@@ -11,7 +11,7 @@ const App = () => {
         Products
       </h1>
       <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
-        Users
+        Users เย้ๆๆ🍜
       </h1>
     </div>
   );
