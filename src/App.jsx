@@ -1,3 +1,4 @@
+import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import SplashCursor from "./components/SplashCursor";
 
@@ -18,6 +19,7 @@ const App = () => {
         Users เย้ๆๆ🍜
       </h1>
       <SplashCursor />
+      <Footer />
     </div>
   </div>
   );
