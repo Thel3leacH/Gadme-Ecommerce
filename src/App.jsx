@@ -2,9 +2,9 @@ import { Navbar } from "./components/Navbar";
 import SplashCursor from "./components/SplashCursor";
 
 const App = () => {
-  return (
+  return (<div>
+    <Navbar />
     <div className="min-w-screen bg-teal-500 flex justify-end gap-20 shadow-md">
-      <Navbar />
       <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
         Hello test ✌😉
       </h1>
@@ -19,6 +19,7 @@ const App = () => {
       </h1>
       <SplashCursor />
     </div>
+  </div>
   );
 };
 

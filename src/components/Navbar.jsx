@@ -1,41 +1,35 @@
+import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 
 
 export function Navbar() {
     return (
-        //nav bar
-        <nav id="nav-container" className="bg-[#006A71]" >
-            <div className="flex" id="logo-side" >
-                <img src="#" alt="gadme-logo" />
+        <div className="bg-[#006A71]">
+            <nav className="bg-[#006A71] flex flex-row justify-between">
+                <img src="../images/Gadme-Logo.png" alt="gadme-logo" />
                 <h1>GadMe</h1>
-            </div>
-
-            <div className="justify-end text-2xl text-blue-50 ">
-                <ul class="nav__list">
-                    <li class="nav__item">
+                <ul className="flex flex-row-reverse">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-search"></i>
+                            href="#">
+                            <BsSearch />
                         </a>
                     </li>
 
-                    <li class="nav__item">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-cart"></i>
+                            href="#">
+                            <BsBasket />
                         </a>
                     </li>
 
-                    <li class="nav__item">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-person"></i>
+                            href="#">
+                            <BsPersonFill />
                         </a>
                     </li>
                 </ul>
-            </div>
-        </nav >
+            </nav>
+        </div >
     )
 }
