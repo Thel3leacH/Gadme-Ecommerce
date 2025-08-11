@@ -5,7 +5,7 @@ export function Navbar() {
     return (
         <div className="bg-[#006A71]">
             <nav className="bg-[#006A71] flex flex-row justify-between">
-                <img src="/Gadme.png" alt="gadme-logo" className="w-xs h-xs" />
+                <img src="/Gadme.png" alt="gadme-logo" className="size-<4>" />
                 <h1>GadMe</h1>
                 <ul className="flex flex-row flex-end gap-2">
                     <li >
