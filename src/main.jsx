@@ -7,6 +7,6 @@ import { C2 } from './testๆๆ/C2.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-    <C2/>
+    <C2 />
   </StrictMode>,
 )
