@@ -1,41 +1,35 @@
+import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 
 
 export function Navbar() {
     return (
-        //nav bar
-        <nav id="nav-container" className="bg-[#006A71]" >
-            <div className="flex" id="logo-side" >
-                <img src="#" alt="gadme-logo" />
+        <div className="bg-[#006A71]">
+            <nav className="bg-[#006A71] flex flex-row justify-between">
+                <img src="/Gadme.png" alt="gadme-logo" className="size-<4>" />
                 <h1>GadMe</h1>
-            </div>
-
-            <div className="justify-end text-2xl text-blue-50 ">
-                <ul class="nav__list">
-                    <li class="nav__item">
+                <ul className="flex flex-row flex-end gap-2">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-search"></i>
+                            href="#">
+                            <BsSearch className="text-2xl " />
                         </a>
                     </li>
 
-                    <li class="nav__item">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-cart"></i>
+                            href="#">
+                            <BsBasket className="text-2xl " />
                         </a>
                     </li>
 
-                    <li class="nav__item">
+                    <li >
                         <a
-                            href="#"
-                            class="nav__link">
-                            <i class="bi bi-person"></i>
+                            href="#">
+                            <BsPersonFill className="text-2xl " />
                         </a>
                     </li>
                 </ul>
-            </div>
-        </nav >
+            </nav>
+        </div >
     )
 }
