@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/product-lists/product";
@@ -8,6 +8,7 @@ const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/product-lists/product";
 export function ProductCard() {
   const [produceName, setProduceName] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [likes, setLikes] = useState({});
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -23,6 +24,21 @@ export function ProductCard() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  //   const [like,setLike]=useState(false)
+  //   const handleLike=(e)=>{
+  //     e.preventDefault()
+  //     setLike(true)
+  //     if(like){<FaHeart className="text-[#9ACBD0] text-[1.5rem]" />}
+  //   }
+
+  const handleLike = (e, id) => {
+    e.preventDefault();
+    setLikes((prevLikes) => ({
+      ...prevLikes,
+      [id]: !prevLikes[id], // สลับสถานะ liked ของ id นั้น
+    }));
+  };
 
   return (
     <div>
@@ -51,12 +67,12 @@ export function ProductCard() {
                     {product.productCategory}
                   </span>
                 </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <FaRegHeart className="text-[#9ACBD0] text-[1.5rem]" />
+                <button onClick={(e) => handleLike(e, product.id)}>
+                  {likes[product.id] ? (
+                    <FaHeart className="text-[#9ACBD0] text-[1.5rem]" />
+                  ) : (
+                    <FaRegHeart className="text-[#9ACBD0] text-[1.5rem]" />
+                  )}
                 </button>
               </div>
               <h3 className="font-medium">Price {product.productPrice} $</h3>
