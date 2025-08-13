@@ -1,4 +1,3 @@
-
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -9,8 +8,7 @@ import { ProductList } from "./views/ProductLists.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-
-    <BrowserRouter>
+    <BrowserRouter> {/* ถ้ามีการใช้ RouterProvider ในหน้า App ให้ลบ BrowserRouter ออก */}
       <App />
       {/* <C2 /> */}
       <ProductList/>
