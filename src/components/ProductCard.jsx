@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/product-lists/product";
+
+const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+
 
 export function ProductCard() {
   const [produceName, setProduceName] = useState([]);
@@ -16,7 +18,8 @@ export function ProductCard() {
       const response = await axios.get(Api);
       setProduceName(response.data);
     } catch (error) {
-      alert("Failed");
+
+      alert("Failed " + error.massage);
     }
     setLoading(false);
   };
@@ -25,12 +28,6 @@ export function ProductCard() {
     fetchProducts();
   }, []);
 
-  //   const [like,setLike]=useState(false)
-  //   const handleLike=(e)=>{
-  //     e.preventDefault()
-  //     setLike(true)
-  //     if(like){<FaHeart className="text-[#9ACBD0] text-[1.5rem]" />}
-  //   }
 
   const handleLike = (e, id) => {
     e.preventDefault();
@@ -48,16 +45,21 @@ export function ProductCard() {
           <Link
             key={product.id}
             to={`/product/${product.id}`}
-            className="w-[15rem] h-[25rem] rounded-[0.5rem] shadow-[5px_5px_10px_rgba(0,0,0,0.25)]"
+
+            className="w-[15rem] h-[25rem] shadow-[5px_5px_10px_rgba(0,0,0,0.25)]"
           >
             <img
-              src={product.productImg}
+              src={product.productImage}
+
               alt="Product Image"
               className="w-[15rem] h-[15rem]"
             />
             <div className="m-[0.5rem] p-2.5">
-              <h2>{product.productName}</h2>
-              <div className="flex justify-between items-center mt-2 mb-2">
+
+              <h2 className="text-[1.15rem] font-bold">
+                {product.productName}
+              </h2>
+              <div className="mt-3 mb-3 flex justify-between items-center">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
