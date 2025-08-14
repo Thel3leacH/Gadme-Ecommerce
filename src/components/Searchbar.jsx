@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
+const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
 
 export default function Searchbar() {
-    const [query, setQuery] = useState('');
-    //mock up items array, can remove later or bind with our items
-    const items = [
-        "iPhone 15",
-        "Samsung Galaxy S24",
-        "Xiaomi Mi 14",
-        "MacBook Air",
-        "iPad Pro",
-        "Apple Watch",
-        "Sony WH-1000XM5",
-    ];
+    const [query, setQuery] = useState("");
+    const [items, setItems] = useState([]);
 
-    const filteredItems = items.filter((item) =>
-        item.toLowerCase().includes(query.toLowerCase())
+    //fetch info from API
+    useEffect(() => {
+        axios.get(Api)
+            .then(res => setItems(res.data))
+            .catch(err => console.error("Error fetching products:", err));
+    }, []);
+
+    const filteredItems = items.filter(item =>
+        item.productName.toLowerCase().includes(query.toLowerCase())
     );
 
     return (
@@ -35,8 +36,15 @@ export default function Searchbar() {
                 <div className="mt-3 text-sm text-gray-700">
                     {filteredItems.length > 0 ? (
                         <ul className="list-disc list-inside">
-                            {filteredItems.map((item, index) => (
-                                <li key={index}>{item}</li>
+                            {filteredItems.map((item) => (
+                                <li key={item.id}>
+                                    <Link
+                                        to={`/product/${item.id}`}
+                                        className="hover:underline text-blue-200"
+                                    >
+                                        {item.productName}
+                                    </Link>
+                                </li>
                             ))}
                         </ul>
                     ) : (
