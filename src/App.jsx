@@ -1,23 +1,28 @@
-import SplashCursor from "./components/SplashCursor";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./views/Home";
+
+import { ProductList } from "./views/ProductLists";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "productlists",
+        element: <ProductList />,
+      },
+    ],
+  },
+]);
 
 const App = () => {
-  return (
-    <div className="min-w-screen bg-teal-500 flex justify-end gap-20 shadow-md">
-      <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
-        Hello test ✌😉
-      </h1>
-      <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
-        Home
-      </h1>
-      <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
-        Products
-      </h1>
-      <h1 className="text-xl font-bold text-white hover:text-green-800 cursor-pointer">
-        Users เย้ๆๆ🍜
-      </h1>
-      <SplashCursor />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
