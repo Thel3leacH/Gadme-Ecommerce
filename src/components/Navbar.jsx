@@ -1,7 +1,16 @@
 import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
+import Searchbar from "./Searchbar";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export function Navbar() {
+      const [isSearchVisible, setIsSearchVisible] = useState(false);
+
+    const toggleSearch = (event) => {
+        event.preventDefault();
+        setIsSearchVisible(!isSearchVisible);
+    };
+
   return (
     <div className="bg-[#006A71]">
       <nav className="bg-[#006A71] flex flex-row justify-between">
@@ -11,8 +20,9 @@ export function Navbar() {
         <h1 className="m-2">GadMe</h1>
         <ul className="flex flex-row flex-end gap-4 m-2">
           <li>
-            <a href="#">
-              <BsSearch className="text-2xl " />
+            <button onClick={toggleSearch} >
+            <BsSearch className="text-2xl " />
+            </button>
             </a>
           </li>
 
@@ -29,6 +39,7 @@ export function Navbar() {
           </li>
         </ul>
       </nav>
+            {isSearchVisible && <Searchbar />}
     </div>
   );
 }
