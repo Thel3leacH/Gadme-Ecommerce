@@ -35,7 +35,7 @@ export default function Searchbar() {
             {query.trim() && (
                 <div className="mt-3 text-sm text-gray-700">
                     {filteredItems.length > 0 ? (
-                        <ul className="list-disc list-inside">
+                        <ul className="list-disc list-inside bg-teal-700 p-1">
                             {filteredItems.map((item) => (
                                 <li key={item.id}>
                                     <Link

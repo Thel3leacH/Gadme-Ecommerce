@@ -3,6 +3,7 @@ import Searchbar from "./Searchbar";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginPopup } from "./LoginForm";
+import { SignupPopup } from "./SignupForm";
 
 export function Navbar() {
     const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -13,12 +14,13 @@ export function Navbar() {
     };
 
     const [isLoginVisible, setIsLoginVisible] = useState(false);
+    const [isSignupVisible, setIsSignupVisible] = useState(false);
 
-    const toggleLogin = (event) => {
+    const toggleLoginAndSignup = (event) => {
         event.preventDefault();
         setIsLoginVisible(!isLoginVisible);
+        setIsSignupVisible(!isSignupVisible);
     };
-
 
 
     return (
@@ -42,7 +44,9 @@ export function Navbar() {
                     </li>
 
                     <li>
-                        <button onClick={toggleLogin} >
+                        <button
+                            onClick={toggleLoginAndSignup}
+                        >
                             <BsPersonFill className="text-2xl " />
                         </button>
                     </li>
@@ -50,6 +54,7 @@ export function Navbar() {
             </nav>
             {isSearchVisible && <Searchbar />}
             {isLoginVisible && <LoginPopup />}
+            {isSignupVisible && <SignupPopup />}
         </div>
     );
 }
