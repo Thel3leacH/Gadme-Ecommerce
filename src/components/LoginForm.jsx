@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-export function SignupPopup() {
+export function LoginPopup() {
     return (
         <Dialog>
             <form>
@@ -22,24 +22,24 @@ export function SignupPopup() {
                     <DialogHeader>
                         <DialogTitle>Sign in</DialogTitle>
                         <DialogDescription>
-                            Sign in for better experience.
+                            Sign in for better experience. Please provide your e-mail and password.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4">
                         <div className="grid gap-3">
-                            <Label htmlFor="name-1">Name</Label>
-                            <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+                            <Label htmlFor="email">Email</Label>
+                            <Input id="email" name="email" defaultValue="Enter your email" />
                         </div>
                         <div className="grid gap-3">
-                            <Label htmlFor="username-1">Username</Label>
-                            <Input id="username-1" name="username" defaultValue="@peduarte" />
+                            <Label htmlFor="password">Password</Label>
+                            <Input id="password" name="password" defaultValue="Enter your password" />
                         </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit">Log in</Button>
                     </DialogFooter>
                 </DialogContent>
             </form>
