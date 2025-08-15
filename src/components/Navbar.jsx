@@ -2,6 +2,7 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import Searchbar from "./Searchbar";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LoginPopup } from "./LoginForm";
 
 export function Navbar() {
     const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -10,6 +11,15 @@ export function Navbar() {
         event.preventDefault();
         setIsSearchVisible(!isSearchVisible);
     };
+
+    const [isLoginVisible, setIsLoginVisible] = useState(false);
+
+    const toggleLogin = (event) => {
+        event.preventDefault();
+        setIsLoginVisible(!isLoginVisible);
+    };
+
+
 
     return (
         <div className="bg-[#006A71]">
@@ -32,13 +42,14 @@ export function Navbar() {
                     </li>
 
                     <li>
-                        <a href="#">
+                        <button onClick={toggleLogin} >
                             <BsPersonFill className="text-2xl " />
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </nav>
             {isSearchVisible && <Searchbar />}
+            {isLoginVisible && <LoginPopup />}
         </div>
     );
 }
