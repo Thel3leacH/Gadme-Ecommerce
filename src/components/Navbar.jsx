@@ -55,6 +55,24 @@ export function Navbar() {
             {isSearchVisible && <Searchbar />}
             {isLoginVisible && <LoginPopup />}
             {isSignupVisible && <SignupPopup />}
+
+            <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2" />
+                </Link>
+            </div>
         </div>
     );
 }
