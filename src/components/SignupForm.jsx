@@ -5,7 +5,6 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 
 
-
 export function SignupPopup() {
     return (
         <Dialog>
@@ -39,7 +38,7 @@ export function SignupPopup() {
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="password">Password</Label>
-                            <Input id="password" name="password" defaultValue="Your password at least 8 character" required />
+                            <Input id="password" name="password" defaultValue="Your password at least 8 character" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="cfpassword">Confirm Password</Label>
