@@ -10,9 +10,11 @@ export function LoginPopup() {
     return (
         <Dialog>
             <form>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Sign in</Button>
-                </DialogTrigger>
+                <div className="flex flex-row-reverse py-1.5 px-1.5" >
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Sign in</Button>
+                    </DialogTrigger>
+                </div>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Sign in</DialogTitle>

@@ -46,6 +46,7 @@ export function Navbar() {
                     <li>
                         <button
                             onClick={toggleLoginAndSignup}
+                            className="flex flex-row"
                         >
                             <BsPersonFill className="text-2xl " />
                         </button>
