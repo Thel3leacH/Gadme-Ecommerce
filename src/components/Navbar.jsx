@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <div>
       <header className="bg-[#48A6A7] text-shadow-cyan-50 text-amber-50 py-7">
-        <nav className="md:flex justify-between gap-12 px-6">
+        <nav className="md:flex justify-between items-center gap-12 px-6">
           <p className="md:text-5xl md:font-semibold md:uppercase md:text-center md:hover:text-amber-300">
             Logo
           </p>
