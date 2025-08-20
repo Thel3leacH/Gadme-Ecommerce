@@ -4,6 +4,8 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import Searchbar from "./Searchbar";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LoginPopup } from "./LoginForm";
+import { SignupPopup } from "./SignupForm";
 
 
 const Navbar = () => {
@@ -14,14 +16,22 @@ const Navbar = () => {
         event.preventDefault();
         setIsSearchVisible(!isSearchVisible);
     };
-  
-  
-  
+
+    const [isLoginVisible, setIsLoginVisible] = useState(false);
+    const [isSignupVisible, setIsSignupVisible] = useState(false);
+
+    const toggleLoginAndSignup = (event) => {
+        event.preventDefault();
+        setIsLoginVisible(!isLoginVisible);
+        setIsSignupVisible(!isSignupVisible);
+    };
+
   return (
     <div>
       <header className="bg-[#48A6A7] text-shadow-cyan-50 text-amber-50 py-7">
         <nav className="md:flex justify-between items-center gap-12 px-6">
    <Link to="/">
+
                     <img src="/Gadme.png" alt="gadme-logo" width="30px" className="m-2" />
                 </Link>
           <p className="md:text-5xl md:font-semibold md:uppercase md:text-center md:hover:text-amber-300">
@@ -49,16 +59,38 @@ const Navbar = () => {
                     </li>
 
                     <li>
-                        <a href="#">
+                        <button
+                            onClick={toggleLoginAndSignup}
+                        >
                             <BsPersonFill className="text-2xl " />
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </nav>
             {isSearchVisible && <Searchbar />}
-      </header>
-    </div>
-  );
+            {isLoginVisible && <LoginPopup />}
+            {isSignupVisible && <SignupPopup />}
+
+            <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2 " />
+                </Link>
+                <Link to="/">
+                    <img src="/notebookpic.jpg" alt="gadme-logo" className="m-2" />
+                </Link>
+            </div>
+                   </header>
+        </div>
+    );
 };
 
 export default Navbar;
