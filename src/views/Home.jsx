@@ -1,3 +1,4 @@
+
 import HotProducts from "../components/HotProducts";
 import { Review } from "../components/Review";
 import Slogan from "../components/Slogan";
