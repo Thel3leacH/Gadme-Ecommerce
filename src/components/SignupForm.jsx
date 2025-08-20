@@ -11,7 +11,7 @@ export function SignupPopup() {
             <form>
                 <div className="flex flex-row-reverse py-1.5 px-1.5" >
                     <DialogTrigger asChild>
-                        <Button variant="outline" >Sign up</Button>
+                        <Button variant="outline" className="text-blue-950" >Sign up</Button>
                     </DialogTrigger>
                 </div>
                 <DialogContent className="sm:max-w-[425px]">
@@ -24,27 +24,27 @@ export function SignupPopup() {
                     <div className="grid gap-4">
                         <div className="grid gap-3">
                             <Label htmlFor="firstname">Firstname</Label>
-                            <Input id="firstname" name="firstname" defaultValue="Enter your firstname here" />
+                            <Input id="firstname" name="firstname" placeholder="Enter your firstname here" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="lastname">Lastname</Label>
-                            <Input id="lastname" name="lastname" defaultValue="Enter your firstname here" />
+                            <Input id="lastname" name="lastname" placeholder="Enter your firstname here" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="username">Username</Label>
-                            <Input id="username" name="username" defaultValue="Enter your username here" />
+                            <Input id="username" name="username" placeholder="Enter your username here" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" name="email" defaultValue="Enter your email" />
+                            <Input id="email" name="email" placeholder="Enter your email" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="password">Password</Label>
-                            <Input id="password" name="password" defaultValue="Your password at least 8 character" />
+                            <Input id="password" name="password" placeholder="Your password at least 8 character" />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="cfpassword">Confirm Password</Label>
-                            <Input id="cfpassword" name="cfpassword" defaultValue="Re-type your password" />
+                            <Input id="cfpassword" name="cfpassword" placeholder="Re-type your password" />
                         </div>
                     </div>
                     <DialogFooter>
