@@ -1,6 +1,7 @@
-export function Footer() {
+
+const Footer = () => {
   return (
-    <div className="bg-[#006A71] text-white p-6 flex flex-row gap-16">
+    <div className="bg-[#48A6A7] text-white p-6 flex flex-row gap-16">
       <div className="mx-2 my-2 flex flex-col justify-between gap-2">
         <img src="/Gadme.png" alt="gadme-logo" width="30px" />
         <h1>GadMe</h1>
@@ -47,4 +48,8 @@ export function Footer() {
       </div>
     </div >
   );
-}
+
+};
+
+export default Footer;
+
