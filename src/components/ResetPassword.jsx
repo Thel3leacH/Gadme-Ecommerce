@@ -6,7 +6,7 @@ import { Label } from "./ui/label"
 
 
 
-export function ResetPassHere() {
+export function ResetPassword() {
     return (
         <Dialog>
             <form>

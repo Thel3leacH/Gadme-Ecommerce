@@ -6,7 +6,7 @@ import { Label } from "./ui/label"
 
 
 
-export function ForgetPassPopup() {
+export function ForgetPassword() {
     return (
         <Dialog>
             <form>

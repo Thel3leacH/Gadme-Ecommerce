@@ -5,7 +5,7 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 
 
-export function SignupPopup() {
+export function SignupForm() {
     return (
         <Dialog>
             <form>

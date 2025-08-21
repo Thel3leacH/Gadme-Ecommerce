@@ -4,8 +4,8 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import Searchbar from "./Searchbar";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LoginPopup } from "./LoginForm";
-import { SignupPopup } from "./SignupForm";
+import { LoginForm } from "./LoginForm";
+import { SignupForm, SignupPopup } from "./SignupForm";
 
 
 const Navbar = () => {
@@ -69,8 +69,8 @@ const Navbar = () => {
                     </ul>
                 </nav>
                 {isSearchVisible && <Searchbar />}
-                {isLoginVisible && <LoginPopup />}
-                {isSignupVisible && <SignupPopup />}
+                {isLoginVisible && <LoginForm />}
+                {isSignupVisible && <SignupForm />}
 
                 <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
                     <Link to="/">

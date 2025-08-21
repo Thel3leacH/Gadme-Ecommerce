@@ -1,5 +1,5 @@
 
-import { ForgetPassPopup } from "./ForgetPassword"
+import { ForgetPassword } from "./ForgetPassword"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { Input } from "./ui/input"
@@ -7,7 +7,7 @@ import { Label } from "./ui/label"
 
 
 
-export function LoginPopup() {
+export function LoginForm() {
     return (
         <Dialog>
             <form>
@@ -31,7 +31,7 @@ export function LoginPopup() {
                         <div className="grid gap-3">
                             <Label htmlFor="password">Password</Label>
                             <Input id="password" name="password" placeholder="Enter your password" />
-                            <ForgetPassPopup />
+                            <ForgetPassword />
                         </div>
                     </div>
                     <DialogFooter>
