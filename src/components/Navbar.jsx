@@ -11,12 +11,13 @@ const Navbar = () => {
           <p className="md:text-5xl md:font-semibold md:uppercase md:text-center md:hover:text-amber-300">
             Gad-me
           </p>
-          <AnimatedThemeToggler />
+
           <div className="md:flex gap-7">
             <p className="md:hover:text-amber-300">Home</p>
             <p className="md:hover:text-amber-300">Products</p>
             <p className="md:hover:text-amber-300">About</p>
             <p className="md:hover:text-amber-300">Contact</p>
+            <AnimatedThemeToggler />
           </div>
         </nav>
       </header>
