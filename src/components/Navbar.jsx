@@ -87,8 +87,8 @@ const Navbar = () => {
                     </ul>
                 </nav>
                 {isSearchVisible && <Searchbar />}
-                {isLoginVisible && <LoginPopup />}
-                {isSignupVisible && <SignupPopup />}
+                {isLoginVisible && <LoginForm />}
+                {isSignupVisible && <SignupForm />}
 
 
                 <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
