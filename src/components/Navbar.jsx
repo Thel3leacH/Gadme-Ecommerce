@@ -4,13 +4,12 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "./LoginForm";
-import { SignupForm, SignupPopup } from "./SignupForm";
+import { SignupForm } from "./SignupForm";
 import Searchbar from "./Searchbar";
 
-
 const Navbar = () => {
-    //this will make change is react responsive
-    const [isSearchVisible, setIsSearchVisible] = useState(false);
+  //this will make change is react responsive
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const toggleSearch = (event) => {
     event.preventDefault();
@@ -25,8 +24,6 @@ const Navbar = () => {
     setIsLoginVisible(!isLoginVisible);
     setIsSignupVisible(!isSignupVisible);
   };
-
-
 
   return (
     <div>
@@ -79,9 +76,7 @@ const Navbar = () => {
             </li>
 
             <li>
-              <button 
-                 onClick={toggleLoginAndSignup}
-                 className="flex flex-row">
+              <button onClick={toggleLoginAndSignup} className="flex flex-row">
                 <BsPersonFill className="text-2xl " />
               </button>
             </li>
