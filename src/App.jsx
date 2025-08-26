@@ -1,24 +1,32 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./views/Home";
 import Layout from "./components/Layout";
-// import Home from "./views/Home";
-
 import { ProductList } from "./views/ProductLists";
-import AddressForm from "./components/AddressForm";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+
+    errorElement: (
+      <div className="min-h-screen flex justify-center items-center">
+        <h1 className="text-4xl">404 - Page Not Found 🙅‍♂️</h1>
+      </div>
+    ),
+
     children: [
       {
         path: "/",
         // element: <Home />,
         element: <AddressForm />,
       },
+
       {
         path: "productlists",
         element: <ProductList />,
       },
+  
     ],
   },
 ]);

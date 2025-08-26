@@ -1,6 +1,8 @@
-export function Footer() {
+
+const Footer = () => {
   return (
-    <div className="bg-[#006A71]">
+    <div className="bg-[#48A6A7]">
+
       <div className="mx-2 my-2">
         <img src="../images/Gadme-Logo.png" alt="gadme-logo" />
         <h1>GadMe</h1>
@@ -37,4 +39,8 @@ export function Footer() {
       </div>
     </div>
   );
-}
+
+};
+
+export default Footer;
+
