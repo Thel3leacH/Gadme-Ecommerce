@@ -4,17 +4,19 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div className="">
+    <>
       <header>
         <Navbar />
       </header>
-      <main className="overflow-auto p-4">
+      {/* className="overflow-auto p-4" */}
+      <main class="overflow-auto md:container mx-auto px-7">
         <Outlet />
       </main>
-      <footer className="flex-shrink-0">
+      {/* className="flex-shrink-0" */}
+      <footer className="md:bg-chart-2 text-gray-400 text-sm mt-16">
         <Footer />
       </footer>
-    </div>
+    </>
   );
 };
 
