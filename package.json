@@ -33,9 +33,7 @@
     "tailwind-animate": "^0.2.10",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
-    "three": "^0.179.1",
-    "rollup": "4.18.0",
-    "@rollup/rollup-linux-x64-gnu": "4.18.0"
+    "three": "^0.179.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
