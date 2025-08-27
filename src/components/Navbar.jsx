@@ -4,7 +4,7 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "./LoginForm";
-import { SignupForm, SignupPopup } from "./SignupForm";
+import { SignupForm } from "./SignupForm";
 import Searchbar from "./Searchbar";
 
 const Navbar = () => {
