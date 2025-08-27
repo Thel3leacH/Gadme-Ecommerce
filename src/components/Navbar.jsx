@@ -8,7 +8,7 @@ import { SignupForm } from "./SignupForm";
 import Searchbar from "./Searchbar";
 
 const Navbar = () => {
-  // this will make change is react responsive
+  //this will make change is react responsive
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const toggleSearch = (event) => {

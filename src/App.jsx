@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Home from "./views/Home";
 import Layout from "./components/Layout";
 import { ProductList } from "./views/ProductLists";
@@ -30,7 +31,6 @@ const router = createBrowserRouter([
         path: "productlists/product/:id",
         element: <ProductPage />,
       },
-  
     ],
   },
 ]);

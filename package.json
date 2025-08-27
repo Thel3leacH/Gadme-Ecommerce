@@ -21,6 +21,7 @@
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
+    "install": "^0.13.0",
     "jquery": "^3.7.1",
     "lucide-react": "^0.541.0",
     "matter-js": "^0.20.0",
