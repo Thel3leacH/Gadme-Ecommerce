@@ -1,43 +1,52 @@
 
 const Footer = () => {
   return (
-    <div className="bg-[#48A6A7]">
-
-      <div className="mx-2 my-2">
-        <img src="../images/Gadme-Logo.png" alt="gadme-logo" />
+    <div className="bg-[#48A6A7] text-white p-6 flex flex-row gap-16">
+      <div className="mx-2 my-2 flex flex-col justify-between gap-2">
+        <img src="/Gadme.png" alt="gadme-logo" width="30px" />
         <h1>GadMe</h1>
-        <text>Customer Supports:</text>
-        <text>(629) 555-0129</text>
-        <text>4517 Washington Ave. </text>
-        <text>Manchester, Kentucky 39495</text>
-        <text>info@gadme.com</text>
+        <p>Customer Supports:</p>
+        <p>(629) 555-0129</p>
+        <p>4517 Washington Ave. </p>
+        <p>Manchester, Kentucky 39495</p>
+        <p>info@gadme.com</p>
       </div>
 
-      <div className="">
-        <h2>Top Category</h2>
-        <ul className="flex flex-row">
+      <div className="space-y-2">
+        <h2 className="font-bold">Top Category</h2>
+        <ul className="flex flex-col space-y-2">
           <li>
-            <a href="#">Computer & Laptop</a>
+            <a href="#" className="hover:underline">
+              Computer & Laptop
+            </a>
           </li>
 
           <li>
-            <a href="#">SmartPhone</a>
+            <a href="#" className="hover:underline hover:text-amber-200">
+              SmartPhone
+            </a>
           </li>
 
           <li>
-            <a href="#">Headphone</a>
+            <a href="#" className="hover:underline hover:text-amber-200">
+              Headphone
+            </a>
           </li>
 
           <li>
-            <a href="#">Accessories</a>
+            <a href="#" className="hover:underline hover:text-amber-200">
+              Accessories
+            </a>
           </li>
 
           <li>
-            <a href="#">Camera & Photo</a>
+            <a href="#" className="hover:underline hover:text-amber-200">
+              Camera & Photo
+            </a>
           </li>
         </ul>
       </div>
-    </div>
+    </div >
   );
 
 };
