@@ -4,7 +4,6 @@ import Home from "./views/Home";
 import Layout from "./components/Layout";
 import { ProductList } from "./views/ProductLists";
 import { ProductPage } from "./views/ProductPage";
-// import AddressForm from "./components/AddressForm";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +20,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
-        // element: <AddressForm />,
       },
 
       {
