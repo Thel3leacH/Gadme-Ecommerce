@@ -63,7 +63,7 @@ const Navbar = () => {
                         </li>
                     </ul>
 
-                    <ul className="flex gap-4 m-2 md:hidden">
+                    <ul className="flex gap-4 m-2 ">
                         <li>
                             <button onClick={toggleSearch}>
                                 <BsSearch className="text-2xl " />
