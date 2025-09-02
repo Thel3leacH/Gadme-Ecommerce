@@ -1,12 +1,9 @@
-import { Button } from "./ui/button"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
+import { useState } from "react";
+import axios from "axios";
 
-//const API = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+const API = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
 
-
-function AdminAddItem({ items, setItems, fetchItems, API }) {
+function AdminAddItem({ items, setItems, fetchItems }) {
     const [itemForm, setItemForm] = useState({
         productname: "",
         description: "",
@@ -15,16 +12,8 @@ function AdminAddItem({ items, setItems, fetchItems, API }) {
         warrantyinfo: "",
         relatedproduct: [],
         features: [],
-        variances: [
-            {
-                color: "",
-                image: [],
-                stock: 0,
-                price: 0,
-            },
-        ],
-    }, { timestamps: true }
-    );
+        variances: [{ color: "", image: [], stock: 0, price: 0 }],
+    });
 
     const [editItemId, setEditItemId] = useState(null);
     const [editItemForm, setEditItemForm] = useState({
@@ -35,208 +24,165 @@ function AdminAddItem({ items, setItems, fetchItems, API }) {
         warrantyinfo: "",
         relatedproduct: [],
         features: [],
-        variances: [
-            {
-                color: "",
-                image: [],
-                stock: 0,
-                price: 0,
-            },
-        ],
+        variances: [{ color: "", image: [], stock: 0, price: 0 }],
     });
 
-};
+    // 🟢 Handle Form
+    const handleItemChange = (e) => {
+        setItemForm({ ...itemForm, [e.target.name]: e.target.value });
+    };
 
-const handleItemChange = (e) => {
-    setItemForm({
-        ...editItemForm,
-        [e.target.name]: e.target.value
-    });
-};
+    const handleVarianceChange = (index, e) => {
+        const { name, value } = e.target;
+        const newVariances = [...itemForm.variances];
+        newVariances[index][name] = value;
+        setItemForm({ ...itemForm, variances: newVariances });
+    };
 
-const handleItemSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        await axios.post(API, itemForm);
-        await fetchItems();
-        // Reset item form
+    const handleAddVariance = () => {
         setItemForm({
-            productname: "",
-            description: "",
-            brand: "",
-            modelname: "",
-            warrantyinfo: "",
-            relatedproduct: [],
-            features: [],
-            variances: [
-                {
-                    color: "",
-                    image: [],
-                    stock: 0,
-                    price: 0,
-                },
-            ],
-        }, { timestamps: true }
-        );
-    } catch (error) {
-        console.error("❌Error creating new item:", error);
-    }
-};
+            ...itemForm,
+            variances: [...itemForm.variances, { color: "", image: [], stock: 0, price: 0 }],
+        });
+    };
 
-const handleItemDelete = async (id) => {
-    if (!window.confirm("Delete this item?")) return;
-    await axios.delete(`${API}/${id}`);
-    setItems(items.filter((item) => item.id !== id));
-};
+    const handleItemSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(API, itemForm);
+            await fetchItems();
+            setItemForm({
+                productname: "",
+                description: "",
+                brand: "",
+                modelname: "",
+                warrantyinfo: "",
+                relatedproduct: [],
+                features: [],
+                variances: [{ color: "", image: [], stock: 0, price: 0 }],
+            });
+        } catch (error) {
+            console.error("❌ Error creating item:", error);
+        }
+    };
 
-const handleItemEdit = (item) => {
-    setEditItemId(item.id);
-    setEditItemForm({
-        productname: item.productname,
-        description: item.description,
-        brand: item.brand,
-        modelname: item.modelname,
-        warrantyinfo: item.warrantyinfo,
-        relatedproduct: item.relatedproduct,
-        features: item.features,
-        variances: [
-            {
-                color: item.variances.color,
-                image: item.variances.image,
-                stock: item.variances.stock,
-                price: item.variances.price,
-            },
-        ],
-    });
+    // 🟢 Edit & Delete
+    const handleItemDelete = async (id) => {
+        if (!window.confirm("Delete this item?")) return;
+        await axios.delete(`${API}/${id}`);
+        setItems(items.filter((item) => item.id !== id));
+    };
+
+    const handleItemEdit = (item) => {
+        setEditItemId(item.id);
+        setEditItemForm({
+            productname: item.productname,
+            description: item.description,
+            brand: item.brand,
+            modelname: item.modelname,
+            warrantyinfo: item.warrantyinfo,
+            relatedproduct: item.relatedproduct,
+            features: item.features,
+            variances: item.variances || [{ color: "", image: [], stock: 0, price: 0 }],
+        });
+    };
+
+    const handleItemEditSave = async (id) => {
+        try {
+            await axios.put(`${API}/${id}`, editItemForm);
+            await fetchItems();
+            setEditItemId(null);
+        } catch (error) {
+            console.error("❌ Error updating item:", error);
+        }
+    };
+
+    const handleItemEditCancel = () => setEditItemId(null);
+
+    const handleItemEditChange = (e) => {
+        setEditItemForm({ ...editItemForm, [e.target.name]: e.target.value });
+    };
+
+    return (
+        <div className="flex flex-col items-center">
+            {/* Form */}
+            <form onSubmit={handleItemSubmit} className="pb-3">
+                <input name="productname" value={itemForm.productname} onChange={handleItemChange} placeholder="Product name" />
+                <input name="description" value={itemForm.description} onChange={handleItemChange} placeholder="Description" />
+                <input name="brand" value={itemForm.brand} onChange={handleItemChange} placeholder="Brand" />
+                <input name="modelname" value={itemForm.modelname} onChange={handleItemChange} placeholder="Model name" />
+                <input name="warrantyinfo" value={itemForm.warrantyinfo} onChange={handleItemChange} placeholder="Warranty" />
+                <input name="relatedproduct" value={itemForm.relatedproduct} onChange={handleItemChange} placeholder="Related" />
+                <input name="features" value={itemForm.features} onChange={handleItemChange} placeholder="Features" />
+
+                {/* Variances */}
+                <div>
+                    <h3 className="font-bold">Variances</h3>
+                    {itemForm.variances.map((v, i) => (
+                        <div key={i}>
+                            <input name="color" value={v.color} onChange={(e) => handleVarianceChange(i, e)} placeholder="Color" />
+                            <input name="stock" type="number" value={v.stock} onChange={(e) => handleVarianceChange(i, e)} placeholder="Stock" />
+                            <input name="price" type="number" value={v.price} onChange={(e) => handleVarianceChange(i, e)} placeholder="Price" />
+                            <input name="image" value={v.image} onChange={(e) => handleVarianceChange(i, e)} placeholder="Image URL" />
+                        </div>
+                    ))}
+                    <button type="button" onClick={handleAddVariance}>+ Add Variance</button>
+                </div>
+
+                <button type="submit">Save new item</button>
+            </form>
+
+            {/* Table */}
+            <table className="w-full border-separate">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Features</th>
+                        <th>Color</th>
+                        <th>Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item) => (
+                        <tr key={item.id}>
+                            {editItemId === item.id ? (
+                                <>
+                                    <td><input name="productname" value={editItemForm.productname} onChange={handleItemEditChange} /></td>
+                                    <td><input name="features" value={editItemForm.features} onChange={handleItemEditChange} /></td>
+                                    <td><input value={editItemForm.variances[0]?.color || ""} onChange={(e) => {
+                                        const newVar = [...editItemForm.variances];
+                                        newVar[0].color = e.target.value;
+                                        setEditItemForm({ ...editItemForm, variances: newVar });
+                                    }} /></td>
+                                    <td><input type="number" value={editItemForm.variances[0]?.stock || 0} onChange={(e) => {
+                                        const newVar = [...editItemForm.variances];
+                                        newVar[0].stock = e.target.value;
+                                        setEditItemForm({ ...editItemForm, variances: newVar });
+                                    }} /></td>
+                                    <td>
+                                        <button onClick={() => handleItemEditSave(item.id)}>Save</button>
+                                        <button onClick={handleItemEditCancel}>Cancel</button>
+                                    </td>
+                                </>
+                            ) : (
+                                <>
+                                    <td>{item.productname}</td>
+                                    <td>{Array.isArray(item.features) ? item.features.join(", ") : item.features}</td>
+                                    <td>{item.variances?.[0]?.color || "-"}</td>
+                                    <td>{item.variances?.[0]?.stock || 0}</td>
+                                    <td>
+                                        <button onClick={() => handleItemEdit(item)}>Edit</button>
+                                        <button onClick={() => handleItemDelete(item.id)}>Delete</button>
+                                    </td>
+                                </>
+                            )}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
 
-const handleItemEditSave = async (id) => {
-    try {
-        await axios.put(`${API}/${id}`, editItemForm)
-        await fetchItems();
-        setEditItemId(null);
-    } catch (error) {
-        console.error("❌Error updating item:", error);
-    }
-};
-
-const handleEditCancel = () => {
-    setEditItemId(null);
-};
-
-
-
-//     return (
-//         <div className="flex flex-col items-center">
-//             <form onSubmit={handleItemSubmit} className="pb-3">
-//                 <input
-//                     onChange={handleChange}
-//                     value={form.name}
-//                     name="name"
-//                     className="bg-white mx-1 w-32 px-2 rounded border"
-//                     placeholder="Name"
-//                 />
-//                 <input
-//                     onChange={handleChange}
-//                     value={form.lastname}
-//                     name="lastname"
-//                     className="bg-white mx-1 w-32 px-2 rounded border"
-//                     placeholder="Last name"
-//                 />
-//                 <input
-//                     onChange={handleChange}
-//                     value={form.position}
-//                     name="position"
-//                     className="bg-white mx-1 w-32 px-2 rounded border"
-//                     placeholder="Position"
-//                 />
-//                 <button
-//                     type="submit"
-//                     className="cursor-pointer bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 mx-1 rounded-4xl"
-//                 >
-//                     Save new user
-//                 </button>
-//             </form>
-//             <table className="w-full border-separate">
-//                 <thead>
-//                     <tr className="text-center font-bold bg-gray-200">
-//                         <th className="border rounded-tl-lg p-2">Name</th>
-//                         <th className="border p-2">Last name</th>
-//                         <th className="border p-2">Position</th>
-//                         <th className="border rounded-tr-lg p-2">Action</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     {users.map((user) => (
-//                         <tr key={user.id} className="bg-white">
-//                             {editId === user.id ? (
-//                                 <>
-//                                     <td className="border p-2 ">
-//                                         <input
-//                                             value={editForm.name}
-//                                             onChange={""}
-//                                             name="name"
-//                                             className="bg-white mx-1 w-32 px-2 rounded border"
-//                                         />
-//                                     </td>
-//                                     <td className="border p-2 ">
-//                                         <input
-//                                             value={editForm.lastname}
-//                                             onChange={""}
-//                                             name="lastname"
-//                                             className="bg-white mx-1 w-32 px-2 rounded border"
-//                                         />
-//                                     </td>
-//                                     <td className="border p-2 ">
-//                                         <input
-//                                             value={editForm.position}
-//                                             onChange={""}
-//                                             name="position"
-//                                             className="bg-white mx-1 w-32 px-2 rounded border"
-//                                         />
-//                                     </td>
-//                                     <td className="border p-2 ">
-//                                         <button
-//                                             onClick={() => handleEditSave(user.id)}
-//                                             className="cursor-pointer bg-teal-300 hover:bg-rose-500 text-white px-2 rounded-xl"
-//                                         >
-//                                             Save
-//                                         </button>
-//                                         <button
-//                                             onClick={handleEditCancel}
-//                                             className="cursor-pointer bg-gray-400 hover:bg-rose-500 text-white px-2 rounded-xl"
-//                                         >
-//                                             Cancel
-//                                         </button>
-//                                         <handleEditChange />
-//                                     </td>
-//                                 </>
-//                             ) : (
-//                                 <>
-//                                     <td className="border p-2 ">{user.name}</td>
-//                                     <td className="border p-2 ">{user.lastname}</td>
-//                                     <td className="border p-2 ">{user.position}</td>
-//                                     <td className="border p-2 ">
-//                                         <button
-//                                             onClick={() => handleEdit(user)}
-//                                             className="cursor-pointer bg-yellow-300 hover:bg-rose-500 text-white px-2 rounded-xl"
-//                                         >
-//                                             Edit
-//                                         </button>
-//                                         <button
-//                                             onClick={() => handleDelete(user.id)}
-//                                             className="cursor-pointer bg-rose-400 hover:bg-rose-500 text-white px-2 rounded-xl"
-//                                         >
-//                                             Delete
-//                                         </button>
-//                                     </td>
-//                                 </>
-//                             )}
-
-//                         </tr>
-//                     ))}
-//                 </tbody>
-//             </table>
-//         </div>
-//     );
-// }
+export default AdminAddItem;
