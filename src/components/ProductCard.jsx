@@ -16,7 +16,7 @@ export function ProductCard() {
       const response = await axios.get(Api);
       setProduceName(response.data);
     } catch (error) {
-      alert("Failed");
+      alert("Failed"+error.massage);
     }
     setLoading(false);
   };
