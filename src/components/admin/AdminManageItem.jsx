@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+const API = "https://68b70b2a73b3ec66cec3999a.mockapi.io/api/mockitem/items";
 
 function AdminAddItem({ items, setItems, fetchItems }) {
     const [itemForm, setItemForm] = useState({
@@ -27,7 +27,7 @@ function AdminAddItem({ items, setItems, fetchItems }) {
         variances: [{ color: "", image: [], stock: 0, price: 0 }],
     });
 
-    // 🟢 Handle Form
+    //  Handle Form
     const handleItemChange = (e) => {
         setItemForm({ ...itemForm, [e.target.name]: e.target.value });
     };
@@ -66,7 +66,7 @@ function AdminAddItem({ items, setItems, fetchItems }) {
         }
     };
 
-    // 🟢 Edit & Delete
+    // Edit & Delete
     const handleItemDelete = async (id) => {
         if (!window.confirm("Delete this item?")) return;
         await axios.delete(`${API}/${id}`);
@@ -102,6 +102,9 @@ function AdminAddItem({ items, setItems, fetchItems }) {
     const handleItemEditChange = (e) => {
         setEditItemForm({ ...editItemForm, [e.target.name]: e.target.value });
     };
+
+    useEffect(() => { }, []);
+
 
     return (
         <div className="flex flex-col items-center">
@@ -144,41 +147,48 @@ function AdminAddItem({ items, setItems, fetchItems }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => (
-                        <tr key={item.id}>
-                            {editItemId === item.id ? (
-                                <>
-                                    <td><input name="productname" value={editItemForm.productname} onChange={handleItemEditChange} /></td>
-                                    <td><input name="features" value={editItemForm.features} onChange={handleItemEditChange} /></td>
-                                    <td><input value={editItemForm.variances[0]?.color || ""} onChange={(e) => {
-                                        const newVar = [...editItemForm.variances];
-                                        newVar[0].color = e.target.value;
-                                        setEditItemForm({ ...editItemForm, variances: newVar });
-                                    }} /></td>
-                                    <td><input type="number" value={editItemForm.variances[0]?.stock || 0} onChange={(e) => {
-                                        const newVar = [...editItemForm.variances];
-                                        newVar[0].stock = e.target.value;
-                                        setEditItemForm({ ...editItemForm, variances: newVar });
-                                    }} /></td>
-                                    <td>
-                                        <button onClick={() => handleItemEditSave(item.id)}>Save</button>
-                                        <button onClick={handleItemEditCancel}>Cancel</button>
-                                    </td>
-                                </>
-                            ) : (
-                                <>
-                                    <td>{item.productname}</td>
-                                    <td>{Array.isArray(item.features) ? item.features.join(", ") : item.features}</td>
-                                    <td>{item.variances?.[0]?.color || "-"}</td>
-                                    <td>{item.variances?.[0]?.stock || 0}</td>
-                                    <td>
-                                        <button onClick={() => handleItemEdit(item)}>Edit</button>
-                                        <button onClick={() => handleItemDelete(item.id)}>Delete</button>
-                                    </td>
-                                </>
-                            )}
-                        </tr>
-                    ))}
+                    {items && items.length > 0 ? (
+                        items.map((item) => (
+                            <tr key={item.id}>
+                                {editItemId === item.id ? (
+                                    <>
+                                        <td><input name="productname" value={editItemForm.productname} onChange={handleItemEditChange} /></td>
+                                        <td><input name="features" value={editItemForm.features} onChange={handleItemEditChange} /></td>
+                                        <td><input value={editItemForm.variances[0]?.color || ""} onChange={(e) => {
+                                            const newVar = [...editItemForm.variances];
+                                            newVar[0].color = e.target.value;
+                                            setEditItemForm({ ...editItemForm, variances: newVar });
+                                        }} /></td>
+                                        <td><input type="number" value={editItemForm.variances[0]?.stock || 0} onChange={(e) => {
+                                            const newVar = [...editItemForm.variances];
+                                            newVar[0].stock = e.target.value;
+                                            setEditItemForm({ ...editItemForm, variances: newVar });
+                                        }} /></td>
+                                        <td>
+                                            <button onClick={() => handleItemEditSave(item.id)}>Save</button>
+                                            <button onClick={handleItemEditCancel}>Cancel</button>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td>{item.productname}</td>
+                                        <td>{Array.isArray(item.features) ? item.features.join(", ") : item.features}</td>
+                                        <td>{item.variances?.[0]?.color || "-"}</td>
+                                        <td>{item.variances?.[0]?.stock || 0}</td>
+                                        <td>
+                                            <button onClick={() => handleItemEdit(item)}>Edit</button>
+                                            <button onClick={() => handleItemDelete(item.id)}>Delete</button>
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                        ))
+                    ) :
+                        (
+                            <tr>
+                                <td colSpan="5" className="text-center p-4">No products found.</td>
+                            </tr>
+                        )}
                 </tbody>
             </table>
         </div>
