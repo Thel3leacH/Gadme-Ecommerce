@@ -3,6 +3,7 @@ import Home from "./views/Home";
 import Layout from "./components/Layout";
 import { ProductList } from "./views/ProductLists";
 import { ProductPage } from "./views/ProductPage";
+import AdminAddItem from "./components/admin/AdminManageItem";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ const router = createBrowserRouter([
         path: "productlists/product/:id",
         element: <ProductPage />,
       },
-  
+      {
+        path: "admin",
+        element: <AdminAddItem />,
+      },
+
     ],
   },
 ]);
