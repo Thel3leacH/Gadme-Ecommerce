@@ -1,88 +1,134 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Button } from "./ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
 
-//const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
-
-// const API_POST = "https://jsd5-mock-backend.onrender.com/members";
-// const API_DELETE = "https://jsd5-mock-backend.onrender.com/member";
-
-// export function AdminTable({ users, setUsers, fetchUsers, API }) {
-//     const [form, setForm] = useState({
-//         name: "",
-//         lastname: "",
-//         position: "",
-//     });
-
-//     const [editId, setEditId] = useState(null);
-//     const [editForm, setEditForm] = useState({
-//         name: "",
-//         lastname: "",
-//         position: "",
-//     });
+//const API = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
 
 
-//     const handleChange = (e) => {
-//         setForm({ ...form, [e.target.name]: e.target.value });
-//     };
+function AdminAddItem({ items, setItems, fetchItems, API }) {
+    const [itemForm, setItemForm] = useState({
+        productname: "",
+        description: "",
+        brand: "",
+        modelname: "",
+        warrantyinfo: "",
+        relatedproduct: [],
+        features: [],
+        variances: [
+            {
+                color: "",
+                image: [],
+                stock: 0,
+                price: 0,
+            },
+        ],
+    }, { timestamps: true }
+    );
 
-//     const handleEditChange = (e) => {
-//         setEditForm({
-//             ...editForm,
-//             [e.target.name]: e.target.value
-//         });
-//     };
+    const [editItemId, setEditItemId] = useState(null);
+    const [editItemForm, setEditItemForm] = useState({
+        productname: "",
+        description: "",
+        brand: "",
+        modelname: "",
+        warrantyinfo: "",
+        relatedproduct: [],
+        features: [],
+        variances: [
+            {
+                color: "",
+                image: [],
+                stock: 0,
+                price: 0,
+            },
+        ],
+    });
 
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         try {
-//             await axios.post(API, form);
-//             await fetchUsers();
-//             // Reset the form
-//             setForm({
-//                 name: "",
-//                 lastname: "",
-//                 position: "",
-//             });
-//         } catch (error) {
-//             console.error("Error creating user:", error);
-//         }
-//     };
+};
 
-//     const handleDelete = async (id) => {
-//         if (!window.confirm("Delete this user?")) return;
-//         await axios.delete(`${API}/${id}`);
-//         setUsers(users.filter((user) => user.id !== id));
-//     };
+const handleItemChange = (e) => {
+    setItemForm({
+        ...editItemForm,
+        [e.target.name]: e.target.value
+    });
+};
 
-//     const handleEdit = (user) => {
-//         setEditId(user.id);
-//         setEditForm({
-//             name: user.name,
-//             lastname: user.lastname,
-//             position: user.position,
-//         });
-//     };
+const handleItemSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        await axios.post(API, itemForm);
+        await fetchItems();
+        // Reset item form
+        setItemForm({
+            productname: "",
+            description: "",
+            brand: "",
+            modelname: "",
+            warrantyinfo: "",
+            relatedproduct: [],
+            features: [],
+            variances: [
+                {
+                    color: "",
+                    image: [],
+                    stock: 0,
+                    price: 0,
+                },
+            ],
+        }, { timestamps: true }
+        );
+    } catch (error) {
+        console.error("❌Error creating new item:", error);
+    }
+};
 
-//     const handleEditSave = async (id) => {
-//         try {
-//             await axios.put(`${API}/${id}`, editForm)
-//             await fetchUsers();
-//             setEditId(null);
-//         } catch (error) {
-//             console.error("Error updating member:", error);
-//         }
-//     };
+const handleItemDelete = async (id) => {
+    if (!window.confirm("Delete this item?")) return;
+    await axios.delete(`${API}/${id}`);
+    setItems(items.filter((item) => item.id !== id));
+};
 
-//     const handleEditCancel = () => {
-//         setEditId(null);
-//     };
+const handleItemEdit = (item) => {
+    setEditItemId(item.id);
+    setEditItemForm({
+        productname: item.productname,
+        description: item.description,
+        brand: item.brand,
+        modelname: item.modelname,
+        warrantyinfo: item.warrantyinfo,
+        relatedproduct: item.relatedproduct,
+        features: item.features,
+        variances: [
+            {
+                color: item.variances.color,
+                image: item.variances.image,
+                stock: item.variances.stock,
+                price: item.variances.price,
+            },
+        ],
+    });
+}
+
+const handleItemEditSave = async (id) => {
+    try {
+        await axios.put(`${API}/${id}`, editItemForm)
+        await fetchItems();
+        setEditItemId(null);
+    } catch (error) {
+        console.error("❌Error updating item:", error);
+    }
+};
+
+const handleEditCancel = () => {
+    setEditItemId(null);
+};
 
 
 
 //     return (
 //         <div className="flex flex-col items-center">
-//             <form onSubmit={handleSubmit} className="pb-3">
+//             <form onSubmit={handleItemSubmit} className="pb-3">
 //                 <input
 //                     onChange={handleChange}
 //                     value={form.name}
