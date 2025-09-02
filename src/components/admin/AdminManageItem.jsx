@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API = "https://68b70b2a73b3ec66cec3999a.mockapi.io/api/mockitem/items";
 
-function AdminAddItem({ items, setItems, fetchItems }) {
+function AdminManageItem({ items, setItems, fetchItems }) {
     const [itemForm, setItemForm] = useState({
         productname: "",
         description: "",
@@ -107,32 +107,49 @@ function AdminAddItem({ items, setItems, fetchItems }) {
 
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center p-4">
             {/* Form */}
             <form onSubmit={handleItemSubmit} className="pb-3">
-                <input name="productname" value={itemForm.productname} onChange={handleItemChange} placeholder="Product name" />
-                <input name="description" value={itemForm.description} onChange={handleItemChange} placeholder="Description" />
-                <input name="brand" value={itemForm.brand} onChange={handleItemChange} placeholder="Brand" />
-                <input name="modelname" value={itemForm.modelname} onChange={handleItemChange} placeholder="Model name" />
-                <input name="warrantyinfo" value={itemForm.warrantyinfo} onChange={handleItemChange} placeholder="Warranty" />
-                <input name="relatedproduct" value={itemForm.relatedproduct} onChange={handleItemChange} placeholder="Related" />
-                <input name="features" value={itemForm.features} onChange={handleItemChange} placeholder="Features" />
-
+                <label>Product Name :
+                    <input name="productname" value={itemForm.productname} onChange={handleItemChange} placeholder="Product name" className="bg-cyan-100" />
+                </label>
+                <label>Description :
+                    <input name="description" value={itemForm.description} onChange={handleItemChange} placeholder="Description" className="bg-cyan-100" />
+                </label>
+                <label>Brand Name :
+                    <input name="brand" value={itemForm.brand} onChange={handleItemChange} placeholder="Brand" className="bg-cyan-100" />
+                </label>
+                <label>Model Name :
+                    <input name="modelname" value={itemForm.modelname} onChange={handleItemChange} placeholder="Model name" className="bg-cyan-100" />
+                </label>
+                <label>Warranty Information :
+                    <input name="warrantyinfo" value={itemForm.warrantyinfo} onChange={handleItemChange} placeholder="Warranty" className="bg-cyan-100" />
+                </label>
+                <label>Related Product :
+                    <input name="relatedproduct" value={itemForm.relatedproduct} onChange={handleItemChange} placeholder="Related" className="bg-cyan-100" />
+                </label>
+                <label>Features :
+                    <input name="features" value={itemForm.features} onChange={handleItemChange} placeholder="Features" className="bg-cyan-100" />
+                </label>
                 {/* Variances */}
                 <div>
                     <h3 className="font-bold">Variances</h3>
                     {itemForm.variances.map((v, i) => (
                         <div key={i}>
-                            <input name="color" value={v.color} onChange={(e) => handleVarianceChange(i, e)} placeholder="Color" />
-                            <input name="stock" type="number" value={v.stock} onChange={(e) => handleVarianceChange(i, e)} placeholder="Stock" />
-                            <input name="price" type="number" value={v.price} onChange={(e) => handleVarianceChange(i, e)} placeholder="Price" />
-                            <input name="image" value={v.image} onChange={(e) => handleVarianceChange(i, e)} placeholder="Image URL" />
+                            <input name="color" value={v.color} onChange={(e) => handleVarianceChange(i, e)} placeholder="Color" className="bg-cyan-100" />
+                            <label>Stock :
+                                <input name="stock" type="number" value={v.stock} onChange={(e) => handleVarianceChange(i, e)} placeholder="Stock" className="bg-cyan-100" />
+                            </label>
+                            <label>Price :
+                                <input name="price" type="number" value={v.price} onChange={(e) => handleVarianceChange(i, e)} placeholder="Price" className="bg-cyan-100" />
+                            </label>
+                            <input name="image" value={v.image} onChange={(e) => handleVarianceChange(i, e)} placeholder="Image URL" className="bg-cyan-100" />
                         </div>
                     ))}
-                    <button type="button" onClick={handleAddVariance}>+ Add Variance</button>
+                    <button type="button" onClick={handleAddVariance} className="bg-emerald-200 ">+ Add Variance</button>
                 </div>
 
-                <button type="submit">Save new item</button>
+                <button type="submit" className="bg-emerald-200 " >Save new item</button>
             </form>
 
             {/* Table */}
@@ -152,21 +169,21 @@ function AdminAddItem({ items, setItems, fetchItems }) {
                             <tr key={item.id}>
                                 {editItemId === item.id ? (
                                     <>
-                                        <td><input name="productname" value={editItemForm.productname} onChange={handleItemEditChange} /></td>
-                                        <td><input name="features" value={editItemForm.features} onChange={handleItemEditChange} /></td>
+                                        <td><input name="productname" value={editItemForm.productname} onChange={handleItemEditChange} className="bg-pink-200 " /></td>
+                                        <td><input name="features" value={editItemForm.features} onChange={handleItemEditChange} className="bg-pink-200" /></td>
                                         <td><input value={editItemForm.variances[0]?.color || ""} onChange={(e) => {
                                             const newVar = [...editItemForm.variances];
                                             newVar[0].color = e.target.value;
                                             setEditItemForm({ ...editItemForm, variances: newVar });
-                                        }} /></td>
+                                        }} className="bg-pink-200" /></td>
                                         <td><input type="number" value={editItemForm.variances[0]?.stock || 0} onChange={(e) => {
                                             const newVar = [...editItemForm.variances];
                                             newVar[0].stock = e.target.value;
                                             setEditItemForm({ ...editItemForm, variances: newVar });
-                                        }} /></td>
+                                        }} className="bg-pink-200" /></td>
                                         <td>
-                                            <button onClick={() => handleItemEditSave(item.id)}>Save</button>
-                                            <button onClick={handleItemEditCancel}>Cancel</button>
+                                            <button onClick={() => handleItemEditSave(item.id)} className="bg-blue-200" >Save</button>
+                                            <button onClick={handleItemEditCancel} className="bg-orange-200" >Cancel</button>
                                         </td>
                                     </>
                                 ) : (
@@ -195,4 +212,4 @@ function AdminAddItem({ items, setItems, fetchItems }) {
     );
 }
 
-export default AdminAddItem;
+export default AdminManageItem;
