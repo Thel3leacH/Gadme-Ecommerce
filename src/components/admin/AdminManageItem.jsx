@@ -177,12 +177,14 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <h3 className="font-bold">Variances</h3>
                             {itemForm.variances.map((v, i) => (
                                 <div key={i} className="grid grid-cols-4 gap-2 mb-2">
+                                    <Label>Color</Label>
                                     <Input
                                         name="color"
                                         value={v.color}
                                         onChange={(e) => handleVarianceChange(i, e)}
                                         placeholder="Color"
                                     />
+                                    <Label>Stock</Label>
                                     <Input
                                         name="stock"
                                         type="number"
@@ -190,6 +192,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                         onChange={(e) => handleVarianceChange(i, e)}
                                         placeholder="Stock"
                                     />
+                                    <Label>Price</Label>
                                     <Input
                                         name="price"
                                         type="number"
@@ -197,6 +200,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                         onChange={(e) => handleVarianceChange(i, e)}
                                         placeholder="Price"
                                     />
+                                    <Label>Product pic</Label>
                                     <Input
                                         name="image"
                                         value={v.image}
