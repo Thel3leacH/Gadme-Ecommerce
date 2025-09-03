@@ -1,1 +1,1 @@
-export function Cart(){}
+export function CartIcon(){}

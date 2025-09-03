@@ -4,7 +4,7 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "./LoginForm";
-import { SignupForm, SignupPopup } from "./SignupForm";
+import { SignupForm} from "./SignupForm";
 import Searchbar from "./Searchbar";
 
 
@@ -57,6 +57,7 @@ const Navbar = () => {
             </li>
             <li className="md:hover:text-amber-300">About</li>
             <li className="md:hover:text-amber-300">Contact</li>
+            <li className="md:hover:text-amber-300">กะตร้า</li>
             <li className="md:hover:text-amber-300">
               <button onClick={toggleLoginAndSignup}>
                 <BsPersonFill className="text-2xl " />
