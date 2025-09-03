@@ -1,7 +1,6 @@
 import Navbar from "./landingpage/Navbar";
 import Footer from "./landingpage/Footer";
 import { Outlet } from "react-router-dom";
-import Hero from "./LandingPage/Hero";
 
 const Layout = () => {
   return (
