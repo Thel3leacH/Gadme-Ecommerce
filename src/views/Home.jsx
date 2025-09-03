@@ -1,11 +1,12 @@
-import { NewFeat } from "../components/NewFeat";
-import { Review } from "../components/Review";
-import Slogan from "../components/Slogan";
+import { NewFeat } from "../components/landingpage/NewFeat";
+import { Review } from "../components/landingpage/Review";
+import Slogan from "../components/Slogan.jsx";
 import { TextAnimate } from "@/components/magicui/text-animate";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 
 const Home = () => {
   return (
-    <div className="min-h-screen justify-center items-center">
+    <div className="min-h-screen justify-center items-center ">
       {/* Hard Code */}
       <main class="py-20 text-center">
         <div class="flex justify-center items-center mb-4">
@@ -33,9 +34,10 @@ const Home = () => {
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry.
         </p>
-        <button class="bg-teal-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-600">
+        {/* <button class="bg-teal-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-600">
           Shop now
-        </button>
+        </button> */}
+        <InteractiveHoverButton>shop now</InteractiveHoverButton>
       </main>
       <section class="py-16">
         <h2 class="text-3xl font-bold text-center mb-10">HOT PRODUCT</h2>
@@ -102,9 +104,9 @@ const Home = () => {
         <h2 class="text-3xl font-bold text-center mb-10">
           New Feature New Product
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* <NewFeat /> */}
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+        <div class="flex justify-center">
+          <NewFeat />
+          {/* <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
             <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
               <span class="material-symbols-outlined text-5xl text-gray-400">
                 headset_mic
@@ -164,7 +166,7 @@ const Home = () => {
             <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600">
               BUTTON
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
       <section class="py-16">

@@ -3,9 +3,9 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LoginForm } from "./LoginForm";
-import { SignupForm } from "./SignupForm";
-import Searchbar from "./Searchbar";
+import { LoginForm } from "../LoginForm";
+import { SignupForm } from "../SignupForm";
+import Searchbar from "../Searchbar";
 
 const Navbar = () => {
   //this will make change is react responsive
@@ -27,8 +27,7 @@ const Navbar = () => {
 
   return (
     <div>
-      {/* style for header className="bg-[#48A6A7] shadow-md text-shadow-cyan-50 text-amber-50 py-7" */}
-      <header className="bg-chart-2 md:bg-chart-2 py-2 text-white-400 text-xl">
+      <header className="bg-chart-2 text-secondary md:bg-gradient-to-r from-chart-3 to-chart-2 py-2 text-white-400 text-xl shadow-lg">
         <nav className="flex md:flex justify-between items-center gap-12 px-6">
           <div className="md:flex gap-3.5">
             <Link to="/">
@@ -50,7 +49,9 @@ const Navbar = () => {
             <li className="md:hover:text-amber-300">
               <Link to="/productlists">Products</Link>
             </li>
-            <li className="md:hover:text-amber-300">About</li>
+            <li className="md:hover:text-amber-300">
+              <Link to="about">About</Link>
+            </li>
             <li className="md:hover:text-amber-300">Contact</li>
             <li>
               <Link to="/productlists">
@@ -95,44 +96,6 @@ const Navbar = () => {
         {isSearchVisible && <Searchbar />}
         {isLoginVisible && <LoginForm />}
         {isSignupVisible && <SignupForm />}
-
-        {/* <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
-          <Link to="/">
-            <img
-              src="/notebookpic.jpg"
-              alt="gadme-logo"
-              className="rounded-xl shadow-md m-2 "
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="/notebookpic.jpg"
-              alt="gadme-logo"
-              className="rounded-xl shadow-md m-2"
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="/notebookpic.jpg"
-              alt="gadme-logo"
-              className="rounded-xl shadow-md m-2"
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="/notebookpic.jpg"
-              alt="gadme-logo"
-              className="rounded-xl shadow-md m-2"
-            />
-          </Link>
-          <Link to="/">
-            <img
-              src="/notebookpic.jpg"
-              alt="gadme-logo"
-              className="rounded-xl shadow-md m-2"
-            />
-          </Link>
-        </div> */}
       </header>
     </div>
   );

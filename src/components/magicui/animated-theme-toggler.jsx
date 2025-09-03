@@ -1,12 +1,10 @@
-"use client";;
+"use client";
 import { Moon, SunDim } from "lucide-react";
 import { useState, useRef } from "react";
 import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 
-export const AnimatedThemeToggler = ({
-  className
-}) => {
+export const AnimatedThemeToggler = ({ className }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const buttonRef = useRef(null);
   const changeTheme = async () => {
@@ -28,16 +26,19 @@ export const AnimatedThemeToggler = ({
     const bottom = window.innerHeight - top;
     const maxRad = Math.hypot(Math.max(left, right), Math.max(top, bottom));
 
-    document.documentElement.animate({
-      clipPath: [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${maxRad}px at ${x}px ${y}px)`,
-      ],
-    }, {
-      duration: 700,
-      easing: "ease-in-out",
-      pseudoElement: "::view-transition-new(root)",
-    });
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${maxRad}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration: 700,
+        easing: "ease-in-out",
+        pseudoElement: "::view-transition-new(root)",
+      }
+    );
   };
   return (
     <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>

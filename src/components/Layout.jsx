@@ -1,22 +1,21 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "./landingpage/Navbar";
+import Footer from "./landingpage/Footer";
 import { Outlet } from "react-router-dom";
+import Hero from "./LandingPage/Hero";
 
 const Layout = () => {
   return (
-    <>
-      <header>
+    <div className="font-poppins">
+      <header className="fixed w-full">
         <Navbar />
       </header>
-      {/* className="overflow-auto p-4" */}
-      <main class="overflow-auto md:container mx-auto px-7">
+      <main class="overflow-auto md:container mx-auto">
         <Outlet />
       </main>
-      {/* className="flex-shrink-0" */}
-      <footer className="md:bg-chart-2 text-gray-400 text-sm mt-16">
+      <footer className="md:bg-chart-2 text-gray-400 text-sm">
         <Footer />
       </footer>
-    </>
+    </div>
   );
 };
 
