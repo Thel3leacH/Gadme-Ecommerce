@@ -1,6 +1,6 @@
 import { NewFeat } from "../components/landingpage/NewFeat";
 import { Review } from "../components/landingpage/Review";
-import Hero from "../components/LandingPage/Hero";
+import Hero from "../components/landingpage/Hero";
 import HotProductsV1 from "../components/landingpage/HotProductsV1";
 import Warranty from "../components/landingpage/Warranty";
 
