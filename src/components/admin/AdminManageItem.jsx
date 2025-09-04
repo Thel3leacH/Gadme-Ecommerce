@@ -18,6 +18,7 @@ const API = "https://68b70b2a73b3ec66cec3999a.mockapi.io/api/mockitem/items"
 
 function AdminManageItem({ items, setItems, fetchItems }) {
     const [itemForm, setItemForm] = useState({
+        category: "",
         productname: "",
         description: "",
         brand: "",
@@ -59,6 +60,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
             await axios.post(API, itemForm)
             await fetchItems()
             setItemForm({
+                category: "",
                 productname: "",
                 description: "",
                 brand: "",
@@ -108,6 +110,15 @@ function AdminManageItem({ items, setItems, fetchItems }) {
             <Card className="w-full max-w-3xl">
                 <CardContent className="p-6">
                     <form onSubmit={handleItemSubmit} className="space-y-4 ">
+                        <div className="flex flex-col space-y-2">
+                            <Label>Product Category</Label>
+                            <select value={itemForm.category} onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })} name="category">
+                                <option value="" disabled>Select an option...</option>
+                                <option value="Smartwatch">Smartwatch</option>
+                                <option value="Earbud">Earbud</option>
+                                <option value="Keyboard">Keyboard</option>
+                            </select>
+                        </div>
                         <div className="flex flex-col space-y-2">
                             <Label>Product Name</Label>
                             <Input
@@ -239,6 +250,14 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                         {editItemId === item.id ? (
                                             <>
                                                 <TableCell>
+                                                    <select value={editItemForm.category} onChange={(e) => setEditItemForm({ ...itemForm, category: e.target.value })} name="category">
+                                                        <option value="" disabled>Select an option...</option>
+                                                        <option value="Smartwatch">Smartwatch</option>
+                                                        <option value="Earbud">Earbud</option>
+                                                        <option value="Keyboard">Keyboard</option>
+                                                    </select>
+                                                </TableCell>
+                                                <TableCell>
                                                     <Input
                                                         name="productname"
                                                         value={editItemForm.productname}
@@ -335,7 +354,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }
 

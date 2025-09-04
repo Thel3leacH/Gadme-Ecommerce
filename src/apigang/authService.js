@@ -29,6 +29,7 @@ export const getCart = async () => {
   return response.data;
 };
 
+//BELOW are ADMIN zone
 //make this but not sure if I understand correctly
 export const adminItem = async () => {
   const response = await api.get("/gadme/auth/admin");
