@@ -3,9 +3,8 @@ import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LoginForm } from "./LoginForm";
-import { SignupForm } from "./SignupForm";
 import Searchbar from "./Searchbar";
+import AuthDialog from "./auth/AuthDialog";
 
 const Navbar = () => {
   //this will make change is react responsive
@@ -16,14 +15,14 @@ const Navbar = () => {
     setIsSearchVisible(!isSearchVisible);
   };
 
-  const [isLoginVisible, setIsLoginVisible] = useState(false);
-  const [isSignupVisible, setIsSignupVisible] = useState(false);
+  // const [isLoginVisible, setIsLoginVisible] = useState(false);
+  // const [isSignupVisible, setIsSignupVisible] = useState(false);
 
-  const toggleLoginAndSignup = (event) => {
-    event.preventDefault();
-    setIsLoginVisible(!isLoginVisible);
-    setIsSignupVisible(!isSignupVisible);
-  };
+  // const toggleLoginAndSignup = (event) => {
+  //   event.preventDefault();
+  //   setIsLoginVisible(!isLoginVisible);
+  //   setIsSignupVisible(!isSignupVisible);
+  // };
 
   return (
     <div>
@@ -57,10 +56,9 @@ const Navbar = () => {
                 <BsBasket className="text-2xl " />
               </Link>
             </li>
+
             <li className="md:hover:text-amber-300">
-              <button onClick={toggleLoginAndSignup}>
-                <BsPersonFill className="text-2xl " />
-              </button>
+              <AuthDialog />
             </li>
 
             <li>
@@ -82,19 +80,11 @@ const Navbar = () => {
             </li>
 
             <li>
-              <button onClick={toggleLoginAndSignup} className="flex flex-row">
-                <BsPersonFill className="text-2xl " />
-              </button>
-            </li>
-
-            <li>
               <AnimatedThemeToggler />
             </li>
           </ul>
         </nav>
         {isSearchVisible && <Searchbar />}
-        {isLoginVisible && <LoginForm />}
-        {isSignupVisible && <SignupForm />}
 
         {/* <div className="bg-white flex flex-row w-auto sm:w-full gap-5">
           <Link to="/">
