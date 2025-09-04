@@ -169,45 +169,9 @@ const Home = () => {
           </div> */}
         </div>
       </section>
-      <section class="py-16">
-        <div class="bg-gray-50 rounded-xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 class="text-3xl font-bold mb-2">Special offer</h2>
-            <p class="text-gray-500 mb-6">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.
-            </p>
-            <p class="text-gray-500 text-sm">Expire On</p>
-            <p class="text-3xl font-bold text-teal-600">24 July 25</p>
-            <p class="text-3xl font-bold text-teal-600">13:00 PM</p>
-          </div>
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <div class="w-full h-64 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-              <span class="material-symbols-outlined text-6xl text-gray-400">
-                watch
-              </span>
-            </div>
-            <h3 class="font-semibold text-lg mb-1">Special</h3>
-            <p class="text-sm text-gray-500 mb-2">Subline</p>
-            <p class="text-xs text-gray-400 mb-4">
-              Something or descriptive text for the card goes here like a pro.
-            </p>
-            <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600 w-full">
-              BUTTON
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* Review  */}
       <section>
-        <TextAnimate
-          animation="blurInUp"
-          by="text"
-          className="text-4xl font-bold text-center"
-        >
-          Reviews
-        </TextAnimate>
         <Review />
       </section>
       {/* <section class="py-16">
