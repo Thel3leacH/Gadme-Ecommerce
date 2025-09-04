@@ -16,8 +16,9 @@ import { Card, CardContent } from "@/components/ui/card"
 
 const API = "https://68b70b2a73b3ec66cec3999a.mockapi.io/api/mockitem/items"
 
-function AdminManageItem({ items, setItems, fetchItems }) {
-    const [itemForm, setItemForm] = useState({
+function AdminManageProduct({ products, setProducts, fetchProducts }) {
+    //make react responsive to the change in form
+    const [productForm, setProductForm] = useState({
         category: "",
         productname: "",
         description: "",
@@ -29,37 +30,37 @@ function AdminManageItem({ items, setItems, fetchItems }) {
         variances: [{ color: "", image: [], stock: 0, price: 0 }],
     })
 
-    const [editItemId, setEditItemId] = useState(null)
-    const [editItemForm, setEditItemForm] = useState(itemForm)
+    const [editProductId, setEditProductId] = useState(null)
+    const [editProductForm, setEditProductForm] = useState(productForm)
 
     // --- Handlers ---
-    const handleItemChange = (e) => {
-        setItemForm({ ...itemForm, [e.target.name]: e.target.value })
+    const handleProductChange = (e) => {
+        setProductForm({ ...productForm, [e.target.name]: e.target.value })
     }
 
     const handleVarianceChange = (index, e) => {
         const { name, value } = e.target
-        const newVariances = [...itemForm.variances]
+        const newVariances = [...productForm.variances]
         newVariances[index][name] = value
-        setItemForm({ ...itemForm, variances: newVariances })
+        setProductForm({ ...productForm, variances: newVariances })
     }
 
     const handleAddVariance = () => {
-        setItemForm({
-            ...itemForm,
+        setProductForm({
+            ...productForm,
             variances: [
-                ...itemForm.variances,
+                ...productForm.variances,
                 { color: "", image: [], stock: 0, price: 0 },
             ],
         })
     }
 
-    const handleItemSubmit = async (e) => {
+    const handleProductSubmit = async (e) => {
         e.preventDefault()
         try {
-            await axios.post(API, itemForm)
-            await fetchItems()
-            setItemForm({
+            await axios.post(API, productForm)
+            await fetchProducts()
+            setProductForm({
                 category: "",
                 productname: "",
                 description: "",
@@ -71,35 +72,35 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                 variances: [{ color: "", image: [], stock: 0, price: 0 }],
             })
         } catch (error) {
-            console.error("❌ Error creating item:", error)
+            console.error("❌ Error creating product:", error)
         }
     }
 
-    const handleItemDelete = async (id) => {
-        if (!window.confirm("Delete this item?")) return
+    const handleProductDelete = async (id) => {
+        if (!window.confirm("Delete this product?")) return
         await axios.delete(`${API}/${id}`)
-        setItems(items.filter((item) => item.id !== id))
+        setProducts(products.filter((product) => product.id !== id))
     }
 
-    const handleItemEdit = (item) => {
-        setEditItemId(item.id)
-        setEditItemForm(item)
+    const handleProductEdit = (product) => {
+        setEditProductId(product.id)
+        setEditProductForm(product)
     }
 
-    const handleItemEditSave = async (id) => {
+    const handleProductEditSave = async (id) => {
         try {
-            await axios.put(`${API}/${id}`, editItemForm)
-            await fetchItems()
-            setEditItemId(null)
+            await axios.put(`${API}/${id}`, editProductForm)
+            await fetchProducts()
+            setEditProductId(null)
         } catch (error) {
-            console.error("❌ Error updating item:", error)
+            console.error("❌ Error updating product:", error)
         }
     }
 
-    const handleItemEditCancel = () => setEditItemId(null)
+    const handleProductEditCancel = () => setEditProductId(null)
 
-    const handleItemEditChange = (e) => {
-        setEditItemForm({ ...editItemForm, [e.target.name]: e.target.value })
+    const handleProductEditChange = (e) => {
+        setEditProductForm({ ...editProductForm, [e.target.name]: e.target.value })
     }
 
     useEffect(() => { }, [])
@@ -109,10 +110,10 @@ function AdminManageItem({ items, setItems, fetchItems }) {
             {/* Form */}
             <Card className="w-full max-w-3xl">
                 <CardContent className="p-6">
-                    <form onSubmit={handleItemSubmit} className="space-y-4 ">
+                    <form onSubmit={handleProductSubmit} className="space-y-4 ">
                         <div className="flex flex-col space-y-2">
                             <Label>Product Category</Label>
-                            <select value={itemForm.category} onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })} name="category">
+                            <select value={productForm.category} onChange={(e) => setProductForm({ ...productForm, category: e.target.value })} name="category">
                                 <option value="" disabled>Select an option...</option>
                                 <option value="Smartwatch">Smartwatch</option>
                                 <option value="Earbud">Earbud</option>
@@ -123,8 +124,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Product Name</Label>
                             <Input
                                 name="productname"
-                                value={itemForm.productname}
-                                onChange={handleItemChange}
+                                value={productForm.productname}
+                                onChange={handleProductChange}
                                 placeholder="Product name"
                             />
                         </div>
@@ -132,8 +133,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Description</Label>
                             <Input
                                 name="description"
-                                value={itemForm.description}
-                                onChange={handleItemChange}
+                                value={productForm.description}
+                                onChange={handleProductChange}
                                 placeholder="Description"
                             />
                         </div>
@@ -141,8 +142,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Brand</Label>
                             <Input
                                 name="brand"
-                                value={itemForm.brand}
-                                onChange={handleItemChange}
+                                value={productForm.brand}
+                                onChange={handleProductChange}
                                 placeholder="Brand"
                             />
                         </div>
@@ -150,8 +151,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Model Name</Label>
                             <Input
                                 name="modelname"
-                                value={itemForm.modelname}
-                                onChange={handleItemChange}
+                                value={productForm.modelname}
+                                onChange={handleProductChange}
                                 placeholder="Model name"
                             />
                         </div>
@@ -159,8 +160,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Warranty Information</Label>
                             <Input
                                 name="warrantyinfo"
-                                value={itemForm.warrantyinfo}
-                                onChange={handleItemChange}
+                                value={productForm.warrantyinfo}
+                                onChange={handleProductChange}
                                 placeholder="Warranty"
                             />
                         </div>
@@ -168,8 +169,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Related Product</Label>
                             <Input
                                 name="relatedproduct"
-                                value={itemForm.relatedproduct}
-                                onChange={handleItemChange}
+                                value={productForm.relatedproduct}
+                                onChange={handleProductChange}
                                 placeholder="Related"
                             />
                         </div>
@@ -177,8 +178,8 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             <Label>Features</Label>
                             <Input
                                 name="features"
-                                value={itemForm.features}
-                                onChange={handleItemChange}
+                                value={productForm.features}
+                                onChange={handleProductChange}
                                 placeholder="Features"
                             />
                         </div>
@@ -186,7 +187,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                         {/* Variances */}
                         <div className="flex flex-col space-y-2">
                             <h3 className="font-bold">Variances</h3>
-                            {itemForm.variances.map((v, i) => (
+                            {productForm.variances.map((v, i) => (
                                 <div key={i} className="grid grid-cols-4 gap-2 mb-2">
                                     <Label>Color</Label>
                                     <Input
@@ -225,7 +226,7 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             </Button>
                         </div>
 
-                        <Button type="submit">Save new item</Button>
+                        <Button type="submit">Save new product</Button>
                     </form>
                 </CardContent>
             </Card>
@@ -244,13 +245,13 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {items && items.length > 0 ? (
-                                items.map((item) => (
-                                    <TableRow key={item.id}>
-                                        {editItemId === item.id ? (
+                            {products && products.length > 0 ? (
+                                products.map((product) => (
+                                    <TableRow key={product.id}>
+                                        {editProductId === product.id ? (
                                             <>
                                                 <TableCell>
-                                                    <select value={editItemForm.category} onChange={(e) => setEditItemForm({ ...itemForm, category: e.target.value })} name="category">
+                                                    <select value={editProductForm.category} onChange={(e) => setEditProductForm({ ...productForm, category: e.target.value })} name="category">
                                                         <option value="" disabled>Select an option...</option>
                                                         <option value="Smartwatch">Smartwatch</option>
                                                         <option value="Earbud">Earbud</option>
@@ -260,25 +261,25 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                                 <TableCell>
                                                     <Input
                                                         name="productname"
-                                                        value={editItemForm.productname}
-                                                        onChange={handleItemEditChange}
+                                                        value={editProductForm.productname}
+                                                        onChange={handleProductEditChange}
                                                     />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
                                                         name="features"
-                                                        value={editItemForm.features}
-                                                        onChange={handleItemEditChange}
+                                                        value={editProductForm.features}
+                                                        onChange={handleProductEditChange}
                                                     />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
-                                                        value={editItemForm.variances[0]?.color || ""}
+                                                        value={editProductForm.variances[0]?.color || ""}
                                                         onChange={(e) => {
-                                                            const newVar = [...editItemForm.variances]
+                                                            const newVar = [...editProductForm.variances]
                                                             newVar[0].color = e.target.value
-                                                            setEditItemForm({
-                                                                ...editItemForm,
+                                                            setEditProductForm({
+                                                                ...editProductForm,
                                                                 variances: newVar,
                                                             })
                                                         }}
@@ -287,12 +288,12 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                                 <TableCell>
                                                     <Input
                                                         type="number"
-                                                        value={editItemForm.variances[0]?.stock || 0}
+                                                        value={editProductForm.variances[0]?.stock || 0}
                                                         onChange={(e) => {
-                                                            const newVar = [...editItemForm.variances]
+                                                            const newVar = [...editProductForm.variances]
                                                             newVar[0].stock = e.target.value
-                                                            setEditItemForm({
-                                                                ...editItemForm,
+                                                            setEditProductForm({
+                                                                ...editProductForm,
                                                                 variances: newVar,
                                                             })
                                                         }}
@@ -301,14 +302,14 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                                 <TableCell className="space-x-2">
                                                     <Button
                                                         size="sm"
-                                                        onClick={() => handleItemEditSave(item.id)}
+                                                        onClick={() => handleProductEditSave(product.id)}
                                                     >
                                                         Save
                                                     </Button>
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
-                                                        onClick={handleItemEditCancel}
+                                                        onClick={handleProductEditCancel}
                                                     >
                                                         Cancel
                                                     </Button>
@@ -316,25 +317,25 @@ function AdminManageItem({ items, setItems, fetchItems }) {
                                             </>
                                         ) : (
                                             <>
-                                                <TableCell>{item.productname}</TableCell>
+                                                <TableCell>{product.productname}</TableCell>
                                                 <TableCell>
-                                                    {Array.isArray(item.features)
-                                                        ? item.features.join(", ")
-                                                        : item.features}
+                                                    {Array.isArray(product.features)
+                                                        ? product.features.join(", ")
+                                                        : product.features}
                                                 </TableCell>
-                                                <TableCell>{item.variances?.[0]?.color || "-"}</TableCell>
-                                                <TableCell>{item.variances?.[0]?.stock || 0}</TableCell>
+                                                <TableCell>{product.variances?.[0]?.color || "-"}</TableCell>
+                                                <TableCell>{product.variances?.[0]?.stock || 0}</TableCell>
                                                 <TableCell className="space-x-2">
                                                     <Button
                                                         size="sm"
-                                                        onClick={() => handleItemEdit(item)}
+                                                        onClick={() => handleProductEdit(product)}
                                                     >
                                                         Edit
                                                     </Button>
                                                     <Button
                                                         size="sm"
                                                         variant="destructive"
-                                                        onClick={() => handleItemDelete(item.id)}
+                                                        onClick={() => handleProductDelete(product.id)}
                                                     >
                                                         Delete
                                                     </Button>
@@ -358,4 +359,4 @@ function AdminManageItem({ items, setItems, fetchItems }) {
     )
 }
 
-export default AdminManageItem
+export default AdminManageProduct
