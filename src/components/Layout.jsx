@@ -1,14 +1,11 @@
-
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div className="">
-      <header>
-        <Navbar />
-      </header>
+    <div className="w-full">
+      <Navbar />
       <main className="overflow-auto p-4">
         <Outlet />
       </main>
