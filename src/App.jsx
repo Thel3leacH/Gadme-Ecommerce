@@ -7,6 +7,7 @@ import { ProductPage } from "./views/ProductPage";
 import HomeV1 from "./views/HomeV1";
 import HomeV2 from "./views/HomeV2";
 import About from "./views/About";
+import { HomeV3 } from "./views/HomeV3";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
     ),
 
     children: [
-      { path: "/", element: <Home /> },
+      { path: "/", element: <HomeV3 /> },
       // { path: "/", element: <HomeV1 /> },
       // { path: "/", element: <HomeV2 /> },
       { path: "about", element: <About /> },

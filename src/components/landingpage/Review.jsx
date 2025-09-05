@@ -71,14 +71,14 @@ const ReviewCard = ({ img, name, username, body }) => {
 
 export function Review() {
   return (
-    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden py-14">
-      <TextAnimate
+    <div className="mb-20 relative flex w-full flex-col items-center justify-center overflow-x-hidden overflow-y-hidden">
+      {/* <TextAnimate
         animation="blurInUp"
         by="text"
         className="text-4xl font-poppins font-bold text-center"
       >
         Reviews
-      </TextAnimate>
+      </TextAnimate> */}
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />

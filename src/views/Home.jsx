@@ -8,10 +8,10 @@ const Home = () => {
   return (
     <div className="min-h-screen justify-center items-center ">
       {/* Hard Code */}
-      <main class="py-20 text-center">
+      <main class="py-30 text-center">
         <div class="flex justify-center items-center mb-4">
           <div class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined text-white">devices</span>
+            <div class="material-symbols-outlined text-black">GadMe</div>
           </div>
         </div>
         {/* <h1 class="text-6xl font-bold text-gray-800 mb-4">
@@ -169,7 +169,7 @@ const Home = () => {
           </div> */}
         </div>
       </section>
-      <section class="py-16">
+      {/* <section class="py-16">
         <div class="bg-gray-50 rounded-xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
             <h2 class="text-3xl font-bold mb-2">Special offer</h2>
@@ -197,14 +197,14 @@ const Home = () => {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Review  */}
       <section>
         <TextAnimate
           animation="blurInUp"
           by="text"
-          className="text-4xl font-bold text-center"
+          className="text-3xl font-bold text-center"
         >
           Reviews
         </TextAnimate>
