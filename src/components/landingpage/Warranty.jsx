@@ -6,7 +6,7 @@ import { RiRobot3Fill } from "react-icons/ri";
 
 const Warranty = () => {
   return (
-    <div className="md:flex justify-between px-8 pt-20">
+    <div className="md:flex justify-between px-8">
       <div className="flex gap-3">
         <FaCarSide className="w-auto h-15" />
         <article>
