@@ -1,6 +1,6 @@
 import { NewFeat } from "../components/landingpage/NewFeat";
 import { Review } from "../components/landingpage/Review";
-import Slogan from "../components/Slogan.jsx";
+import Slogan from "../components/landingpage/Slogan";
 import Warranty from "../components/landingpage/Warranty";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
@@ -105,67 +105,6 @@ const Home = () => {
         </h2>
         <div class="flex justify-center">
           <NewFeat />
-          {/* <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-            <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <span class="material-symbols-outlined text-5xl text-gray-400">
-                headset_mic
-              </span>
-            </div>
-            <h3 class="font-semibold text-lg mb-1">New</h3>
-            <p class="text-sm text-gray-500 mb-2">Subline</p>
-            <p class="text-xs text-gray-400 mb-4">
-              Something or descriptive text for the card goes here like a pro.
-            </p>
-            <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600">
-              BUTTON
-            </button>
-          </div>
-
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-            <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <span class="material-symbols-outlined text-5xl text-gray-400">
-                speaker_group
-              </span>
-            </div>
-            <h3 class="font-semibold text-lg mb-1">New</h3>
-            <p class="text-sm text-gray-500 mb-2">Subline</p>
-            <p class="text-xs text-gray-400 mb-4">
-              Something or descriptive text for the card goes here like a pro.
-            </p>
-            <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600">
-              BUTTON
-            </button>
-          </div>
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-            <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <span class="material-symbols-outlined text-5xl text-gray-400">
-                cable
-              </span>
-            </div>
-            <h3 class="font-semibold text-lg mb-1">New</h3>
-            <p class="text-sm text-gray-500 mb-2">Subline</p>
-            <p class="text-xs text-gray-400 mb-4">
-              Something or descriptive text for the card goes here like a pro.
-            </p>
-            <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600">
-              BUTTON
-            </button>
-          </div>
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-            <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <span class="material-symbols-outlined text-5xl text-gray-400">
-                power_bank
-              </span>
-            </div>
-            <h3 class="font-semibold text-lg mb-1">New</h3>
-            <p class="text-sm text-gray-500 mb-2">Subline</p>
-            <p class="text-xs text-gray-400 mb-4">
-              Something or descriptive text for the card goes here like a pro.
-            </p>
-            <button class="bg-teal-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-teal-600">
-              BUTTON
-            </button>
-          </div> */}
         </div>
       </section>
 
