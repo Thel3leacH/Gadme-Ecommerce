@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import gadmeLogo from "/src/assets/gadme-logo.svg";
-import { LoginForm } from "../../../LoginForm";
+import { LoginForm } from "../../../auth/LoginForm";
+import AuthDialog from "../../../auth/AuthDialog";
 
 // Simple logo component for the navbar
 const Logo = () => {
@@ -191,7 +192,8 @@ export const Navbar04 = React.forwardRef(
                         >
                           {signInText}
                         </button> */}
-                        <LoginForm />
+                        {/* <LoginForm /> */}
+                        <AuthDialog />
                       </NavigationMenuItem>
                       <NavigationMenuItem className="w-full">
                         <Button
@@ -295,7 +297,8 @@ export const Navbar04 = React.forwardRef(
                   >
                     {signInText}
                   </Button> */}
-                  <LoginForm />
+                  {/* <LoginForm /> */}
+                  <AuthDialog />
                 </div>
               )}
             </div>
