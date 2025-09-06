@@ -1,8 +1,10 @@
 import { NewFeat } from "../components/landingpage/NewFeat";
 import { Review } from "../components/landingpage/Review";
 import Slogan from "../components/Slogan.jsx";
+import Warranty from "../components/landingpage/Warranty";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -14,9 +16,6 @@ const Home = () => {
             <span class="material-symbols-outlined text-white">devices</span>
           </div>
         </div>
-        {/* <h1 class="text-6xl font-bold text-gray-800 mb-4">
-          Experience the difference
-        </h1> */}
         <Slogan
           text="Experience The Difference"
           className="text-5xl font-bold py-5 text-wrap"
@@ -34,10 +33,10 @@ const Home = () => {
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry.
         </p>
-        {/* <button class="bg-teal-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-600">
-          Shop now
-        </button> */}
-        <InteractiveHoverButton>shop now</InteractiveHoverButton>
+
+        <Link to="productlists">
+          <InteractiveHoverButton>shop now</InteractiveHoverButton>
+        </Link>
       </main>
       <section class="py-16">
         <h2 class="text-3xl font-bold text-center mb-10">HOT PRODUCT</h2>
@@ -170,108 +169,12 @@ const Home = () => {
         </div>
       </section>
 
+      <Warranty />
+
       {/* Review  */}
       <section>
         <Review />
       </section>
-      {/* <section class="py-16">
-        <h2 class="text-3xl font-bold text-center mb-10">Popular Reviews</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          <div class="border border-gray-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-2">Review</h3>
-            <p class="text-sm text-gray-500 mb-4">Subscribing Text</p>
-            <div class="flex gap-2">
-              <button class="border border-gray-300 text-gray-600 px-4 py-1 rounded-md text-xs font-semibold hover:bg-gray-100">
-                BUTTON
-              </button>
-              <button class="bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold hover:bg-teal-600">
-                BUTTON
-              </button>
-            </div>
-          </div>
-          <div class="border border-gray-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-2">Review</h3>
-            <p class="text-sm text-gray-500 mb-4">Subscribing Text</p>
-            <div class="flex gap-2">
-              <button class="border border-gray-300 text-gray-600 px-4 py-1 rounded-md text-xs font-semibold hover:bg-gray-100">
-                BUTTON
-              </button>
-              <button class="bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold hover:bg-teal-600">
-                BUTTON
-              </button>
-            </div>
-          </div>
-          <div class="border border-gray-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-2">Review</h3>
-            <p class="text-sm text-gray-500 mb-4">Subscribing Text</p>
-            <div class="flex gap-2">
-              <button class="border border-gray-300 text-gray-600 px-4 py-1 rounded-md text-xs font-semibold hover:bg-gray-100">
-                BUTTON
-              </button>
-              <button class="bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold hover:bg-teal-600">
-                BUTTON
-              </button>
-            </div>
-          </div>
-          <div class="border border-gray-200 rounded-xl p-6">
-            <h3 class="font-semibold mb-2">Review</h3>
-            <p class="text-sm text-gray-500 mb-4">Subscribing Text</p>
-            <div class="flex gap-2">
-              <button class="border border-gray-300 text-gray-600 px-4 py-1 rounded-md text-xs font-semibold hover:bg-gray-100">
-                BUTTON
-              </button>
-              <button class="bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold hover:bg-teal-600">
-                BUTTON
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-          <span class="material-symbols-outlined text-6xl text-gray-300">
-            image
-          </span>
-        </div>
-      </section> */}
-      {/* with components */}
-      {/* <main className="flex flex-col">
-        <section1 className="uppercase text-center text-wrap">
-          <Slogan
-            text="Experience The Difference"
-            className="text-5xl font-bold py-5 text-wrap"
-            delay={400}
-            duration={1}
-            ease="power3.out"
-            splitType="words"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="center"
-          />
-        </section1>
-        <section2>
-          <TextAnimate
-            animation="blurInUp"
-            by="text"
-            className="text-4xl font-bold text-center"
-          >
-            Reviews
-          </TextAnimate>
-          <Review />
-        </section2>
-        <section3>
-          <div className="">
-            <TextAnimate
-              animation="scaleUp"
-              by="text"
-              className="text-4xl font-bold text-center"
-            >
-              Hot Products
-            </TextAnimate>
-            <HotProducts />
-          </div>
-        </section3>
-      </main> */}
     </div>
   );
 };

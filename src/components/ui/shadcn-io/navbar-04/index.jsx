@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import gadmeLogo from "/src/assets/gadme-logo.svg";
+import { LoginForm } from "../../../LoginForm";
 
 // Simple logo component for the navbar
 const Logo = () => {
@@ -181,7 +182,7 @@ export const Navbar04 = React.forwardRef(
                         />
                       </NavigationMenuItem>
                       <NavigationMenuItem className="w-full">
-                        <button
+                        {/* <button
                           onClick={(e) => {
                             e.preventDefault();
                             if (onSignInClick) onSignInClick();
@@ -189,7 +190,8 @@ export const Navbar04 = React.forwardRef(
                           className="flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer no-underline"
                         >
                           {signInText}
-                        </button>
+                        </button> */}
+                        <LoginForm />
                       </NavigationMenuItem>
                       <NavigationMenuItem className="w-full">
                         <Button
@@ -217,10 +219,14 @@ export const Navbar04 = React.forwardRef(
                 onClick={(e) => e.preventDefault()}
                 className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
               >
-                <div className="text-2xl">{logo}</div>
-                <span className="hidden font-bold text-xl sm:inline-block">
-                  Gadme
-                </span>
+                <Link to="/">
+                  <div className="text-2xl">{logo}</div>
+                </Link>
+                <Link to="/">
+                  <span className="hidden font-bold text-xl sm:inline-block">
+                    Gadme
+                  </span>
+                </Link>
               </button>
               {/* Search form */}
               <div className="">
@@ -259,6 +265,12 @@ export const Navbar04 = React.forwardRef(
               {/* Right side */}
               {!isMobile && (
                 <div className="flex items-center gap-3">
+                  <Link to="productlists">
+                    <p>Products</p>
+                  </Link>
+                  <Link to="about">
+                    <p>About</p>
+                  </Link>
                   <Button
                     size="sm"
                     className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
@@ -272,7 +284,7 @@ export const Navbar04 = React.forwardRef(
                       </span>
                     </Link>
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     size="sm"
                     className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
@@ -282,7 +294,8 @@ export const Navbar04 = React.forwardRef(
                     }}
                   >
                     {signInText}
-                  </Button>
+                  </Button> */}
+                  <LoginForm />
                 </div>
               )}
             </div>
