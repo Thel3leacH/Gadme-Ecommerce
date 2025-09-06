@@ -5,6 +5,7 @@ import { ProductList } from "./views/ProductLists";
 import { ProductPage } from "./views/ProductPage";
 import About from "./views/About";
 import Checkout from "./views/Checkout";
+import AdminManageItem from "./components/admin/AdminManageItem";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "checkout", element: <Checkout /> },
       { path: "productlists", element: <ProductList /> },
       { path: "productlists/product/:id", element: <ProductPage /> },
+      { path: "admin", element: <AdminManageItem /> },
     ],
   },
 ]);
