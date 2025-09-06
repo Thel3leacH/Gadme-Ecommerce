@@ -10,10 +10,10 @@ const Home = () => {
   return (
     <div className="min-h-screen justify-center items-center ">
       {/* Hard Code */}
-      <main class="py-20 text-center">
+      <main class="py-30 text-center">
         <div class="flex justify-center items-center mb-4">
           <div class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined text-white">devices</span>
+            <div class="material-symbols-outlined text-black">GadMe</div>
           </div>
         </div>
         <Slogan

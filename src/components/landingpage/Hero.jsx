@@ -10,10 +10,11 @@ const Hero = ({ bgImage }) => {
         style={{ backgroundImage: `url(${bgImage})` }}
       >
         {/* Hero section */}
-        <main class="py-20 text-center">
-          <div class="flex justify-center items-center mb-4">
-            <div class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
-              <span class="material-symbols-outlined text-white">Gad</span>me
+        <main className="py-20 text-center">
+          <div className="flex justify-center items-center mb-4">
+            <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined text-white">Gad</span>
+              me
             </div>
           </div>
           <Slogan
@@ -29,7 +30,7 @@ const Hero = ({ bgImage }) => {
             rootMargin="-100px"
             textAlign="center"
           />
-          <p class="text-gray-500 max-w-md mx-auto mb-8">
+          <p className="text-gray-500 max-w-md mx-auto mb-8">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry.
           </p>
