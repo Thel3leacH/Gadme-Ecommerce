@@ -37,8 +37,8 @@ const Home = () => {
         />
 
         <p className="text-white max-w-md mx-auto mb-8">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
+          Stylish. Durable. Truly practical. Experience gadgets that make a real
+          difference.
         </p>
 
         <Link to="productlists">
