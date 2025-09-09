@@ -41,14 +41,13 @@ export const searchProducts = async (query, { page = 1, limit = 10 } = {}) => {
   return fetchProducts({ page, limit, q: query });
 };
 
-//not sure if I understand it correctly
+//Below are all cart service
 // Access Cart of the user
 export const addProductCart = async (productData) => {
   const response = await api.post("/gadme/add-product/cart", productData);
   return response.data;
 };
 
-//not sure
 // Update an existing product in cart
 export const updateProductCart = async (productId, updatedData) => {
   const response = await api.put(
@@ -58,8 +57,7 @@ export const updateProductCart = async (productId, updatedData) => {
   return response.data;
 };
 
-//not sure
-// Delete an product from database
+// Delete an product from cart
 export const deleteProductCart = async (productId) => {
   const response = await api.delete(`/gadme/delete-product/${productId}/cart`);
   return response.data;
