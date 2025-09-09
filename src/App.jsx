@@ -10,6 +10,7 @@ import Payment from "./views/Payment";
 import OrderConfirm from "./views/OrderConfirm";
 import UserProfile from "./views/UserProfile";
 import ProductCheckout from "./views/ProductCheckout";
+import Cart from "./views/Cart";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { path: "orderconfirm", element: <OrderConfirm /> },
       { path: "userprofile", element: <UserProfile /> },
       { path: "checkout", element: <ProductCheckout /> },
+      { path: "cart", element: <Cart /> },
     ],
   },
 ]);

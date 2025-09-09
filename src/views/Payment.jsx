@@ -1,5 +1,5 @@
 import React, { useMemo, useState, createContext, useContext } from "react";
-
+import { useParams, Link, useNavigate } from "react-router-dom";
 /**
  * 🔧 Self-contained Payment Page demo (no external deps)
  * - ตัดการพึ่งพา react-router-dom และ lucide-react เพื่อแก้หน้าแคนวาสขาว
@@ -613,13 +613,16 @@ function PaymentPageInner({
                 disabled={!canPay || isPaying || !!paid}
                 onClick={handlePay}
               >
-                {isPaying
-                  ? "กำลังชำระเงิน..."
-                  : paid
-                  ? "ชำระเงินสำเร็จ"
-                  : `ชำระเงินตอนนี้ ${formatTHB(
-                      demoFallback.grandTotalSatang
-                    )}`}
+                <Link to="/orderconfirm">
+                  {" "}
+                  {isPaying
+                    ? "กำลังชำระเงิน..."
+                    : paid
+                    ? "ชำระเงินสำเร็จ"
+                    : `ชำระเงินตอนนี้ ${formatTHB(
+                        demoFallback.grandTotalSatang
+                      )}`}
+                </Link>
               </Button>
             </CardFooter>
           </Card>

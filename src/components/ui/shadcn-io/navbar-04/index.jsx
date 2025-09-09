@@ -1,14 +1,14 @@
 "use client";
 import * as React from "react";
 import { useEffect, useState, useRef, useId, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/CartContext";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import {
   NavigationMenu,
   NavigationMenuItem,

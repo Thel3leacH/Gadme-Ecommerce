@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-
+import { useParams, Link, useNavigate } from "react-router-dom";
 // ✅ Checkout Demo (shadcn-style) – cleaned & fixed
 // - แก้โครงสร้าง JSX ให้ปิดแท็กถูกต้อง (CardContent / div)
 // - นำส่วน "วิธีการจัดส่ง", "วิธีการชำระเงิน", และ "หมายเหตุเพิ่มเติม" ออกแล้วตามที่ขอ
@@ -535,7 +535,7 @@ export default function Checkout() {
                 onClick={placeOrder}
                 disabled={!isFormValid()}
               >
-                ยืนยันและชำระเงิน
+                <Link to="/payment">ยืนยันและชำระเงิน</Link>
               </Button>
               <div className="text-center text-xs text-gray-500">
                 💼 ราคาสกุลเงิน: {currency} •

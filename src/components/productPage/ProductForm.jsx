@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
 
@@ -49,7 +49,7 @@ export function ProductForm() {
         <p>Color</p>
         <select name="color" className="py-1.5 w-[12rem] border-1 rounded-md">
           {/* onChange= value= name="" */}
-          {product.productChoice?.map((choice)=>(
+          {product.productChoice?.map((choice) => (
             <option key={choice}>{choice}</option>
           ))}
           {/* <option value="black">Black</option>
@@ -83,7 +83,7 @@ export function ProductForm() {
               Add to Cart
             </button>
             <button className="py-1.5 w-[15rem] rounded-4xl bg-[#006A71] text-white cursor-pointer lg:w-[12rem]">
-              Buy Now
+              <Link to="/cart">Buy Now</Link>
             </button>
           </div>
         </div>
