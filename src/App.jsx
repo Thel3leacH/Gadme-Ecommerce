@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Home from "./views/Home";
 import Layout from "./components/Layout";
 import { ProductList } from "./views/ProductLists";
@@ -19,7 +20,8 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        // element: <Home />,
+        element: <AddressForm />,
       },
 
       {
