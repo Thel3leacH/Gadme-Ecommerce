@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import { ProductList } from "./views/ProductLists";
 import { ProductPage } from "./views/ProductPage";
 import AdminManageItem from "./components/admin/AdminManageItem";
+import AddressForm from "./components/AddressForm";
 
 const router = createBrowserRouter([
   {
@@ -18,26 +19,11 @@ const router = createBrowserRouter([
     ),
 
     children: [
-      {
-        path: "/",
-        // element: <Home />,
-        element: <AddressForm />,
-      },
-
-      {
-        path: "productlists",
-        element: <ProductList />,
-      },
-
-      {
-        path: "productlists/product/:id",
-        element: <ProductPage />,
-      },
-      {
-        path: "admin",
-        element: <AdminManageItem />,
-      },
-
+      { path: "/", element: <Home /> },
+      { path: "about", element: <About /> },
+      { path: "checkout", element: <Checkout /> },
+      { path: "productlists", element: <ProductList /> },
+      { path: "productlists/product/:id", element: <ProductPage /> },
     ],
   },
 ]);
