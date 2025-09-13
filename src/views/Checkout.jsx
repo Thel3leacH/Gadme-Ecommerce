@@ -203,7 +203,7 @@ export default function Checkout() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [subdistrict, setSubdistrict] = useState("");
@@ -229,7 +229,7 @@ export default function Checkout() {
     firstName.trim() &&
     lastName.trim() &&
     phone.trim() &&
-    email.trim() &&
+    // email.trim() &&
     address.trim() &&
     subdistrict.trim() &&
     district.trim() &&
@@ -265,7 +265,7 @@ export default function Checkout() {
           firstName,
           lastName,
           phone,
-          email,
+          // email,
           address,
           subdistrict,
           district,
@@ -345,7 +345,7 @@ export default function Checkout() {
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <Label htmlFor="email">
                     อีเมล (สำหรับใบเสร็จ/ติดตามพัสดุ)
                   </Label>
@@ -356,7 +356,7 @@ export default function Checkout() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* ที่อยู่ */}
@@ -407,21 +407,6 @@ export default function Checkout() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-3">
-              <Button
-                variant="ghost"
-                onClick={() => alert("กลับไปแก้ไขตะกร้า (ตัวอย่าง)")}
-              >
-                กลับไปแก้ไขตะกร้า
-              </Button>
-              <Button
-                className="h-11"
-                onClick={placeOrder}
-                disabled={!isFormValid()}
-              >
-                ดำเนินการชำระเงิน
-              </Button>
-            </CardFooter>
           </Card>
 
           {/* RIGHT */}
