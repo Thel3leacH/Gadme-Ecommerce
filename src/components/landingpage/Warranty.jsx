@@ -7,28 +7,28 @@ import { RiRobot3Fill } from "react-icons/ri";
 const Warranty = () => {
   return (
     <div className="md:flex justify-between px-8">
-      <div className="flex gap-3">
+      <div className="flex justify-between gap-3 py-3">
         <FaCarSide className="w-auto h-15" />
         <article>
           <p className="text-xl font-bold text-chart-2">Free Shipping</p>
           <p>Free Shipping On All Order</p>
         </article>
       </div>
-      <div className="flex gap-3">
+      <div className="flex justify-between gap-3 py-3">
         <GiMoneyStack className="w-auto h-15" />
         <article>
           <p className="text-xl font-bold text-chart-2">Safe Money</p>
           <p>30 Days Money Back</p>
         </article>
       </div>
-      <div className="flex gap-3">
+      <div className="flex justify-between gap-3 py-3">
         <IoWallet className="w-auto h-15" />
         <article>
           <p className="text-xl font-bold text-chart-2">Secure Payment</p>
           <p>All Payment Secure</p>
         </article>
       </div>
-      <div className="flex gap-3">
+      <div className="flex justify-between gap-3 py-3">
         <RiRobot3Fill className="w-auto h-15" />
         <article>
           <p className="text-xl font-bold text-chart-2">
