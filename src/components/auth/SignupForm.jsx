@@ -34,7 +34,7 @@ export function SignupForm() {
   };
 
   return (
-    <>
+    <div className="font-poppins">
       <form onSubmit={handleSubmit(handleSignup)}>
         <DialogHeader>
           <DialogTitle>Sign up</DialogTitle>
@@ -219,6 +219,6 @@ export function SignupForm() {
           </Button>
         </DialogFooter>
       </form>
-    </>
+    </div>
   );
 }

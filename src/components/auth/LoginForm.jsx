@@ -26,7 +26,7 @@ export function LoginForm() {
   };
 
   return (
-    <>
+    <div className="font-poppins">
       <form onSubmit={handleSubmit(handleLogin)}>
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
@@ -98,6 +98,6 @@ export function LoginForm() {
         </DialogFooter>
       </form>
       <ForgetPassword />
-    </>
+    </div>
   );
 }
