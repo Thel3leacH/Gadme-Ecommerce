@@ -1,6 +1,5 @@
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 import { BsBasket, BsPersonFill, BsSearch } from "react-icons/bs";
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "./LoginForm";
@@ -62,7 +61,7 @@ const Navbar = () => {
             </li>
           </ul>
 
-          <ul className="flex gap-4 m-2 md:hidden">
+          <ul className="flex gap-4 m-2 ">
             <li>
               <button onClick={toggleSearch}>
                 <BsSearch className="text-2xl " />
