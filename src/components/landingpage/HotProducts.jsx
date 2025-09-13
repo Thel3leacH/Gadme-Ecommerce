@@ -1,5 +1,5 @@
-import { items } from "../data/items";
-import Masonry from "./ui/Masonry";
+import { items } from "../../data/items";
+import Masonry from "../ui/Masonry";
 
 const HotProducts = () => {
   return (
