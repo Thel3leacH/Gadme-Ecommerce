@@ -57,7 +57,7 @@ export function ProductForm() {
     setQuantity((q) => (op === "+" ? q + 1 : Math.max(1, q - 1)));
   };
 
-  const { add } = useCart();
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
     console.log("handleAddToCart");
@@ -69,8 +69,9 @@ export function ProductForm() {
       product_price: active.product_price,
       product_image: active.product_image,
       product_qty: quantity,
+      product_status: "Selected",
     };
-    add(payload, quantity);
+    addToCart(payload, quantity);
   };
 
   if (loading) return <div className="p-6 text-center">Loading⌛...</div>;
