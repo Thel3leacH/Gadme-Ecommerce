@@ -265,7 +265,7 @@ export const Navbar04 = React.forwardRef(
               {/* Right side */}
               {!isMobile && (
                 <div className="flex items-center gap-3">
-                  <Link to="productlists">
+                  <Link to="products">
                     <p>Products</p>
                   </Link>
                   <Link to="about">

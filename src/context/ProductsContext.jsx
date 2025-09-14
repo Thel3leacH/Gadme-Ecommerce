@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import axios from "axios";
 
+const API_URL = "http://localhost:3000/";
 const ProductsContext = createContext(null);
 
 export function ProductsProvider({ children }) {
@@ -7,24 +9,18 @@ export function ProductsProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  async function load() {
+  const fetchProducts = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
-      // NOTE: ถ้าไฟล์อยู่ใน public/products.json ให้ fetch("/products.json")
-      // ถ้าอยู่ใน src/data/products.json ให้เปลี่ยนมา import ตรงแทน
-      const r = await fetch("/products.json");
-      const data = await r.json();
-      setProducts(data);
-    } catch (e) {
-      setError(e);
-    } finally {
-      setLoading(false);
+      const res = await axios.get(`${API_URL}productlist`);
+      setProducts(res.data);
+    } catch {
+      console.log("Failed to fetch productlist");
     }
-  }
-
+    setLoading(false);
+  };
   useEffect(() => {
-    load();
+    fetchProducts();
   }, []);
 
   const value = useMemo(
@@ -32,7 +28,7 @@ export function ProductsProvider({ children }) {
       products,
       loading,
       error,
-      refresh: load,
+      refresh: fetchProducts,
       productById: (id) => products.find((p) => String(p.id) === String(id)),
     }),
     [products, loading, error]

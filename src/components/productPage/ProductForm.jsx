@@ -1,59 +1,102 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
 
-const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+const API_URL = "http://localhost:3000";
 
 export function ProductForm() {
-  const { id } = useParams();
-  const [product, setProduct] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { name } = useParams(); // = :product_name
+  const [products, setProducts] = useState([]);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${Api}/${id}`);
-      setProduct(response.data);
-    } catch (error) {
-      alert("Failed");
-    }
-    setLoading(false);
-  };
-
+  // โหลดสินค้าชื่อเดียวกันทั้งหมด (เรียงราคาต่ำ->สูงตาม API)
   useEffect(() => {
-    fetchProducts();
-  }, [id]);
+    let cancel = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `${API_URL}/productdetail/${encodeURIComponent(name)}`
+        );
+        if (cancel) return;
+        const rows = Array.isArray(res.data?.products) ? res.data.products : [];
+        setProducts(rows);
+        setSelectedColor(rows[0]?.product_color || ""); // ตั้งค่าตัวเลือกแรก
+      } catch (e) {
+        if (!cancel) setError(e);
+      } finally {
+        if (!cancel) setLoading(false);
+      }
+    })();
+    return () => {
+      cancel = true;
+    };
+  }, [name]);
 
-  // const [form,setForm]=useState({product:productName.productName, color:"", quantity:""}) <<<<<<<<<<<<<<<<< ต่อตรงนี้ งง
+  // ทำรายการตัวเลือกสีจากเอกสารที่ได้
+  const colorOptions = useMemo(() => {
+    return Array.from(
+      new Set(products.map((p) => p?.product_color).filter(Boolean))
+    );
+  }, [products]);
 
-  // Quantity
-  const [Quantity, setQuantity] = useState(1);
-  const handleQuantity = (e) => {
-    if (e === "+") {
-      setQuantity(Quantity + 1);
-    } else if (e === "-" && Quantity > 1) {
-      setQuantity(Quantity - 1);
-    }
+  // variant ที่ใช้งานตามสีที่เลือก
+  const active = useMemo(() => {
+    if (!products.length) return null;
+    if (!selectedColor) return products[0];
+    return (
+      products.find((p) => p.product_color === selectedColor) || products[0]
+    );
+  }, [products, selectedColor]);
+
+  const handleQuantity = (op) => {
+    setQuantity((q) => (op === "+" ? q + 1 : Math.max(1, q - 1)));
   };
 
+  const { add } = useCart();
+
+  const handleAddToCart = () => {
+    console.log("handleAddToCart");
+    if (!active) return;
+    const payload = {
+      product_id: active._id,
+      product_name: active.product_name,
+      product_color: active.product_color,
+      product_price: active.product_price,
+      product_image: active.product_image,
+      product_qty: quantity,
+    };
+    add(payload, quantity);
+  };
+
+  if (loading) return <div className="p-6 text-center">Loading⌛...</div>;
+  if (error) return <div className="p-6 text-red-600">โหลดข้อมูลไม่สำเร็จ</div>;
+  if (!active) return <div className="p-6">ไม่พบสินค้า</div>;
   return (
     <div className="mx-auto w-[15rem] lg:w-[30rem]">
-      {/* {loading ? <div className="text-center">Loading⌛...</div> : <div></div>} */}
       <div className="flex flex-col gap-5">
-        <a href="" className="underline">
-          {product.productCategory}
+        <a href="#" className="underline">
+          {active.product_category}
         </a>
-        <h1 className="text-[2.5rem] font-bold">{product.productName}</h1>
+        <h1 className="text-[2.5rem] font-bold">{active.product_name}</h1>
 
         {/* color */}
         <p>Color</p>
-        <select name="color" className="py-1.5 w-[12rem] border-1 rounded-md">
-          {/* onChange= value= name="" */}
-          {product.productChoice?.map((choice)=>(
-            <option key={choice}>{choice}</option>
+        <select
+          name="color"
+          className="py-1.5 w-[12rem] border rounded-md"
+          value={selectedColor}
+          onChange={(e) => setSelectedColor(e.target.value)}
+        >
+          {colorOptions.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
-          {/* <option value="black">Black</option>
-          <option value="white">White</option> */}
         </select>
 
         {/* Quantity */}
@@ -65,8 +108,8 @@ export function ProductForm() {
           >
             -
           </button>
-          <span className="py-1.5 w-10 border-1 rounded-md text-center">
-            {Quantity}
+          <span className="py-1.5 w-10 border rounded-md text-center">
+            {quantity}
           </span>
           <button
             onClick={() => handleQuantity("+")}
@@ -76,13 +119,25 @@ export function ProductForm() {
           </button>
         </div>
 
+        {/* ราคา (เติมได้ถ้าต้องการแสดง) */}
+        <div className="text-lg font-semibold">
+          ฿{Number(active.product_price || 0).toLocaleString()}
+        </div>
+
         <div className="my-[1rem] flex flex-col justify-center items-center gap-5">
-          <img src="/guarantee.png" alt="" className="w-[25rem] lg:w-[30rem]" />
+          <img
+            src="/guarantee.png"
+            alt="guarantee"
+            className="w-[25rem] lg:w-[30rem]"
+          />
           <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
-            <button className="py-1.5 w-[15rem] rounded-4xl bg-[#FAAE2B] text-[#006A71] cursor-pointer lg:w-[12rem]">
+            <button
+              className="py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] text-[#006A71] cursor-pointer lg:w-[12rem]"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
-            <button className="py-1.5 w-[15rem] rounded-4xl bg-[#006A71] text-white cursor-pointer lg:w-[12rem]">
+            <button className="py-1.5 w-[15rem] rounded-[2rem] bg-[#006A71] text-white cursor-pointer lg:w-[12rem]">
               Buy Now
             </button>
           </div>
@@ -91,38 +146,3 @@ export function ProductForm() {
     </div>
   );
 }
-
-// export function ProductForm({isEdit}){
-
-//   const [form, setForm]=useState({productName:"",color:"", quality:""}) //productName:productName.productName
-//   const {productId}=useParams()
-//   useEffect(()=>{
-//     if(isEdit&&productId){
-//       axios
-//       .get(`${Api}/${productId}`)
-//       .then(response=>setForm({productName:response.data.productName, color:response.data.color, quality:response.data.quality}))
-//     }
-//   }, [isEdit, productId])
-
-//   const navigate=useNavigate()
-
-//   const handleChange=(e)=>{
-//     setForm({...form, [e.target.productName]:e.target.value})
-//   }
-
-//   const handleSubmit=async(e)=>{
-//         e.preventDefault()
-//         if (isEdit) {
-//             await axios.put(`${Api}/${productId}`, form) //เอาข้อมูลชุดใหม่ไปอัพเดทที่ database
-//         } else {
-//             await axios.post(Api, form)
-//         }
-//         navigate('/#')
-//     }
-
-//   return(
-//     <div>
-//       <h2>{Produ}</h2>
-//     </div>
-//   )
-// }

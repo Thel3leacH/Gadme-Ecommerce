@@ -1,11 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Home from "./views/Home";
-import Layout from "./components/Layout";
-import { ProductList } from "./views/ProductLists";
-import { ProductPage } from "./views/ProductPage";
-import About from "./views/About";
-import Checkout from "./views/Checkout";
+import Home from "@/views/Home";
+import Layout from "@/components/Layout";
+import ProductLists from "@/views/ProductLists";
+import ProductPage from "@/views/ProductPage";
+import About from "@/views/About";
+import Checkout from "@/views/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -17,11 +17,11 @@ const router = createBrowserRouter([
       </div>
     ),
     children: [
-      { path: "/", element: <Home /> },
+      { path: "/", element: <About /> },
       { path: "about", element: <About /> },
       { path: "checkout", element: <Checkout /> },
-      { path: "productlists", element: <ProductList /> },
-      { path: "productlists/product/:id", element: <ProductPage /> },
+      { path: "products", element: <ProductLists /> },
+      { path: "products/:name", element: <ProductPage /> },
     ],
   },
 ]);
