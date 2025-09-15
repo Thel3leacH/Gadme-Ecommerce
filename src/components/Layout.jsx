@@ -5,9 +5,7 @@ import { Outlet } from "react-router-dom";
 const Layout = () => {
   return (
     <div className="">
-      <header>
-        <Navbar />
-      </header>
+      <Navbar />
       <main className="overflow-auto p-4">
         <Outlet />
       </main>

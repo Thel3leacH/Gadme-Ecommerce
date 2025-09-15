@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
@@ -17,6 +17,17 @@ export function CartProvider({ children }) {
     if (Array.isArray(data) && data[0]?.totalQty != null)
       return data[0].totalQty;
     return 0;
+  };
+
+  const busyRef = useRef(new Set());
+  const withItemLock = async (key, fn) => {
+    if (busyRef.current.has(key)) return; // ถ้ายังประมวลผลรายการนี้อยู่ ให้กันคลิกซ้ำ
+    busyRef.current.add(key);
+    try {
+      return await fn();
+    } finally {
+      busyRef.current.delete(key);
+    }
   };
 
   const fetchCartCount = async () => {
@@ -74,8 +85,131 @@ export function CartProvider({ children }) {
     }
   };
 
+  const setQty = async (itemId, nextQty, { currentQty } = {}) =>
+    withItemLock(itemId, async () => {
+      const delta =
+        typeof currentQty === "number"
+          ? Number(nextQty) - Number(currentQty)
+          : 0;
+      const tId =
+        delta > 0
+          ? toast.loading("กำลังเพิ่มจำนวน...")
+          : toast.loading("กำลังลดจำนวน...");
+      if (delta) setTotalQty((c) => Math.max(0, c + delta));
+
+      try {
+        const res = await axios.put(
+          `${API_URL}/cart/${itemId}`,
+          { product_qty: nextQty },
+          { withCredentials: true }
+        );
+        const serverCount = extractCount(res.data);
+        if (serverCount > 0) setTotalQty(serverCount);
+        else await fetchCartCount();
+        toast.success("อัปเดตจำนวนแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        if (delta) setTotalQty((c) => Math.max(0, c - delta)); // rollback
+        const msg =
+          e.response?.data?.message || e.message || "อัปเดตจำนวนไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  // Increase quantity by step (default 1)
+  const incQty = async (itemId, step = 1) =>
+    withItemLock(itemId, async () => {
+      const tId = toast.loading("กำลังเพิ่มจำนวน...");
+      setTotalQty((c) => c + Number(step)); // optimistic
+      try {
+        const res = await axios.patch(
+          `${API_URL}/cart/${itemId}/increase`,
+          null,
+          {
+            params: { step },
+            withCredentials: true,
+          }
+        );
+        const serverCount = extractCount(res.data);
+        if (serverCount > 0) setTotalQty(serverCount);
+        else await fetchCartCount();
+        toast.success("เพิ่มจำนวนแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        setTotalQty((c) => Math.max(0, c - Number(step))); // rollback
+        const msg =
+          e.response?.data?.message || e.message || "เพิ่มจำนวนไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  // Decrease quantity by step (default 1)
+  const decQty = async (itemId, step = 1) => {
+    const tId = toast.loading("กำลังลดจำนวน...");
+    setTotalQty((c) => Math.max(0, c - Number(step))); // optimistic (ขั้นต่ำ 0)
+    try {
+      const res = await axios.patch(
+        `${API_URL}/cart/${itemId}/decrease`,
+        null,
+        {
+          params: { step },
+          withCredentials: true,
+        }
+      );
+      const serverCount = extractCount(res.data);
+      if (serverCount > 0) setTotalQty(serverCount);
+      else await fetchCartCount();
+      toast.success("ลดจำนวนแล้ว", { id: tId });
+      return res.data;
+    } catch (e) {
+      setTotalQty((c) => c + Number(step)); // rollback
+      const msg = e.response?.data?.message || e.message || "ลดจำนวนไม่สำเร็จ";
+      toast.error(msg, { id: tId });
+      throw e;
+    }
+  };
+
+  const removeItem = async (itemId, { currentQty } = {}) => {
+    const tId = toast.loading("กำลังลบรายการ...");
+    if (typeof currentQty === "number") {
+      setTotalQty((c) => Math.max(0, c - Number(currentQty))); // optimistic
+    }
+
+    try {
+      const res = await axios.delete(`${API_URL}/cart/${itemId}`, {
+        withCredentials: true,
+      });
+
+      // sync ตัวเลขจาก server (รองรับหลายฟอร์แมต)
+      const serverCount = extractCount(res.data);
+      if (serverCount >= 0) setTotalQty(serverCount);
+      else await fetchCartCount();
+
+      toast.success("ลบรายการแล้ว", { id: tId });
+      return res.data;
+    } catch (e) {
+      // ถ้าพลาด ให้ซิงก์นับใหม่แทน (โรลแบ็กอาจไม่รู้ qty ที่แน่ชัด)
+      await fetchCartCount();
+      const msg = e.response?.data?.message || e.message || "ลบรายการไม่สำเร็จ";
+      toast.error(msg, { id: tId });
+      throw e;
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ totalQty, addToCart, fetchCartCount }}>
+    <CartContext.Provider
+      value={{
+        totalQty,
+        addToCart,
+        fetchCartCount,
+        setQty,
+        incQty,
+        decQty,
+        removeItem,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
