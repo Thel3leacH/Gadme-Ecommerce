@@ -11,6 +11,7 @@ import UserProfile from "./views/UserProfile";
 import ProductCheckout from "./views/ProductCheckout";
 import Cart from "./views/Cart";
 import AdminManageItem from "./components/admin/AdminManageItem";
+import { Confirm } from "./views/Confirm";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: "checkout", element: <ProductCheckout /> },
       { path: "cart", element: <Cart /> },
       { path: "admin", element: <AdminManageItem /> },
+      { path: "confirm", element: <Confirm /> },
     ],
   },
 ]);
