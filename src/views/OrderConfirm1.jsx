@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-export function OrderConfirm() {
+export function OrderConfirm1() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 

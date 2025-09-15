@@ -12,10 +12,9 @@ import {
 const images = [
   "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---silver--QAB260_PM1_Worn%20view.png?wid=1180&hei=1180",
   "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---pink--QAB230_PM1_Other%20view.png?wid=1180&hei=1180",
-  "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---red-to-orange-gradient--QAB270_PM1_Other%20view.png?wid=1180&hei=1180","https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---red--QAB240_PM1_Other%20view.png?wid=1180&hei=1180",
+  "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---red-to-orange-gradient--QAB270_PM1_Other%20view.png?wid=1180&hei=1180",
+  "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---red--QAB240_PM1_Other%20view.png?wid=1180&hei=1180",
   "https://th.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-louis-vuitton-horizon-light-up-earphones---golden--QAB220_PM1_Other%20view.png?wid=1180&hei=1180",
-
-  
 ];
 
 export function NewFeat() {
