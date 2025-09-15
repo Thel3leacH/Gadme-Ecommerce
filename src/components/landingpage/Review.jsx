@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Marquee } from "@/components/magicui/marquee";
+import { TextAnimate } from "@/components/magicui/text-animate";
 
 const reviews = [
   {
@@ -70,7 +71,14 @@ const ReviewCard = ({ img, name, username, body }) => {
 
 export function Review() {
   return (
-    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+    <div className="mb-20 relative flex w-full flex-col items-center justify-center overflow-x-hidden overflow-y-hidden">
+      {/* <TextAnimate
+        animation="blurInUp"
+        by="text"
+        className="text-4xl font-poppins font-bold text-center"
+      >
+        Reviews
+      </TextAnimate> */}
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />

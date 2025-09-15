@@ -1,4 +1,4 @@
-import SplitText from "./ui/SplitText";
+import SplitText from "../ui/SplitText";
 
 const Slogan = ({ text, ...rest }) => {
   const handleAnimationComplete = () => {

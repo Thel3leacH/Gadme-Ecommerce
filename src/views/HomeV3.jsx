@@ -1,13 +1,11 @@
-import { Link } from "react-router-dom";
-import { NewFeat } from "../components/landingpage/NewFeat.jsx";
-import { Review } from "../components/landingpage/Review.jsx";
-import Slogan from "../components/landingpage/Slogan.jsx";
+import { NewFeat } from "../components/landingpage/NewFeat";
+import { Review } from "../components/landingpage/Review";
+import Slogan from "../components/Slogan.jsx";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { ProductCard } from "../components/ProductCard.jsx";
-import Warranty from "../components/landingpage/Warranty.jsx";
 
-const Home = () => {
+export const HomeV3 = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -37,13 +35,11 @@ const Home = () => {
         />
 
         <p className="text-white max-w-md mx-auto mb-8">
-          Stylish. Durable. Truly practical. Experience gadgets that make a real
-          difference.
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry.
         </p>
 
-        <Link to="productlists">
-          <InteractiveHoverButton>shop now</InteractiveHoverButton>
-        </Link>
+        <InteractiveHoverButton>shop now</InteractiveHoverButton>
       </main>
 
       {/* New Feature New Product */}
@@ -70,16 +66,6 @@ const Home = () => {
       </TextAnimate>
       <ProductCard />
 
-      {/* Warranty */}
-      <TextAnimate
-        animation="blurInUp"
-        by="text"
-        className="m-20 text-3xl font-bold text-center"
-      >
-        Our Trusts
-      </TextAnimate>
-      <Warranty />
-
       {/* Reviews */}
       <section>
         <TextAnimate
@@ -94,5 +80,3 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;
