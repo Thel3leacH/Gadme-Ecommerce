@@ -9,7 +9,7 @@ function AuthDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <button variant="outline">
-          <BsPersonFill className="text-2xl " />
+          <BsPersonFill className="text-2xl cursor-pointer" />
         </button>
       </DialogTrigger>
       <DialogContent>

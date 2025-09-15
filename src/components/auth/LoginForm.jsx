@@ -9,6 +9,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ForgetPassword } from "./ForgetPassword";
+import { useAuth } from "../../context/AuthContext";
+import { loginUser } from "../../apigang/authService";
 
 export function LoginForm() {
   const {
@@ -20,9 +22,21 @@ export function LoginForm() {
     defaultValues: { loginemail: "", loginpassword: "" },
   });
 
-  const handleLogin = (data) => {
-    console.log("Login Data:", data);
-    reset();
+  const { login } = useAuth();
+
+  const handleLogin = async (data) => {
+    // console.log("Login Data:", data);
+    try {
+      const { loginemail, loginpassword } = data;
+
+      const res = await loginUser(loginemail, loginpassword); //เรียกใช้ backend จาก apigang
+      console.log("Login success, res:", res);
+      login(res.user); //เก็บ user
+      reset();
+    } catch (err) {
+      console.error("Login failed", err);
+      alert("Email or password is incorrect!");
+    }
   };
 
   return (
