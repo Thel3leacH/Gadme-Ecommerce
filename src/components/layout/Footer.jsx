@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div className="bg-chart-2 md:bg-gradient-to-r from-chart-3 to-chart-2 text-secondary p-6 flex justify-between gap-16 shadow-lg">
+    <div className="bg-chart-2 md:bg-gradient-to-r from-chart-3 to-chart-2 text-secondary p-6 flex justify-around gap-16 shadow-lg">
       <div className="mx-2 my-2 flex flex-col justify-between gap-2">
         <img src="/Gadme.png" alt="gadme-logo" width="30px" />
         <h1>GadMe</h1>
@@ -11,6 +11,18 @@ const Footer = () => {
         <p>4517 Washington Ave. </p>
         <p>Manchester, Kentucky 39495</p>
         <p>info@gadme.com</p>
+      </div>
+
+      <div className="space-y-3 md:col-span-2">
+        <h3 className="font-bold text-lg">Our Location</h3>
+        <div className="w-full rounded-xl overflow-hidden shadow-lg">
+          <iframe
+            title="Map"
+            src="https://maps.google.com/maps?q=Bangkok&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            loading="lazy"
+            className="w-full h-48 md:h-60 block border-0"
+          ></iframe>
+        </div>
       </div>
 
       <div className="space-y-2">
