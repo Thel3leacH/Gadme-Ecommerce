@@ -7,6 +7,7 @@ const API_URL = "http://localhost:3000";
 
 export function CartProvider({ children }) {
   const [totalQty, setTotalQty] = useState(0);
+  const [adding, setAdding] = useState(false);
 
   // แยก count ออกมาจาก response ให้รอดหลายฟอร์แมต
   const extractCount = (data) => {
@@ -82,6 +83,8 @@ export function CartProvider({ children }) {
         "เพิ่มลงตะกร้าไม่สำเร็จ";
       toast.error(msg, { id: tId });
       throw e;
+    } finally {
+      setAdding(false); // ปลดล็อกปุ่มเมื่อเสร็จ
     }
   };
 
@@ -118,32 +121,31 @@ export function CartProvider({ children }) {
     });
 
   // Increase quantity by step (default 1)
-  const incQty = async (itemId, step = 1) =>
-    withItemLock(itemId, async () => {
-      const tId = toast.loading("กำลังเพิ่มจำนวน...");
-      setTotalQty((c) => c + Number(step)); // optimistic
-      try {
-        const res = await axios.patch(
-          `${API_URL}/cart/${itemId}/increase`,
-          null,
-          {
-            params: { step },
-            withCredentials: true,
-          }
-        );
-        const serverCount = extractCount(res.data);
-        if (serverCount > 0) setTotalQty(serverCount);
-        else await fetchCartCount();
-        toast.success("เพิ่มจำนวนแล้ว", { id: tId });
-        return res.data;
-      } catch (e) {
-        setTotalQty((c) => Math.max(0, c - Number(step))); // rollback
-        const msg =
-          e.response?.data?.message || e.message || "เพิ่มจำนวนไม่สำเร็จ";
-        toast.error(msg, { id: tId });
-        throw e;
-      }
-    });
+  const incQty = async (itemId, step = 1) => {
+    const tId = toast.loading("กำลังเพิ่มจำนวน...");
+    setTotalQty((c) => c + Number(step)); // optimistic
+    try {
+      const res = await axios.patch(
+        `${API_URL}/cart/${itemId}/increase`,
+        null,
+        {
+          params: { step },
+          withCredentials: true,
+        }
+      );
+      const serverCount = extractCount(res.data);
+      if (serverCount > 0) setTotalQty(serverCount);
+      else await fetchCartCount();
+      toast.success("เพิ่มจำนวนแล้ว", { id: tId });
+      return res.data;
+    } catch (e) {
+      setTotalQty((c) => Math.max(0, c - Number(step))); // rollback
+      const msg =
+        e.response?.data?.message || e.message || "เพิ่มจำนวนไม่สำเร็จ";
+      toast.error(msg, { id: tId });
+      throw e;
+    }
+  };
 
   // Decrease quantity by step (default 1)
   const decQty = async (itemId, step = 1) => {
@@ -201,6 +203,7 @@ export function CartProvider({ children }) {
   return (
     <CartContext.Provider
       value={{
+        adding,
         totalQty,
         addToCart,
         fetchCartCount,

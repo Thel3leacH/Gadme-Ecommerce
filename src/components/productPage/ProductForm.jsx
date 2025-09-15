@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
@@ -12,6 +12,11 @@ export function ProductForm() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart();
+
+  const [adding, setAdding] = useState(false);
+  const inFlightRef = useRef(false); // กันกดซ้ำระหว่าง request ที่ยังไม่จบ
+  const cooldownMs = 600;
 
   // โหลดสินค้าชื่อเดียวกันทั้งหมด (เรียงราคาต่ำ->สูงตาม API)
   useEffect(() => {
@@ -57,21 +62,44 @@ export function ProductForm() {
     setQuantity((q) => (op === "+" ? q + 1 : Math.max(1, q - 1)));
   };
 
-  const { addToCart } = useCart();
-
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     console.log("handleAddToCart");
+
+    // กันกดรัว
+    if (inFlightRef.current) return;
+
+    // เช็กสินค้าให้พร้อมก่อน
     if (!active) return;
+
     const payload = {
       product_id: active._id,
       product_name: active.product_name,
       product_color: active.product_color,
       product_price: active.product_price,
       product_image: active.product_image,
-      product_qty: quantity,
+      product_qty: Math.max(1, Number(quantity) || 1), // กันค่าประหลาด
       product_status: "Selected",
     };
-    addToCart(payload, quantity);
+
+    // ล็อกปุ่ม
+    inFlightRef.current = true;
+    setAdding(true);
+
+    try {
+      // ถ้า addToCart รับ payload อย่างเดียว (ตามที่โค้ดคุณทำไว้)
+      await addToCart(payload);
+
+      // ถ้า addToCart ของคุณ “จำเป็น” ต้องรับ (payload, qty) จริงๆ ให้ใช้บรรทัดล่างแทน:
+      // await addToCart(payload, quantity);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      // คูลดาวน์สั้นๆ แล้วค่อยปลดล็อก
+      setTimeout(() => {
+        setAdding(false);
+        inFlightRef.current = false;
+      }, 1500);
+    }
   };
 
   if (loading) return <div className="p-6 text-center">Loading⌛...</div>;
@@ -133,7 +161,10 @@ export function ProductForm() {
           />
           <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
             <button
-              className="py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] text-[#006A71] cursor-pointer lg:w-[12rem]"
+              disabled={adding}
+              aria-disabled={adding}
+              className={`py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] text-[#006A71] lg:w-[12rem]
+    ${adding ? "opacity-60 pointer-events-none" : "cursor-pointer"}`}
               onClick={handleAddToCart}
             >
               Add to Cart

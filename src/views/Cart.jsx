@@ -9,8 +9,9 @@ export default function CartList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiSubtotal, setApiSubtotal] = useState(null);
-  const [apiCount, setApiCount] = useState(null);
   const { totalQty, setQty, removeItem: removeItemCtx } = useCart();
+  const [deleteBusy, setDeleteBusy] = useState(false); // ล็อกปุ่มลบทั้งหมด
+  const [activeRemovingId, setActiveRemovingId] = useState(null); // ไอเท็มที่กำลังลบอยู่
 
   useEffect(() => {
     (async () => {
@@ -23,7 +24,6 @@ export default function CartList() {
         const { cartItems, subtotal, count } = res.data ?? {};
         setCarts(Array.isArray(cartItems) ? cartItems : []);
         setApiSubtotal(typeof subtotal === "number" ? subtotal : null);
-        setApiCount(typeof count === "number" ? count : null);
       } catch (e) {
         if (e.name !== "CanceledError") setError(e);
       } finally {
@@ -66,13 +66,28 @@ export default function CartList() {
   };
 
   const removeItem = async (id, currentQty) => {
-    const backup = carts;
-    setCarts((prev) => prev.filter((it) => it._id !== id)); // optimistic ที่ list
+    if (deleteBusy) return; // กันกดลบตัวอื่น/ตัวเดิมซ้ำระหว่างกำลังลบ
+
+    const backup = carts; // หรือใช้ [...carts] ถ้าต้องการ clone
+    setDeleteBusy(true);
+    setActiveRemovingId(id);
+
+    // optimistic: เอาออกก่อน
+    setCarts((prev) => prev.filter((it) => it._id !== id));
+
     try {
-      await removeItemCtx(id, { currentQty }); // ✅ ให้ Context อัปเดต count + toast
+      await removeItemCtx(id, { currentQty }); // ให้ Context จัดการ count/toast
       setApiSubtotal(null);
     } catch (e) {
-      setCarts(backup); // rollback UI
+      // rollback
+      setCarts(backup);
+      console.error("remove failed", e);
+    } finally {
+      // คูลดาวน์กันจิ้มรัวทันที
+      setTimeout(() => {
+        setDeleteBusy(false);
+        setActiveRemovingId(null);
+      }, 600);
     }
   };
 
@@ -171,10 +186,16 @@ export default function CartList() {
                       </button>
 
                       <button
-                        className="ms-auto rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
-                        onClick={() => removeItem(item._id, qty)}
+                        disabled={deleteBusy}
+                        aria-disabled={deleteBusy}
+                        onClick={() => removeItem(item._id, item.product_qty)}
+                        className={`ms-auto rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50 ${
+                          deleteBusy ? "opacity-60 pointer-events-none" : ""
+                        }`}
                       >
-                        ลบรายการ
+                        {deleteBusy && activeRemovingId === item._id
+                          ? "กำลังลบ..."
+                          : "ลบรายการ"}
                       </button>
                     </div>
                   </div>
