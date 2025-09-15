@@ -9,11 +9,6 @@ export const HomeV3 = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      {/* <img
-        src="https://images.unsplash.com/photo-1709534644752-784aaf486afc?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        alt=""
-        className="absolute top-[-45rem] w-[80rem] h-[80rem] rounded-full object-cover opacity-80 -z-10 object-center"
-      /> */}
       <main className="py-30 text-center">
         <div className="mb-4 relative flex justify-center items-center">
           <div className="absolute w-10 h-10 bg-teal-500 rounded-full"></div>
