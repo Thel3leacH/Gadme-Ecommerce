@@ -13,6 +13,7 @@ import CartItems from "./CartItems";
 import CouponSection from "./CouponSection";
 import PricingSummary from "./PricingSummary";
 import SelfTests from "./SelfTests";
+import { Link } from "react-router-dom";
 
 export default function OrderSummary({
   items,
@@ -71,7 +72,7 @@ export default function OrderSummary({
       </CardContent>
       <CardFooter className="flex flex-col items-stretch gap-2">
         <Button className="h-11" onClick={placeOrder} disabled={!isFormValid}>
-          Confirm Order
+          <Link to="/confirm">Confirm Order</Link>
         </Button>
         <div className="text-center text-xs text-gray-500">
           💼 Price currency: {currency} • The system will save the address for
