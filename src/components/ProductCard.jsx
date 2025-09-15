@@ -16,7 +16,7 @@ export function ProductCard() {
       const response = await axios.get(Api);
       setProduceName(response.data);
     } catch (error) {
-      alert("Failed " + error.massage);
+      alert("Failed"+error.massage);
     }
     setLoading(false);
   };
@@ -40,13 +40,13 @@ export function ProductCard() {
         {produceName.map((product) => (
           <Link
             key={product.id}
-            to={`/product/${product.id}`}
-            className="w-[15rem] h-[25rem] shadow-[5px_5px_10px_rgba(0,0,0,0.25)]"
+            to={`/productlists/product/${product.id}`}
+            className="w-[15rem] h-[25rem] rounded-xl shadow-[5px_5px_10px_rgba(0,0,0,0.25)]"
           >
             <img
               src={product.productImage}
               alt="Product Image"
-              className="w-[15rem] h-[15rem]"
+              className="w-[15rem] h-[15rem] rounded-t-xl"
             />
             <div className="m-[0.5rem] p-2.5">
               <h2 className="text-[1.15rem] font-bold">
@@ -59,7 +59,7 @@ export function ProductCard() {
                   }}
                 >
                   <span className="bg-[#DBF6F9] rounded-[0.5rem] p-1.5">
-                    {product.productCategory}
+                    <a href="">{product.productCategory}</a>
                   </span>
                 </button>
                 <button onClick={(e) => handleLike(e, product.id)}>
