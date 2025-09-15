@@ -6,7 +6,7 @@ import { ProductList } from "./views/ProductLists";
 import { ProductPage } from "./views/ProductPage";
 import About from "./views/About";
 import { HomeV3 } from "./views/HomeV3";
-import { OrderConfirm } from "./views/OrderConfirm";
+import { OrderConfirm } from "./views/OrderConfirm1";
 
 const router = createBrowserRouter([
   {
