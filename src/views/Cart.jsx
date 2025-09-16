@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useNavigate } from "react-router-dom";
+
 // Change this to match your backend
 const API_URL = "http://localhost:3000/"; // keep trailing slash
 
 export default function CartList() {
+  const navigate = useNavigate();
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,6 +15,7 @@ export default function CartList() {
   const { totalQty, setQty, removeItem: removeItemCtx } = useCart();
   const [deleteBusy, setDeleteBusy] = useState(false); // ล็อกปุ่มลบทั้งหมด
   const [activeRemovingId, setActiveRemovingId] = useState(null); // ไอเท็มที่กำลังลบอยู่
+  const [going, setGoing] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,6 +53,20 @@ export default function CartList() {
       return s + price * qty;
     }, 0);
   }, [carts]);
+
+  const hasInvalidItem = useMemo(
+    () => carts?.some((it) => !it?.product_qty || it.product_qty < 1),
+    [carts]
+  );
+  const canCheckout = useMemo(
+    () => (carts?.length ?? 0) > 0 && !hasInvalidItem && !going,
+    [carts, hasInvalidItem, going]
+  );
+
+  const onCheckout = () => {
+    setGoing(true); // กันกดรัว
+    navigate("/checkout"); // ไปหน้าถัดไป
+  };
 
   const patchQuantity = async (id, nextQty, currentQty) => {
     // optimistic เฉพาะ UI list
@@ -243,14 +261,24 @@ export default function CartList() {
 
               {/* ปุ่มต่างๆ */}
               <div className="flex flex-col gap-2">
-                <button className="w-full rounded-lg bg-black px-4 py-2 text-sm text-white hover:bg-black/90">
-                  ดำเนินการชำระเงิน
+                <button
+                  type="button"
+                  onClick={onCheckout}
+                  disabled={!canCheckout}
+                  aria-disabled={!canCheckout}
+                  aria-busy={going}
+                  className={`w-full rounded-lg bg-black px-4 py-2 text-sm text-white hover:bg-black/90
+      ${!canCheckout ? "opacity-60 cursor-not-allowed hover:bg-black" : ""}`}
+                >
+                  {going ? "กำลังไปหน้า Checkout..." : "ดำเนินการชำระเงิน"}
                 </button>
               </div>
 
-              <p className="mt-3 text-xs text-gray-500">
-                * ราคาสุทธิอาจเปลี่ยนตามค่าจัดส่งและส่วนลดที่ใช้
-              </p>
+              {hasInvalidItem && (
+                <p className="text-xs text-rose-600">
+                  มีรายการที่จำนวนไม่ถูกต้อง กรุณาตรวจสอบจำนวนสินค้าอีกครั้ง
+                </p>
+              )}
             </div>
           </aside>
         )}

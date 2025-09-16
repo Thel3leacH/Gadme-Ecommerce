@@ -229,25 +229,12 @@ export default function Checkout() {
     firstName.trim() &&
     lastName.trim() &&
     phone.trim() &&
-    email.trim() &&
     address.trim() &&
     subdistrict.trim() &&
     district.trim() &&
     province.trim() &&
     postcode.trim() &&
     items.length > 0;
-
-  const applyCoupon = () => {
-    const code = couponCode.trim().toUpperCase();
-    if (code === "SAVE100") {
-      setCouponApplied({ code, discountSatang: 10000 }); // ลด 100 บาท
-    } else if (code === "FREESHIP") {
-      setCouponApplied({ code, discountSatang: shippingFeeSatang }); // ลดเท่าค่าจัดส่ง (เดโม = 0)
-    } else {
-      setCouponApplied(null);
-      alert("คูปองไม่ถูกต้อง หรือหมดอายุ");
-    }
-  };
 
   const placeOrder = () => {
     if (!isFormValid()) {
@@ -305,7 +292,6 @@ export default function Checkout() {
           <h1 className="text-2xl font-semibold tracking-tight">
             สั่งซื้อสินค้า (Checkout)
           </h1>
-          <Badge className="ml-1">{items.length} รายการ</Badge>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -343,18 +329,6 @@ export default function Checkout() {
                     placeholder="08x-xxx-xxxx"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">
-                    อีเมล (สำหรับใบเสร็จ/ติดตามพัสดุ)
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -409,17 +383,11 @@ export default function Checkout() {
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Button
-                variant="ghost"
-                onClick={() => alert("กลับไปแก้ไขตะกร้า (ตัวอย่าง)")}
-              >
-                กลับไปแก้ไขตะกร้า
-              </Button>
-              <Button
                 className="h-11"
                 onClick={placeOrder}
                 disabled={!isFormValid()}
               >
-                ดำเนินการชำระเงิน
+                บันทึกที่อยู่การจัดส่ง
               </Button>
             </CardFooter>
           </Card>
@@ -472,18 +440,6 @@ export default function Checkout() {
                   </ScrollArea>
 
                   <div className="space-y-3 p-4">
-                    {/* คูปอง */}
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="กรอกรหัสคูปอง (เช่น SAVE100 / FREESHIP)"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                      />
-                      <Button variant="secondary" onClick={applyCoupon}>
-                        ใช้คูปอง
-                      </Button>
-                    </div>
-
                     <Separator />
 
                     <div className="space-y-2 text-sm">
@@ -499,32 +455,13 @@ export default function Checkout() {
                             : formatFromSatang(shippingFeeSatang)}
                         </span>
                       </div>
-                      {discountSatang > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span>
-                            ส่วนลด
-                            {couponApplied?.code
-                              ? ` (${couponApplied.code})`
-                              : ""}
-                          </span>
-                          <span>-{formatFromSatang(discountSatang)}</span>
-                        </div>
-                      )}
+
                       <Separator />
                       <div className="flex justify-between text-base font-semibold">
                         <span>ยอดที่ต้องชำระ</span>
                         <span>{formatFromSatang(totalSatang)}</span>
                       </div>
                     </div>
-
-                    {/* Self-tests panel */}
-                    <SelfTests
-                      items={items}
-                      subtotalSatang={subtotalSatang}
-                      totalSatang={totalSatang}
-                      shippingFeeSatang={shippingFeeSatang}
-                      discountSatang={discountSatang}
-                    />
                   </div>
                 </>
               )}
@@ -537,10 +474,6 @@ export default function Checkout() {
               >
                 ยืนยันและชำระเงิน
               </Button>
-              <div className="text-center text-xs text-gray-500">
-                💼 ราคาสกุลเงิน: {currency} •
-                ระบบจะบันทึกที่อยู่เพื่อการจัดส่งเท่านั้น
-              </div>
             </CardFooter>
           </Card>
         </div>
