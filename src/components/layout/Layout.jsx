@@ -8,7 +8,7 @@ const Layout = () => {
       {/* <header className="fixed w-full"> */}
       <Navbar />
       {/* </header> */}
-      <main class="md:container mx-auto">
+      <main className="md:container mx-auto">
         <Outlet />
       </main>
       <footer className="md:bg-chart-2 text-gray-400 text-sm">

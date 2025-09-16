@@ -1,54 +1,76 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import api from "../apigang/api.js";
-import { Navigate } from "react-router-dom";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import api from "@/apigang/api";
+import { useNavigate } from "react-router-dom";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get("/auth/profile");
-        setUser(response.data.user); //เก็บค่า user ใน state
-      } catch (err) {
-        console.error("Not authenticated:", err);
-        setUser(null); //Clear user ใน state ถ้าไม่ผ่าน authen
-      } finally {
-        setLoading(false); // โหลดหน้า Loading
+  const refresh = useCallback(async () => {
+    try {
+      const { data, status } = await api.get("/auth/profile");
+
+      // ✅ ยอมรับเฉพาะ { user: {...} } และไม่ error
+      const u = data?.user;
+      const isValidUser =
+        u &&
+        typeof u === "object" &&
+        !Array.isArray(u) &&
+        !!u._id &&
+        !data?.error;
+
+      if (status === 200 && isValidUser) {
+        setUser(u);
+      } else {
+        setUser(null);
       }
-    };
-
-    fetchProfile();
+    } catch (e) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
   const login = (userData) => {
-    setUser(userData); //Save user info ไว้
-    if (userData.user_role === "Admin") {
-      Navigate("admin"); //ถ้าใช่ Admin หลัง Login เสร็จแล้วไปที่หน้า (รอเลือกหน้าที่ต้องการแสดง)
-    } else {
-      Navigate(""); //ถ้าไม่ใช่ Admin หลัง Login เสร็จแล้วไปที่หน้า (รอเลือกหน้าที่ต้องการแสดง)
-    }
+    if (!userData) return;
+    setUser(userData);
+    const role =
+      userData?.user_role ?? userData?.role ?? userData?.user?.user_role;
+    navigate(role === "Admin" ? "/admin" : "/productlists", { replace: true });
   };
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/auth/logout"); // server เคลียร์คุกกี้
       setUser(null);
-      Navigate("/"); //หลัง Logout เสร็จแล้วไปที่หน้า (รอเลือกหน้าที่ต้องการแสดง)
-    } catch (err) {
-      console.error("Logout failed:", err);
+      navigate("/", { replace: true }); // กลับหน้าแรก
+      return true;
+    } catch (e) {
+      console.error("Logout failed:", e);
+      return false;
     }
   };
 
-  if (loading) {
-    return <div className="text-center mt-10 text-xl">Loading...</div>; // Show หน้า Loading
-  }
+  if (loading)
+    return <div className="text-center mt-10 text-xl">Loading...</div>;
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, setUser, loading, login, logout, refresh }}
+    >
       {children}
     </AuthContext.Provider>
   );
