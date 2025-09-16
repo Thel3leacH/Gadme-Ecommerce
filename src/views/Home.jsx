@@ -4,8 +4,9 @@ import { Review } from "../components/landingpage/Review.jsx";
 import Slogan from "../components/landingpage/Slogan.jsx";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
-import { ProductCard } from "../components/ProductCard.jsx";
+import ProductCard from "../components/ProductCard.jsx";
 import Warranty from "../components/landingpage/Warranty.jsx";
+import ProductLists from "./ProductLists.jsx";
 
 const Home = () => {
   return (
@@ -41,7 +42,7 @@ const Home = () => {
           difference.
         </p>
 
-        <Link to="productlists">
+        <Link to="products">
           <InteractiveHoverButton>shop now</InteractiveHoverButton>
         </Link>
       </main>
@@ -68,7 +69,8 @@ const Home = () => {
       >
         Our Product
       </TextAnimate>
-      <ProductCard />
+      <ProductLists />
+      {/* <ProductCard /> */}
 
       {/* Warranty */}
       <TextAnimate

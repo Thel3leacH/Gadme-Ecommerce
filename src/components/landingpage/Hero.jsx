@@ -34,7 +34,7 @@ const Hero = ({ bgImage }) => {
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry.
           </p>
-          <Link to="/productlists">
+          <Link to="/products">
             <InteractiveHoverButton>shop now</InteractiveHoverButton>
           </Link>
         </main>

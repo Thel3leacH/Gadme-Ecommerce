@@ -44,7 +44,9 @@ export function ProductDetail() {
             {Object.entries(product.productSpec ?? {}).map(([spec, detail]) => (
               <tr key={spec}>
                 <td className="p-1 border-1">{spec}</td>
-                <td className="p-1 border-1">{Array.isArray(detail)? detail.join(", ") : detail}</td>
+                <td className="p-1 border-1">
+                  {Array.isArray(detail) ? detail.join(", ") : detail}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -267,7 +267,7 @@ export default function OrderConfirmPage({ order = mockOrder }) {
               onClick={() => (window.location.href = "/")}
               className="inline-flex items-center gap-2 rounded-full bg-slate-900 text-white px-4 py-2 text-sm shadow-sm hover:bg-slate-800"
             >
-              <Link to="/productlists">ซื้อสินค้าต่อ</Link>
+              <Link to="/products">ซื้อสินค้าต่อ</Link>
             </button>
           </div>
         </motion.div>
