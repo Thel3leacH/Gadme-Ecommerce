@@ -1,0 +1,180 @@
+import axios from "axios";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
+
+const API_URL = "http://localhost:3000";
+
+export function ProductForm() {
+  const { name } = useParams(); // = :product_name
+  const [products, setProducts] = useState([]);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { addToCart } = useCart();
+
+  const [adding, setAdding] = useState(false);
+  const inFlightRef = useRef(false); // กันกดซ้ำระหว่าง request ที่ยังไม่จบ
+  const cooldownMs = 600;
+
+  // โหลดสินค้าชื่อเดียวกันทั้งหมด (เรียงราคาต่ำ->สูงตาม API)
+  useEffect(() => {
+    let cancel = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `${API_URL}/productdetail/${encodeURIComponent(name)}`
+        );
+        if (cancel) return;
+        const rows = Array.isArray(res.data?.products) ? res.data.products : [];
+        setProducts(rows);
+        setSelectedColor(rows[0]?.product_color || ""); // ตั้งค่าตัวเลือกแรก
+      } catch (e) {
+        if (!cancel) setError(e);
+      } finally {
+        if (!cancel) setLoading(false);
+      }
+    })();
+    return () => {
+      cancel = true;
+    };
+  }, [name]);
+
+  // ทำรายการตัวเลือกสีจากเอกสารที่ได้
+  const colorOptions = useMemo(() => {
+    return Array.from(
+      new Set(products.map((p) => p?.product_color).filter(Boolean))
+    );
+  }, [products]);
+
+  // variant ที่ใช้งานตามสีที่เลือก
+  const active = useMemo(() => {
+    if (!products.length) return null;
+    if (!selectedColor) return products[0];
+    return (
+      products.find((p) => p.product_color === selectedColor) || products[0]
+    );
+  }, [products, selectedColor]);
+
+  const handleQuantity = (op) => {
+    setQuantity((q) => (op === "+" ? q + 1 : Math.max(1, q - 1)));
+  };
+
+  const handleAddToCart = async () => {
+    console.log("handleAddToCart");
+
+    // กันกดรัว
+    if (inFlightRef.current) return;
+
+    // เช็กสินค้าให้พร้อมก่อน
+    if (!active) return;
+
+    const payload = {
+      product_id: active._id,
+      product_name: active.product_name,
+      product_color: active.product_color,
+      product_price: active.product_price,
+      product_image: active.product_image,
+      product_qty: Math.max(1, Number(quantity) || 1), // กันค่าประหลาด
+      product_status: "Selected",
+    };
+
+    // ล็อกปุ่ม
+    inFlightRef.current = true;
+    setAdding(true);
+
+    try {
+      // ถ้า addToCart รับ payload อย่างเดียว (ตามที่โค้ดคุณทำไว้)
+      await addToCart(payload);
+
+      // ถ้า addToCart ของคุณ “จำเป็น” ต้องรับ (payload, qty) จริงๆ ให้ใช้บรรทัดล่างแทน:
+      // await addToCart(payload, quantity);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      // คูลดาวน์สั้นๆ แล้วค่อยปลดล็อก
+      setTimeout(() => {
+        setAdding(false);
+        inFlightRef.current = false;
+      }, 1500);
+    }
+  };
+
+  if (loading) return <div className="p-6 text-center">Loading⌛...</div>;
+  if (error) return <div className="p-6 text-red-600">โหลดข้อมูลไม่สำเร็จ</div>;
+  if (!active) return <div className="p-6">ไม่พบสินค้า</div>;
+  return (
+    <div className="mx-auto w-[15rem] lg:w-[30rem]">
+      <div className="flex flex-col gap-5">
+        <a href="#" className="underline">
+          {active.product_category}
+        </a>
+        <h1 className="text-[2.5rem] font-bold">{active.product_name}</h1>
+
+        {/* color */}
+        <p>Color</p>
+        <select
+          name="color"
+          className="py-1.5 w-[12rem] border rounded-md"
+          value={selectedColor}
+          onChange={(e) => setSelectedColor(e.target.value)}
+        >
+          {colorOptions.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        {/* Quantity */}
+        <p>Quantity</p>
+        <div className="flex gap-5">
+          <button
+            onClick={() => handleQuantity("-")}
+            className="cursor-pointer"
+          >
+            -
+          </button>
+          <span className="py-1.5 w-10 border rounded-md text-center">
+            {quantity}
+          </span>
+          <button
+            onClick={() => handleQuantity("+")}
+            className="cursor-pointer"
+          >
+            +
+          </button>
+        </div>
+
+        {/* ราคา (เติมได้ถ้าต้องการแสดง) */}
+        <div className="text-lg font-semibold">
+          ฿{Number(active.product_price || 0).toLocaleString()}
+        </div>
+
+        <div className="my-[1rem] flex flex-col justify-center items-center gap-5">
+          <img
+            src="/guarantee.png"
+            alt="guarantee"
+            className="w-[25rem] lg:w-[30rem]"
+          />
+          <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
+            <button
+              disabled={adding}
+              aria-disabled={adding}
+              className={`py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] hover:bg-[#ffbf50] text-[#006A71] lg:w-[12rem]
+    ${adding ? "opacity-60 pointer-events-none" : "cursor-pointer"}`}
+              onClick={handleAddToCart}
+            >
+              Add to Cart
+            </button>
+            <button className="py-1.5 w-[15rem] rounded-[2rem] bg-teal-500 hover:bg-teal-300 text-white cursor-pointer lg:w-[12rem]">
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
