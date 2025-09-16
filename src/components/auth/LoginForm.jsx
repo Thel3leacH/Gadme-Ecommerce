@@ -13,7 +13,7 @@ import {
 import { ForgetPassword } from "./ForgetPassword";
 import { useAuth } from "@/context/AuthContext"; // <<--- เพิ่ม
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function LoginForm({ onSuccess }) {
   const { setUser, refresh, login } = useAuth(); // <<--- ใช้จาก AuthContext

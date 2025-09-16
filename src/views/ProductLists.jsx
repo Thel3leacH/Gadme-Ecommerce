@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductLists = () => {
   const [products, setProducts] = useState([]);
