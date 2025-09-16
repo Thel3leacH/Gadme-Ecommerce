@@ -1,95 +1,245 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+// src/context/CartContext.jsx
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const CartContext = createContext(null);
-const LS_KEY = "cart:v1";
+const API_URL = import.meta?.env?.VITE_API_URL || "http://localhost:3000";
 
-export function CartProvider({ children }) {
-  // โครงเก็บข้อมูลแบบ { [productId]: qty }
-  const [items, setItems] = useState(() => {
+export function CartProvider({ children, apiBase = API_URL }) {
+  // รวม “ชิ้น”
+  const [totalQty, setTotalQty] = useState(0);
+  // รวม “รายการ”
+  const [totalItems, setTotalItems] = useState(0);
+  const [adding, setAdding] = useState(false);
+
+  // per-item lock กันกดรัว
+  const busyRef = useRef(new Set());
+  const withItemLock = async (key, fn) => {
+    if (key && busyRef.current.has(key)) return;
+    if (key) busyRef.current.add(key);
     try {
-      const raw = localStorage.getItem(LS_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch {
-      return {};
+      return await fn();
+    } finally {
+      if (key) busyRef.current.delete(key);
     }
-  });
+  };
+  const isBusy = (key) => busyRef.current.has(key);
 
-  // ซิงก์ลง localStorage ทุกครั้งที่เปลี่ยน
-  useEffect(() => {
-    localStorage.setItem(LS_KEY, JSON.stringify(items));
-  }, [items]);
+  // ===== Helpers: อ่าน meta จาก response =====
+  const isNum = (v) => typeof v === "number" && Number.isFinite(v);
+  const readQty = (d) =>
+    [d?.count_items, d?.count, d?.totalQty].find((v) => isNum(v)); // รับ 0 ได้
+  const readLines = (d) => [d?.count_lines, d?.lines].find((v) => isNum(v)); // รับ 0 ได้
 
-  // (ทางเลือก) ซิงก์ข้ามแท็บ
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key === LS_KEY && e.newValue) {
-        try {
-          setItems(JSON.parse(e.newValue));
-        } catch {}
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  // Actions
-  const add = (id, qty = 1) =>
-    setItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + qty }));
-
-  const decrement = (id, qty = 1) =>
-    setItems((prev) => {
-      const next = { ...prev };
-      const cur = next[id] || 0;
-      const val = cur - qty;
-      if (val > 0) next[id] = val;
-      else delete next[id];
-      return next;
-    });
-
-  const setQty = (id, qty) =>
-    setItems((prev) => {
-      const next = { ...prev };
-      if (qty > 0) next[id] = qty;
-      else delete next[id];
-      return next;
-    });
-
-  const remove = (id) =>
-    setItems((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-
-  const clear = () => setItems({});
-
-  // Selectors/derived
-  const totalQty = useMemo(
-    () => Object.values(items).reduce((sum, n) => sum + n, 0),
-    [items]
-  );
-  const itemCount = useMemo(() => Object.keys(items).length, [items]);
-  const qtyOf = (id) => items[id] || 0;
-  const has = (id) => !!items[id];
-
-  const value = {
-    items,
-    totalQty,
-    itemCount,
-    add,
-    decrement,
-    setQty,
-    remove,
-    clear,
-    qtyOf,
-    has,
+  // อัปเดต meta จาก payload; ถ้าไม่มีทั้งสองค่า จะคืน false
+  const syncMeta = (data) => {
+    let updated = false;
+    const q = readQty(data);
+    const l = readLines(data);
+    if (isNum(q)) {
+      setTotalQty(q);
+      updated = true;
+    }
+    if (isNum(l)) {
+      setTotalItems(l);
+      updated = true;
+    }
+    return updated;
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  // ดึง meta ครั้งเดียวสำหรับ navbar (ทั้งสองค่า)
+  const fetchCartMeta = async () => {
+    const r = await axios.get(`${apiBase}/cart/meta`, {
+      withCredentials: true,
+    });
+    // อัปเดตจาก response (รับ 0)
+    syncMeta(r.data);
+  };
+  const refreshCartMeta = fetchCartMeta;
+
+  // init
+  useEffect(() => {
+    (async () => {
+      try {
+        await fetchCartMeta();
+      } catch (e) {
+        console.log("init cart meta failed:", e.response?.data || e.message);
+      }
+    })();
+  }, [apiBase]);
+
+  // ===== Actions =====
+
+  // Add to cart
+  const addToCart = async (payload) => {
+    const inc = Number(payload?.product_qty ?? 1) || 1;
+    setAdding(true);
+    const tId = toast.loading("กำลังเพิ่มลงตะกร้า...");
+    setTotalQty((c) => c + inc); // optimistic “ชิ้น”
+
+    try {
+      const res = await axios.post(`${apiBase}/cart`, payload, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // ถ้า response ไม่มี meta ครบ → fetch แค่ครั้งเดียว
+      if (!syncMeta(res.data)) await fetchCartMeta();
+
+      const name = payload?.product_name ?? "สินค้า";
+      toast.success(`เพิ่ม ${name} x${inc} ลงตะกร้าแล้ว 🛒`, { id: tId });
+      return res.data;
+    } catch (e) {
+      setTotalQty((c) => Math.max(0, c - inc)); // rollback
+      const msg =
+        e.response?.data?.message ||
+        e.response?.data?.code ||
+        e.message ||
+        "เพิ่มลงตะกร้าไม่สำเร็จ";
+      toast.error(msg, { id: tId });
+      throw e;
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  // set absolute qty
+  const setQty = async (itemId, nextQty, { currentQty } = {}) =>
+    withItemLock(itemId, async () => {
+      const next = Number(nextQty);
+      if (!Number.isFinite(next) || next < 1) return;
+
+      const delta =
+        typeof currentQty === "number" ? next - Number(currentQty) : 0;
+
+      const tId = toast.loading(
+        delta > 0 ? "กำลังเพิ่มจำนวน..." : "กำลังลดจำนวน..."
+      );
+      if (delta) setTotalQty((c) => Math.max(0, c + delta)); // optimistic
+
+      try {
+        const res = await axios.put(
+          `${apiBase}/cart/${itemId}`,
+          { product_qty: next },
+          { withCredentials: true }
+        );
+
+        if (!syncMeta(res.data)) await fetchCartMeta();
+
+        toast.success("อัปเดตจำนวนแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        if (delta) setTotalQty((c) => Math.max(0, c - delta)); // rollback
+        const msg =
+          e.response?.data?.message || e.message || "อัปเดตจำนวนไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  // +step
+  const incQty = async (itemId, step = 1) =>
+    withItemLock(itemId, async () => {
+      const n = Math.max(1, Number(step) || 1);
+      const tId = toast.loading("กำลังเพิ่มจำนวน...");
+      setTotalQty((c) => c + n); // optimistic
+
+      try {
+        const res = await axios.patch(
+          `${apiBase}/cart/${itemId}/increase`,
+          null,
+          { params: { step: n }, withCredentials: true }
+        );
+
+        if (!syncMeta(res.data)) await fetchCartMeta();
+
+        toast.success("เพิ่มจำนวนแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        setTotalQty((c) => Math.max(0, c - n)); // rollback
+        const msg =
+          e.response?.data?.message || e.message || "เพิ่มจำนวนไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  // -step
+  const decQty = async (itemId, step = 1) =>
+    withItemLock(itemId, async () => {
+      const n = Math.max(1, Number(step) || 1);
+      const tId = toast.loading("กำลังลดจำนวน...");
+      setTotalQty((c) => Math.max(0, c - n)); // optimistic
+
+      try {
+        const res = await axios.patch(
+          `${apiBase}/cart/${itemId}/decrease`,
+          null,
+          { params: { step: n }, withCredentials: true }
+        );
+
+        if (!syncMeta(res.data)) await fetchCartMeta();
+
+        toast.success("ลดจำนวนแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        setTotalQty((c) => c + n); // rollback
+        const msg =
+          e.response?.data?.message || e.message || "ลดจำนวนไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  // ลบรายการ
+  const removeItem = async (itemId, { currentQty } = {}) =>
+    withItemLock(itemId, async () => {
+      const tId = toast.loading("กำลังลบรายการ...");
+      setTotalItems((c) => Math.max(0, c - 1)); // optimistic: บรรทัด -1 แน่นอน
+      if (typeof currentQty === "number") {
+        setTotalQty((c) => Math.max(0, c - Number(currentQty)));
+      }
+
+      try {
+        const res = await axios.delete(`${apiBase}/cart/${itemId}`, {
+          withCredentials: true,
+        });
+
+        if (!syncMeta(res.data)) await fetchCartMeta();
+
+        toast.success("ลบรายการแล้ว", { id: tId });
+        return res.data;
+      } catch (e) {
+        await fetchCartMeta(); // sync กลับ
+        const msg =
+          e.response?.data?.message || e.message || "ลบรายการไม่สำเร็จ";
+        toast.error(msg, { id: tId });
+        throw e;
+      }
+    });
+
+  return (
+    <CartContext.Provider
+      value={{
+        // state
+        totalQty, // รวม “ชิ้น”
+        totalItems, // รวม “รายการ”
+        adding,
+        isBusy,
+
+        // actions
+        fetchCartMeta: refreshCartMeta,
+        addToCart,
+        setQty,
+        incQty,
+        decQty,
+        removeItem,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 }
 
-export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used within <CartProvider />");
-  return ctx;
-}
+export const useCart = () => useContext(CartContext);
