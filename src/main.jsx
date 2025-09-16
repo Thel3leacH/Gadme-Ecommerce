@@ -9,12 +9,6 @@ import { AuthProvider } from "@/context/AuthContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ProductsProvider>
-      <CartProvider>
-        <App />
-        <Toaster position="top-center" />
-      </CartProvider>
-    </ProductsProvider>
     <App />
   </StrictMode>
 );

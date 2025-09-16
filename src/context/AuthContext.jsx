@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     const role =
       userData?.user_role ?? userData?.role ?? userData?.user?.user_role;
-    navigate(role === "Admin" ? "/admin" : "/productlists", { replace: true });
+    navigate(role === "Admin" ? "/admin" : "/", { replace: true });
   };
 
   const logout = async () => {
