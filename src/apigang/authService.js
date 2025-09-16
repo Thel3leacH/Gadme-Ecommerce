@@ -2,24 +2,43 @@ import api from "./api";
 
 //this is for loginUser to sent data to Backend
 export const loginUser = async (email, password) => {
-  const response = await api.post("/gadme/auth/cookie/login", {
-    email,
-    password,
-  });
+  const response = await api.post(
+    "/auth/cookie/login",
+    {
+      user_email: email,
+      user_password: password,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+  console.log("API response loginUser:", response);
   return response.data;
 };
 
 export const logoutUser = async () => {
-  const response = await api.post("gadme/auth/logout");
+  const response = await api.post("/auth/logout");
   return response.data;
 };
 
-export const signupUser = async ({ fullName, email, password }) => {
-  const response = await api.post("/gadme/auth/register", {
-    fullName,
+export const signupUser = async (name, lastName, userName, email, password) => {
+  const response = await api.post("/auth/signup", {
+    name,
+    lastName,
+    userName,
     email,
     password,
   });
+  return response.data;
+};
+
+export const getUserProfile = async () => {
+  const response = await api.get("/auth/profile");
+  return response.data;
+};
+
+export const adminDashbord = async () => {
+  const response = await api.get("/admin/dashboard");
   return response.data;
 };
 

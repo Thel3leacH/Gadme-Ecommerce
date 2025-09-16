@@ -1,35 +1,42 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
 import { BsPersonFill } from "react-icons/bs";
 
-function AuthDialog() {
+export default function AuthDialog() {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => setOpen(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button variant="outline">
-          <BsPersonFill className="text-2xl " />
-        </button>
+        <Button variant="outline" size="icon" aria-label="Open auth dialog">
+          <BsPersonFill className="text-2xl" />
+        </Button>
       </DialogTrigger>
+
       <DialogContent>
         <Tabs defaultValue="login">
-          <TabsList>
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Sign up</TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
-            <LoginForm />
+            {/* ถ้า LoginForm รองรับ onSuccess ก็ส่งไปได้เหมือนกัน */}
+            <LoginForm onSuccess={handleClose} />
           </TabsContent>
 
           <TabsContent value="signup">
-            <SignupForm />
+            {/* ✅ ปิด dialog หลังสมัครสำเร็จ */}
+            <SignupForm onSuccess={handleClose} />
           </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
   );
 }
-
-export default AuthDialog;
