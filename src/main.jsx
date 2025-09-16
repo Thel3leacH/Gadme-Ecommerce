@@ -4,13 +4,11 @@ import "./index.css";
 import App from "./App.jsx";
 import { ProductsProvider } from "@/context/ProductsContext";
 import { CartProvider } from "@/context/CartContext";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/context/AuthContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ProductsProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </ProductsProvider>
+    <App />
   </StrictMode>
 );

@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-export function OrderConfirm1() {
+export function Confirm() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 
@@ -93,9 +93,7 @@ export function OrderConfirm1() {
           </p>
         </div>
 
-        <p className="text-xs">
-          Current Status: {order.order_status}
-        </p>
+        <p className="text-xs">Current Status: {order.order_status}</p>
       </div>
     </div>
   );
