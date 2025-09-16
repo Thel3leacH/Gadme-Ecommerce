@@ -12,6 +12,7 @@ import UserProfile from "./views/UserProfile";
 import ProductCheckout from "./views/ProductCheckout";
 import Cart from "./views/Cart";
 import AdminManageItem from "./components/admin/AdminManageItem";
+import { Confirm } from "./views/Confirm";
 
 import { AuthProvider } from "@/context/AuthContext";
 import { ProductsProvider } from "@/context/ProductsContext";
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: "product-checkout", element: <ProductCheckout /> }, // เลี่ยง path ชน "checkout"
       { path: "cart", element: <Cart /> },
       { path: "admin", element: <AdminManageItem /> },
+      { path: "confirm", element: <Confirm /> },
     ],
   },
 ]);
