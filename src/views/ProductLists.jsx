@@ -23,8 +23,8 @@ const ProductLists = () => {
     })();
   }, []);
 
-  if (loading) return <div className="p-6">กำลังโหลดสินค้า...</div>;
-  if (error) return <div className="p-6 text-red-600">โหลดข้อมูลไม่สำเร็จ</div>;
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (error) return <div className="p-6 text-red-600">Loading Error</div>;
 
   return (
     <div className="mx-auto max-w-7xl p-6">

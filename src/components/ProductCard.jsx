@@ -35,8 +35,8 @@ export default function ProductCard({ product }) {
           <div className="flex items-center justify-between">
             {product?.product_brand ? (
               <Badge
-                variant="secondary"
-                className="rounded-full px-2.5 py-1 text-[12px]"
+                variant="destructive"
+                className="text-white px-2.5 py-1 text-[12px]"
               >
                 {product.product_brand}
               </Badge>
@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
           variant="destructive"
           className="h-11 w-full rounded-full bg-teal-500 !text-white hover:bg-teal-300 focus-visible:!ring-2 focus-visible:ring-red-500"
         >
-          <ReceiptText className="mr-2 h-5 w-5" /> ดูรายละเอียดสินค้า
+          <ReceiptText className="mr-2 h-5 w-5" /> Buy Now
         </Button>
       </CardFooter>
     </Card>

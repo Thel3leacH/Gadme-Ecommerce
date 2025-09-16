@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import gadmeLogo from "/src/assets/gadme-logo.svg";
 import { LoginForm } from "../../../auth/LoginForm";
 import AuthDialog from "../../../auth/AuthDialog";
+import { AnimatedThemeToggler } from "../../../magicui/animated-theme-toggler";
 
 // Simple logo component for the navbar
 const Logo = () => {
@@ -102,9 +103,9 @@ export const Navbar04 = React.forwardRef(
         await toast.promise(
           logout(), // <- ใช้จาก AuthContext
           {
-            loading: "กำลังออกจากระบบ...",
-            success: "ออกจากระบบแล้ว",
-            error: "ออกจากระบบไม่สำเร็จ",
+            loading: "Waiting Process...",
+            success: "Logout 👋",
+            error: "Logout Failed ❌",
           }
         );
       } finally {
@@ -250,6 +251,7 @@ export const Navbar04 = React.forwardRef(
                     Gadme
                   </span>
                 </Link>
+                {/* <AnimatedThemeToggler /> */}
               </button>
               {/* Search form */}
               <div className="">
@@ -484,7 +486,7 @@ export function ProductSearch({ onSelectProduct }) {
               setOpen(false);
             }
           }}
-          placeholder="ค้นหาสินค้า / ยี่ห้อ"
+          placeholder="Search Products"
           className="peer h-8 ps-8 pe-8 min-md:w-96 bg-white"
           role="searchbox"
           aria-autocomplete="list"
