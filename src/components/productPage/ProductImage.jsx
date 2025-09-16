@@ -1,183 +1,131 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// ProductImage.jsx
+import { useEffect, useRef } from "react";
 
-// Slider Syncing
+// jQuery + slick
 import $ from "jquery";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel";
 
-const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+export function ProductImage({
+  products = [],
+  product = null,
+  className = "",
+}) {
+  // รองรับทั้ง products (array) และ product (เดี่ยว)
+  const list =
+    Array.isArray(products) && products.length
+      ? products
+      : product
+      ? [product]
+      : [];
 
-export function ProductImage() {
-  const { id } = useParams();
-  const [product, setProduct] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // รวม URL รูปจากทุก product (รองรับทั้ง images[] และ productImage / product_image / image*)
+  const gatherImagesFromProduct = (p) => {
+    if (!p) return [];
+    if (Array.isArray(p.images) && p.images.length)
+      return p.images.filter(Boolean);
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${Api}/${id}`);
-      setProduct(response.data);
-    } catch (error) {
-      alert("Failed");
-    }
-    setLoading(false);
+    // scan key ที่น่าจะเป็นรูป
+    const keys = Object.keys(p).filter((k) => {
+      const low = k.toLowerCase();
+      return (
+        low.startsWith("productimage") ||
+        low.startsWith("product_image") ||
+        low === "image" ||
+        low.startsWith("image")
+      );
+    });
+
+    // เรียงตามเลขท้ายคีย์ (ไม่มีเลข=0) เพื่อได้ลำดับถูก
+    keys.sort((a, b) => {
+      const ai = parseInt(a.match(/\d+/)?.[0] ?? "0", 10);
+      const bi = parseInt(b.match(/\d+/)?.[0] ?? "0", 10);
+      return ai - bi;
+    });
+
+    return keys.map((k) => p[k]).filter(Boolean);
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, [id]);
+  // รวมรูปจากทุกสินค้า + ตัดซ้ำ
+  const allImages = list.flatMap((p, idx) => {
+    const imgs = gatherImagesFromProduct(p);
+    const name = p?.productName ?? p?.product_name ?? `product-${idx + 1}`;
+    return imgs.map((src, i) => ({ src, alt: `${name} - ${i + 1}` }));
+  });
+  const seen = new Set();
+  const images = allImages.filter(({ src }) =>
+    seen.has(src) ? false : (seen.add(src), true)
+  );
 
-  // Slider Syncing
-  useEffect(() => {
-    if (product) {
-      if ($(".slider-for").hasClass("slick-initialized")) {
-        $(".slider-for").slick("unslick");
-      }
-      if ($(".slider-nav").hasClass("slick-initialized")) {
-        $(".slider-nav").slick("unslick");
-      }
+  // สร้าง id เฉพาะ instance เพื่อใช้ asNavFor แบบไม่ชนกัน
+  const uidRef = useRef(`slick-${Math.random().toString(36).slice(2, 9)}`);
+  const uid = uidRef.current;
 
-      $(".slider-for").slick({
+  // init / re-init slick เมื่อรายการรูปเปลี่ยน
+  useEffect(() => {
+    const $for = $(`#for-${uid}`);
+    const $nav = $(`#nav-${uid}`);
+
+    if ($for.hasClass("slick-initialized")) $for.slick("unslick");
+    if ($nav.hasClass("slick-initialized")) $nav.slick("unslick");
+
+    if (images.length > 0) {
+      $for.slick({
         slidesToShow: 1,
         slidesToScroll: 1,
         arrows: false,
         fade: true,
-        asNavFor: ".slider-nav",
+        asNavFor: `#nav-${uid}`,
       });
-
-      $(".slider-nav").slick({
-        slidesToShow: 3,
+      $nav.slick({
+        slidesToShow: Math.min(5, images.length),
         slidesToScroll: 1,
-        asNavFor: ".slider-for",
+        asNavFor: `#for-${uid}`,
         dots: true,
-        centerMode: true,
+        centerMode: images.length >= 3,
         focusOnSelect: true,
       });
     }
 
-    // cleanup เวลาคอมโพเนนต์ถูก unmount
     return () => {
-      if ($(".slider-for").hasClass("slick-initialized")) {
-        $(".slider-for").slick("unslick");
-      }
-      if ($(".slider-nav").hasClass("slick-initialized")) {
-        $(".slider-nav").slick("unslick");
-      }
+      if ($for.hasClass("slick-initialized")) $for.slick("unslick");
+      if ($nav.hasClass("slick-initialized")) $nav.slick("unslick");
     };
-  }, [product]);
+    // ใช้ join เพื่อให้ effect run เมื่อรายการรูปเปลี่ยนจริง ๆ
+  }, [uid, images.map((i) => i.src).join("|")]);
 
-  if (!product) {
-    return <div>Product not found.</div>;
-  }
+  if (!images.length) return <div>ไม่มีรูปภาพ</div>;
 
   return (
-    <div>
-      {loading ? <div className="text-center">Loading⌛...</div> : <div></div>}
-      {/* Section1-productImage */}
-      <div className="w-[30rem] flex flex-col justify-center items-center gap-2">
-        {/* slider-for */}
-        <div className="slider-for w-[25rem]">
-          <div>
+    <div
+      className={`w-[30rem] flex flex-col justify-center items-center gap-2 ${className}`}
+    >
+      {/* slider-for (ภาพใหญ่) */}
+      <div id={`for-${uid}`} className="slider-for w-[25rem]">
+        {images.map((img, i) => (
+          <div key={`for-${i}-${img.src}`}>
             <img
-              src={product.productImage}
-              alt={`${product.productName} Picture-1`}
-              className="rounded-xl"
+              src={img.src}
+              alt={img.alt}
+              className="rounded-xl w-full h-auto object-cover"
             />
           </div>
-          <div>
+        ))}
+      </div>
+
+      {/* slider-nav (ภาพย่อทั้งหมด) */}
+      <div id={`nav-${uid}`} className="slider-nav w-full cursor-pointer">
+        {images.map((img, i) => (
+          <div key={`nav-${i}-${img.src}`} className="w-full">
             <img
-              src={product.productImage2}
-              alt={`${product.productName} Picture-2`}
-              className="rounded-xl"
+              src={img.src}
+              alt={`${img.alt} thumb`}
+              className="block mx-auto w-[5.5rem] rounded-xl"
             />
           </div>
-          <div>
-            <img
-              src={product.productImage3}
-              alt={`${product.productName} Picture-3`}
-              className="rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage4}
-              alt={`${product.productName} Picture-4`}
-              className="rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage5}
-              alt={`${product.productName} Picture-5`}
-              className="rounded-xl"
-            />
-          </div>
-        </div>
-        {/* slider-nav */}
-        <div className="slider-nav w-[25rem] cursor-pointer">
-          <div>
-            <img
-              src={product.productImage}
-              alt={`${product.productName} Picture-1`}
-              className="w-[5.5rem] rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage2}
-              alt={`${product.productName} Picture-2`}
-              className="w-[5.5rem] rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage3}
-              alt={`${product.productName} Picture-3`}
-              className="w-[5.5rem] rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage4}
-              alt={`${product.productName} Picture-4`}
-              className="w-[5.5rem] rounded-xl"
-            />
-          </div>
-          <div>
-            <img
-              src={product.productImage5}
-              alt={`${product.productName} Picture-5`}
-              className="w-[5.5rem] rounded-xl"
-            />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 }
-
-// {/* <div>
-//             {productName.map((product) => (
-//                 <div key={product.id} className="w-[30rem] flex flex-col justify-center items-center gap-2"> {/* ถูกไหม ไม่่แน่ใจว่า ต้องเพิ่มไรอีกไหม ???????????? */}
-//                     {/* slider-for */}
-//                     <div className="slider-for w-[25rem]">
-//                         <div><img src={product.productImage} alt={`${product.productName} Picture-1`} className="rounded-xl" /></div>
-//                         <div><img src={product.productImage2} alt={`${product.productName} Picture-2`} className="rounded-xl" /></div>
-//                         <div><img src={product.productImage3} alt={`${product.productName} Picture-3`} className="rounded-xl" /></div>
-//                         <div><img src={product.productImage4} alt={`${product.productName} Picture-4`} className="rounded-xl" /></div>
-//                         <div><img src={product.productImage5} alt={`${product.productName} Picture-5`} className="rounded-xl" /></div>
-//                     </div>
-//                     {/* slider-nav */}
-//                     <div className="slider-nav w-[25rem] cursor-pointer">
-//                         <div><img src={product.productImage} alt={`${product.productName} Picture-1`} className="w-[5.5rem] rounded-xl" /></div>
-//                         <div><img src={product.productImage2} alt={`${product.productName} Picture-2`} className="w-[5.5rem] rounded-xl" /></div>
-//                         <div><img src={product.productImage3} alt={`${product.productName} Picture-3`} className="w-[5.5rem] rounded-xl" /></div>
-//                         <div><img src={product.productImage4} alt={`${product.productName} Picture-4`} className="w-[5.5rem] rounded-xl" /></div>
-//                         <div><img src={product.productImage5} alt={`${product.productName} Picture-5`} className="w-[5.5rem] rounded-xl" /></div>
-//                     </div>
-//                 </div>
-//             ))}
-//         </div> */}

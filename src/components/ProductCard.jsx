@@ -1,80 +1,79 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Card, CardContent, CardFooter } from "@/components/ui/card"; // ถ้าไม่มี alias @/ ให้เปลี่ยนเป็นทางRelative
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Heart, ShoppingCart, ReceiptText } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
-
-export function ProductCard() {
-  const [produceName, setProduceName] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [likes, setLikes] = useState({});
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(Api);
-      setProduceName(response.data);
-    } catch (error) {
-      alert("Failed"+error.massage);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const handleLike = (e, id) => {
-    e.preventDefault();
-    setLikes((prevLikes) => ({
-      ...prevLikes,
-      [id]: !prevLikes[id], // สลับสถานะ liked ของ id นั้น
-    }));
-  };
-
+// ✅ ชื่อคอมโพเนนต์ต้อง PascalCase และตรงกับที่ถูกเรียกใช้
+export default function ProductCard({ product }) {
   return (
-    <div>
-      {loading ? <div className="text-center">Loading⌛...</div> : <div></div>}
-      <div className="flex flex-wrap justify-center gap-12 w-[75rem] mx-auto">
-        {produceName.map((product) => (
-          <Link
-            key={product.id}
-            to={`/productlists/product/${product.id}`}
-            className="w-[15rem] h-[25rem] rounded-xl shadow-[5px_5px_10px_rgba(0,0,0,0.25)]"
-          >
-            <img
-              src={product.productImage}
-              alt="Product Image"
-              className="w-[15rem] h-[15rem] rounded-t-xl"
-            />
-            <div className="m-[0.5rem] p-2.5">
-              <h2 className="text-[1.15rem] font-bold">
-                {product.productName}
-              </h2>
-              <div className="mt-3 mb-3 flex justify-between items-center">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <span className="bg-[#DBF6F9] rounded-[0.5rem] p-1.5">
-                    <a href="">{product.productCategory}</a>
-                  </span>
-                </button>
-                <button onClick={(e) => handleLike(e, product.id)}>
-                  {likes[product.id] ? (
-                    <FaHeart className="text-[#9ACBD0] text-[1.5rem]" />
-                  ) : (
-                    <FaRegHeart className="text-[#9ACBD0] text-[1.5rem]" />
-                  )}
-                </button>
+    <Card className="group flex h-full flex-col overflow-hidden py-6 rounded-2xl border border-gray-200/70 bg-white shadow-sm transition-all hover:shadow-lg">
+      <Link
+        to={`/products/${encodeURIComponent(product._id)}`}
+        className="block"
+      >
+        {/* รูป */}
+        <div className="relative">
+          <img
+            src={
+              product?.product_image || "https://picsum.photos/800?grayscale"
+            }
+            alt={product?._id || "product"}
+            className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+          {/* overlay นุ่ม ๆ */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-black/0" />
+        </div>
+
+        {/* เนื้อหา */}
+        <CardContent className="flex flex-1 flex-col gap-3 px-4 py-0">
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-gray-900 py-5">
+            {product?._id || "ชื่อสินค้า"}
+          </h3>
+
+          <div className="flex items-center justify-between">
+            {product?.product_brand ? (
+              <Badge
+                variant="destructive"
+                className="text-white px-2.5 py-1 text-[12px]"
+              >
+                {product.product_brand}
+              </Badge>
+            ) : (
+              <span />
+            )}
+
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 rounded-full"
+              aria-label="เพิ่มรายการโปรด"
+            >
+              <Heart className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* ดันราคาลงด้านล่างของ content */}
+          <div className="mt-auto">
+            <div className="flex justify-center gap-2">
+              <div className="text-xl font-bold tracking-tight text-gray-900">
+                {" "}
+                ฿&nbsp;
+                {product?.minPrice || "888888888"}
               </div>
-              <h3 className="font-medium">Price {product.productPrice} $</h3>
             </div>
-          </Link>
-        ))}
-      </div>
-    </div>
+          </div>
+        </CardContent>
+      </Link>
+      <CardFooter className="p-4 pt-0">
+        <Button
+          variant="destructive"
+          className="h-11 w-full rounded-full bg-teal-500 !text-white hover:bg-teal-300 focus-visible:!ring-2 focus-visible:ring-red-500"
+        >
+          <ReceiptText className="mr-2 h-5 w-5" /> Buy Now
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

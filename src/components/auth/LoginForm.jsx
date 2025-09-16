@@ -41,10 +41,9 @@ export function LoginForm({ onSuccess }) {
           withCredentials: true,
         }),
         {
-          loading: "กำลังเข้าสู่ระบบ...",
-          success: "เข้าสู่ระบบสำเร็จ 🎉",
-          error: (err) =>
-            err?.response?.data?.message || "เข้าสู่ระบบไม่สำเร็จ",
+          loading: "Loading...",
+          success: "Login Successful 🎉",
+          error: (err) => err?.response?.data?.message || "Login Failed ❌",
         }
       );
 

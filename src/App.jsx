@@ -1,19 +1,17 @@
-// App.jsx
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./views/Home";
-import { ProductList } from "./views/ProductLists";
-import { ProductPage } from "./views/ProductPage";
+import ProductLists from "@/views/ProductLists";
+import ProductPage from "@/views/ProductPage";
 import About from "./views/About";
 import Checkout from "./views/Checkout";
 import Payment from "./views/Payment";
 import OrderConfirm from "./views/OrderConfirm";
 import UserProfile from "./views/UserProfile";
 import ProductCheckout from "./views/ProductCheckout";
-import Cart from "./views/Cart";
+import Cart from "@/views/Cart";
 import AdminManageItem from "./components/admin/AdminManageItem";
 import { Confirm } from "./views/Confirm";
-
 import { AuthProvider } from "@/context/AuthContext";
 import { ProductsProvider } from "@/context/ProductsContext";
 import { CartProvider } from "@/context/CartContext";
@@ -46,8 +44,8 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "about", element: <About /> },
       { path: "checkout", element: <Checkout /> },
-      { path: "productlists", element: <ProductList /> },
-      { path: "productlists/product/:id", element: <ProductPage /> },
+      { path: "products", element: <ProductLists /> },
+      { path: "products/:name", element: <ProductPage /> },
       { path: "payment", element: <Payment /> },
       { path: "orderconfirm", element: <OrderConfirm /> },
       { path: "userprofile", element: <UserProfile /> },
