@@ -1,14 +1,14 @@
 "use client";
 import * as React from "react";
 import { useEffect, useState, useRef, useId, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/CartContext";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -306,78 +306,158 @@ export const Navbar04 = React.forwardRef(
   }
 );
 
-function ProductSearch({ onSelectProduct }) {
+// --- utils ภายในไฟล์ ---
+const parsePrice = (x) => {
+  if (x == null) return 0;
+  if (typeof x === "number") return x;
+  if (typeof x === "string") {
+    const num = Number(x.replace(/[^\d.-]/g, "")); // "1,490" -> 1490
+    return Number.isFinite(num) ? num : 0;
+  }
+  return 0;
+};
+
+const toTHB = (n) =>
+  new Intl.NumberFormat("th-TH", { style: "currency", currency: "THB" }).format(
+    parsePrice(n)
+  );
+
+// เน้นคำค้นแบบง่าย
+const Highlight = ({ text = "", q = "" }) => {
+  if (!q) return <>{text}</>;
+  const i = text.toLowerCase().indexOf(q.toLowerCase());
+  if (i === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <mark className="bg-transparent underline decoration-2 underline-offset-2">
+        {text.slice(i, i + q.length)}
+      </mark>
+      {text.slice(i + q.length)}
+    </>
+  );
+};
+
+// แปลง product ให้เป็นรูปแบบเดียวกัน
+const toVM = (p) => {
+  const id = p?._id ?? p?.id ?? p?.product_id ?? "";
+  const rawPrice =
+    p?.product_price ?? p?.price ?? p?.minPrice ?? p?.product_minPrice ?? 0;
+
+  return {
+    id: String(id),
+    title: p?.product_name ?? p?.title ?? p?.name ?? "",
+    brand: p?.product_brand ?? p?.brand ?? "",
+    image:
+      p?.product_image ??
+      p?.image ??
+      (Array.isArray(p?.images) ? p.images[0] : ""),
+    price: parsePrice(rawPrice), // ✅ เก็บเป็นตัวเลขแน่นอน
+    _raw: p, // เก็บต้นฉบับไว้เผื่อใช้งานต่อ
+  };
+};
+
+export function ProductSearch({ onSelectProduct }) {
   const { products, loading, error } = useProducts();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // กรองผลลัพธ์ทันทีเมื่อพิมพ์ (ค้นหา title/brand แบบ case-insensitive)
+  // สร้าง view models ให้ฟิลด์ตรงกันทุกที่
+  const items = useMemo(() => (products ?? []).map(toVM), [products]);
+
+  // ค้นหา title/brand (case-insensitive)
   const results = useMemo(() => {
-    if (!q) return [];
-    const key = q.toLowerCase().trim();
-    return products
+    const key = q.trim().toLowerCase();
+    if (!key) return [];
+    return items
       .filter((p) =>
-        [p.title, p.brand].some((f) =>
-          f?.toString().toLowerCase().includes(key)
-        )
+        [p.id, p.brand].some((f) => f?.toLowerCase().includes(key))
       )
-      .slice(0, 8); // จำกัดจำนวนที่แสดง
-  }, [q, products]);
+      .slice(0, 8);
+  }, [q, items]);
 
+  // เปิด/รีเซ็ต index เมื่อมีข้อความค้นหา
   useEffect(() => {
     setOpen(!!q);
     setActiveIndex(0);
   }, [q]);
 
-  // คลิกนอกเพื่อปิด
+  // ถ้าจำนวนผลลัพธ์เปลี่ยน ให้ clamp index
   useEffect(() => {
-    const onClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    setActiveIndex((i) => Math.min(i, Math.max(results.length - 1, 0)));
+  }, [results]);
+
+  // ปิดเมื่อคลิกนอก (ใช้ capture phase ให้ปิด popup อย่างปลอดภัย)
+  useEffect(() => {
+    const onPointerDownCapture = (e) => {
+      const el = ref.current;
+      if (el && !el.contains(e.target)) setOpen(false);
     };
-    window.addEventListener("click", onClickOutside);
-    return () => window.removeEventListener("click", onClickOutside);
+    document.addEventListener("pointerdown", onPointerDownCapture, true);
+    return () =>
+      document.removeEventListener("pointerdown", onPointerDownCapture, true);
   }, []);
 
-  const select = (item) => {
-    if (!item) return;
-    onSelectProduct?.(item);
-    // นำทางไปหน้าสินค้า ถ้าคุณมี route เช่น /products/:id
-    try {
-      navigate(`/products/${item.id}`);
-    } catch {}
-    setQ("");
+  const select = (vm) => {
+    if (!vm) return;
+    onSelectProduct?.(vm._raw ?? vm);
+
+    // ปิด dropdown ก่อน แล้วค่อย navigate ในเฟรมถัดไป กัน NotFoundError
     setOpen(false);
+    setQ("");
+    requestAnimationFrame(() => {
+      const name = vm.id.trim();
+      if (!name) return; // กันค่าว่าง
+      const target = `/products/${encodeURIComponent(name)}`;
+      if (location.pathname !== target) {
+        navigate(target);
+        navigate(0);
+      }
+    });
   };
 
   return (
     <div className="relative" ref={ref}>
-      <div className="relative">
+      <div
+        className="relative"
+        role="combobox"
+        aria-expanded={open}
+        aria-controls="search-results"
+        aria-haspopup="listbox"
+      >
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onFocus={() => setOpen(!!q)}
           onKeyDown={(e) => {
+            if (!results.length) return;
             if (e.key === "ArrowDown") {
               e.preventDefault();
-              setActiveIndex((i) =>
-                Math.min(i + 1, Math.max(results.length - 1, 0))
-              );
+              setActiveIndex((i) => (i + 1) % results.length); // วนลง
             } else if (e.key === "ArrowUp") {
               e.preventDefault();
-              setActiveIndex((i) => Math.max(i - 1, 0));
+              setActiveIndex((i) => (i - 1 + results.length) % results.length); // วนขึ้น
             } else if (e.key === "Enter") {
-              const item = results[activeIndex];
-              if (item) select(item);
+              e.preventDefault();
+              select(results[activeIndex]);
             } else if (e.key === "Escape") {
               setOpen(false);
             }
           }}
-          placeholder="search"
-          className="peer h-8 ps-8 pe-2 min-md:w-96 bg-white"
+          placeholder="ค้นหาสินค้า / ยี่ห้อ"
+          className="peer h-8 ps-8 pe-8 min-md:w-96 bg-white"
+          role="searchbox"
+          aria-autocomplete="list"
+          aria-activedescendant={
+            open && results[activeIndex]
+              ? `opt-${results[activeIndex].id}`
+              : undefined
+          }
         />
         {q && (
           <button
@@ -407,10 +487,15 @@ function ProductSearch({ onSelectProduct }) {
           )}
 
           {!loading && !error && results.length > 0 && (
-            <ul role="listbox" className="max-h-80 overflow-auto">
+            <ul
+              id="search-results"
+              role="listbox"
+              className="max-h-80 overflow-auto"
+            >
               {results.map((p, i) => (
                 <li
                   key={p.id}
+                  id={`opt-${p.id}`}
                   role="option"
                   aria-selected={i === activeIndex}
                   onMouseDown={(e) => e.preventDefault()} // กัน blur ก่อนคลิก
@@ -425,20 +510,20 @@ function ProductSearch({ onSelectProduct }) {
                 >
                   <img
                     src={p.image}
-                    alt={p.title}
+                    alt={p.id || "product image"}
                     className="h-10 w-10 rounded-md object-cover"
                     loading="lazy"
                   />
                   <div className="min-w-0">
                     <div className="truncate font-medium">
-                      <Highlight text={p.title} q={q} />
+                      <Highlight text={p.id} q={q} />
                     </div>
                     <div className="truncate text-xs text-muted-foreground">
-                      <Highlight text={p.brand ?? ""} q={q} />
+                      <Highlight text={p.brand} q={q} />
                     </div>
                   </div>
                   <div className="ml-auto shrink-0 text-xs sm:text-sm font-medium">
-                    {formatTHB(p.price)}
+                    {toTHB(p.price)}
                   </div>
                 </li>
               ))}
@@ -449,28 +534,6 @@ function ProductSearch({ onSelectProduct }) {
     </div>
   );
 }
-
-function Highlight({ text, q }) {
-  if (!q || !text) return <>{text}</>;
-  const i = text.toLowerCase().indexOf(q.toLowerCase());
-  if (i === -1) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <mark className="rounded bg-yellow-200/70 px-0.5 dark:bg-yellow-300/20">
-        {text.slice(i, i + q.length)}
-      </mark>
-      {text.slice(i + q.length)}
-    </>
-  );
-}
-
-const formatTHB = (n) =>
-  new Intl.NumberFormat("th-TH", {
-    style: "currency",
-    currency: "THB",
-    minimumFractionDigits: 0,
-  }).format(n);
 
 Navbar04.displayName = "Navbar04";
 

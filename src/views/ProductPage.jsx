@@ -9,6 +9,7 @@ const API_URL = "http://localhost:3000";
 
 export default function ProductPage() {
   const { name } = useParams();
+  const decoded = decodeURIComponent(name || "");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,8 +19,9 @@ export default function ProductPage() {
     (async () => {
       try {
         setLoading(true);
+
         const res = await axios.get(
-          `${API_URL}/productdetail/${encodeURIComponent(name)}`
+          `${API_URL}/productdetail/${encodeURIComponent(decoded)}`
         );
         setProducts(res.data.products);
       } catch (e) {
@@ -31,7 +33,7 @@ export default function ProductPage() {
     return () => {
       cancel = true;
     };
-  }, [name]);
+  }, [decoded]);
 
   return (
     <div className="m-1 flex flex-col justify-center items-center gap-10 lg:m-15 lg:gap-15">
