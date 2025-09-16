@@ -163,13 +163,13 @@ export function ProductForm() {
             <button
               disabled={adding}
               aria-disabled={adding}
-              className={`py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] text-[#006A71] lg:w-[12rem]
+              className={`py-1.5 w-[15rem] rounded-[2rem] bg-[#FAAE2B] hover:bg-[#ffbf50] text-[#006A71] lg:w-[12rem]
     ${adding ? "opacity-60 pointer-events-none" : "cursor-pointer"}`}
               onClick={handleAddToCart}
             >
               Add to Cart
             </button>
-            <button className="py-1.5 w-[15rem] rounded-[2rem] bg-[#006A71] text-white cursor-pointer lg:w-[12rem]">
+            <button className="py-1.5 w-[15rem] rounded-[2rem] bg-teal-500 hover:bg-teal-300 text-white cursor-pointer lg:w-[12rem]">
               Buy Now
             </button>
           </div>

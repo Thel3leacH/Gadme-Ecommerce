@@ -89,7 +89,7 @@ export const Navbar04 = React.forwardRef(
     const [isMobile, setIsMobile] = useState(false);
     const containerRef = useRef(null);
     const searchId = useId();
-    const { totalQty } = useCart();
+    const { totalQty, totalItems } = useCart();
 
     useEffect(() => {
       const checkWidth = () => {
@@ -279,7 +279,7 @@ export const Navbar04 = React.forwardRef(
                       <span className="flex items-baseline gap-2">
                         {cartText}
                         <span className="text-primary-foreground text-xs">
-                          {totalQty}
+                          {totalItems}
                         </span>
                       </span>
                     </Link>

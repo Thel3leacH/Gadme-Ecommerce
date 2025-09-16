@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"; // ถ้าไม่มี alias @/ ให้เปลี่ยนเป็นทางRelative
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, ReceiptText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // ✅ ชื่อคอมโพเนนต์ต้อง PascalCase และตรงกับที่ถูกเรียกใช้
@@ -28,7 +28,7 @@ export default function ProductCard({ product }) {
 
         {/* เนื้อหา */}
         <CardContent className="flex flex-1 flex-col gap-3 px-4 py-0">
-          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-gray-900">
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-gray-900 py-5">
             {product?._id || "ชื่อสินค้า"}
           </h3>
 
@@ -36,7 +36,7 @@ export default function ProductCard({ product }) {
             {product?.product_brand ? (
               <Badge
                 variant="secondary"
-                className="rounded-full px-2.5 py-1 text-[14px]"
+                className="rounded-full px-2.5 py-1 text-[12px]"
               >
                 {product.product_brand}
               </Badge>
@@ -69,9 +69,9 @@ export default function ProductCard({ product }) {
       <CardFooter className="p-4 pt-0">
         <Button
           variant="destructive"
-          className="h-11 w-full rounded-full bg-red-600 !text-white hover:bg-red-700 focus-visible:!ring-2 focus-visible:ring-red-500"
+          className="h-11 w-full rounded-full bg-teal-500 !text-white hover:bg-teal-300 focus-visible:!ring-2 focus-visible:ring-red-500"
         >
-          <ShoppingCart className="mr-2 h-5 w-5" /> เพิ่มลงตะกร้า
+          <ReceiptText className="mr-2 h-5 w-5" /> ดูรายละเอียดสินค้า
         </Button>
       </CardFooter>
     </Card>
