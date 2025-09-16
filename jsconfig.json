@@ -1,14 +1,8 @@
 {
-  // "files": [],
+  "files": [],
 
-  // "references": [
-  //   {
-  //     "path": "./jsconfig.app.json"
-  //   },
-  //   {
-  //     "path": "./jsconfig.node.json"
-  //   }
-  // ],
+  "references": [],
+
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

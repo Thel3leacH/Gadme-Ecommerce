@@ -4,38 +4,38 @@ import { TextAnimate } from "@/components/magicui/text-animate";
 
 const reviews = [
   {
-    name: "Jack",
+    name: "Test",
     username: "@jack",
     body: "I've never seen anything like this before. It's amazing. I love it.",
     img: "https://avatar.vercel.sh/jack",
   },
   {
-    name: "Jill",
-    username: "@jill",
+    name: "Boss",
+    username: "@boss",
     body: "I don't know what to say. I'm speechless. This is amazing.",
     img: "https://avatar.vercel.sh/jill",
   },
   {
-    name: "John",
-    username: "@john",
+    name: "Boom",
+    username: "@boom",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "https://avatar.vercel.sh/john",
   },
   {
-    name: "Jane",
-    username: "@jane",
+    name: "Golf",
+    username: "@golf",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "https://avatar.vercel.sh/jane",
   },
   {
-    name: "Jenny",
-    username: "@jenny",
+    name: "Eve",
+    username: "@eve",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "https://avatar.vercel.sh/jenny",
   },
   {
-    name: "James",
-    username: "@james",
+    name: "Gam",
+    username: "@gam",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "https://avatar.vercel.sh/james",
   },
@@ -71,14 +71,14 @@ const ReviewCard = ({ img, name, username, body }) => {
 
 export function Review() {
   return (
-    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden py-14">
-      <TextAnimate
+    <div className="mb-20 relative flex w-full flex-col items-center justify-center overflow-x-hidden overflow-y-hidden">
+      {/* <TextAnimate
         animation="blurInUp"
         by="text"
         className="text-4xl font-poppins font-bold text-center"
       >
         Reviews
-      </TextAnimate>
+      </TextAnimate> */}
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />

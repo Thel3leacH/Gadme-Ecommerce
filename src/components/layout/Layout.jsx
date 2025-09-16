@@ -1,12 +1,14 @@
-import Navbar from "../components/landingpage/Navbar";
-import Footer from "../components/landingpage/Footer";
+import Navbar from "./Navbar.jsx";
+import Footer from "./Footer.jsx";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div className="">
+    <div className="font-poppins">
+      {/* <header className="fixed w-full"> */}
       <Navbar />
-      <main className="overflow-auto p-4">
+      {/* </header> */}
+      <main className="md:container mx-auto">
         <Outlet />
       </main>
       <footer className="md:bg-chart-2 text-gray-400 text-sm">

@@ -8,6 +8,8 @@ import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-hot-toast";
 
 import {
   NavigationMenu,
@@ -22,7 +24,8 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import gadmeLogo from "/src/assets/gadme-logo.svg";
-import { LoginForm } from "../../../LoginForm";
+import { LoginForm } from "../../../auth/LoginForm";
+import AuthDialog from "../../../auth/AuthDialog";
 
 // Simple logo component for the navbar
 const Logo = () => {
@@ -90,6 +93,24 @@ export const Navbar04 = React.forwardRef(
     const containerRef = useRef(null);
     const searchId = useId();
     const { totalQty, totalItems } = useCart();
+    const { user, logout, loading } = useAuth();
+    const [busy, setBusy] = useState(false);
+
+    const handleLogout = async () => {
+      setBusy(true);
+      try {
+        await toast.promise(
+          logout(), // <- ใช้จาก AuthContext
+          {
+            loading: "กำลังออกจากระบบ...",
+            success: "ออกจากระบบแล้ว",
+            error: "ออกจากระบบไม่สำเร็จ",
+          }
+        );
+      } finally {
+        setBusy(false);
+      }
+    };
 
     useEffect(() => {
       const checkWidth = () => {
@@ -182,16 +203,18 @@ export const Navbar04 = React.forwardRef(
                         />
                       </NavigationMenuItem>
                       <NavigationMenuItem className="w-full">
-                        {/* <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (onSignInClick) onSignInClick();
-                          }}
-                          className="flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer no-underline"
-                        >
-                          {signInText}
-                        </button> */}
-                        <LoginForm />
+                        {loading ? null : user ? (
+                          <Button
+                            size="sm"
+                            className="mt-0.5 w-full"
+                            onClick={handleLogout}
+                            disabled={busy}
+                          >
+                            Logout
+                          </Button>
+                        ) : (
+                          <AuthDialog />
+                        )}
                       </NavigationMenuItem>
                       <NavigationMenuItem className="w-full">
                         <Button
@@ -295,7 +318,19 @@ export const Navbar04 = React.forwardRef(
                   >
                     {signInText}
                   </Button> */}
-                  <LoginForm />
+                  {/* <LoginForm /> */}
+                  {loading ? null : user ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      disabled={busy}
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <AuthDialog />
+                  )}
                 </div>
               )}
             </div>
