@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   const refresh = useCallback(async () => {
     try {
-      const { data, status } = await api.get("/auth/profile");
+      const { data, status } = await api.get("api/auth/profile");
 
       // ✅ ยอมรับเฉพาะ { user: {...} } และไม่ error
       const u = data?.user;
