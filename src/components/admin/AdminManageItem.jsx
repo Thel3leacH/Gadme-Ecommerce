@@ -19,8 +19,86 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 
+/* ----------------------- helpers: mapping & normalize ---------------------- */
+
+// แปลงข้อมูลจากฟอร์ม → payload ที่ BE ต้องการ
+const normalizePayload = (form) => {
+    const toArray = (v) => {
+        if (Array.isArray(v)) return v;
+        if (typeof v === "string") {
+            return v
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
+        }
+        return [];
+    };
+
+    return {
+        product_name: form.productname?.trim(),
+        product_brand: form.brand?.trim(),
+        product_category: form.category?.trim(),
+        product_description: form.description?.trim() || "",
+        product_tag: toArray(form.tags), // "a, b" -> ["a","b"]
+
+        // ส่ง variances เป็น key ที่ BE ใช้
+        variances: (form.variances || []).map((v) => ({
+            product_color: v.color?.trim() || "",
+            product_stock: Number(v.stock) || 0,
+            product_price: Number(v.price) || 0,
+            product_image: Array.isArray(v.image)
+                ? v.image
+                : v.image
+                    ? String(v.image)
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter(Boolean)
+                    : [],
+        })),
+    };
+};
+
+// แปลงข้อมูลจาก BE → แบบฟอร์มฝั่ง FE เพื่อใช้ตอน Edit
+const toFormModel = (p) => {
+    const tagsArray = Array.isArray(p.product_tag)
+        ? p.product_tag
+        : p.product_tag
+            ? [p.product_tag]
+            : [];
+
+    const variances = Array.isArray(p.variances) && p.variances.length > 0
+        ? p.variances.map((v) => ({
+            color: v.product_color || "",
+            stock: v.product_stock ?? 0,
+            price: v.product_price ?? 0,
+            // แสดงเป็น string ให้กรอกง่าย ถ้ามีหลายรูปใช้คอมมา
+            image: Array.isArray(v.product_image)
+                ? v.product_image.join(", ")
+                : v.product_image || "",
+        }))
+        : [{ color: "", image: "", stock: 0, price: 0 }];
+
+    return {
+        // ชุดชื่อ field ของฟอร์มฝั่ง FE
+        category: p.product_category || "",
+        productname: p.product_name || "",
+        description: p.product_description || "",
+        brand: p.product_brand || "",
+        modelname: p.modelname || "",
+        warrantyinfo: p.warrantyinfo || "",
+        relatedproduct: p.relatedproduct || [],
+        // เก็บทั้งสองแบบ เพื่อไม่ต้องแก้ UI เดิมในส่วน return (มี input name="features")
+        tags: tagsArray.join(", "),
+        features: tagsArray.join(", "),
+        variances,
+    };
+};
+
 function AdminManageProduct() {
+    // ข้อมูลในตาราง
     const [products, setProducts] = useState([]);
+
+    // แบบฟอร์มสร้างสินค้าใหม่
     const [productForm, setProductForm] = useState({
         category: "",
         productname: "",
@@ -29,49 +107,67 @@ function AdminManageProduct() {
         modelname: "",
         warrantyinfo: "",
         relatedproduct: [],
-        tags: [],
-        variances: [{ color: "", image: [], stock: 0, price: 0 }],
+        tags: "", // เก็บเป็น string ใน input แล้วค่อยแปลงเป็น array ตอนส่ง
+        variances: [{ color: "", image: "", stock: 0, price: 0 }],
     });
 
+    // โหมดแก้ไข
     const [editProductId, setEditProductId] = useState(null);
     const [editProductForm, setEditProductForm] = useState(productForm);
+
+    /* ---------------------------------- API --------------------------------- */
 
     const fetchProducts = async () => {
         try {
             const { products } = await getAllProducts();
-            setProducts(products);
+            setProducts(products || []);
         } catch (err) {
             console.error("Failed to fetch products", err);
         }
     };
 
-    // --- Handlers ---
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    /* -------------------------------- Handlers ------------------------------- */
+
+    // ฟอร์มสร้างใหม่ – ช่องปกติ
     const handleProductChange = (e) => {
-        setProductForm({ ...productForm, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setProductForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // ฟอร์มสร้างใหม่ – เปลี่ยนค่าใน variances แต่ละแถว
     const handleVarianceChange = (index, e) => {
         const { name, value } = e.target;
-        const newVariances = [...productForm.variances];
-        newVariances[index][name] = value;
-        setProductForm({ ...productForm, variances: newVariances });
-    };
-
-    const handleAddVariance = () => {
-        setProductForm({
-            ...productForm,
-            variances: [
-                ...productForm.variances,
-                { color: "", image: [], stock: 0, price: 0 },
-            ],
+        setProductForm((prev) => {
+            const next = structuredClone(prev);
+            next.variances[index][name] = value;
+            return next;
         });
     };
 
+    // เพิ่มแถว variance
+    const handleAddVariance = () => {
+        setProductForm((prev) => ({
+            ...prev,
+            variances: [
+                ...prev.variances,
+                { color: "", image: "", stock: 0, price: 0 },
+            ],
+        }));
+    };
+
+    // submit สร้างใหม่
     const handleProductSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createProduct(productForm);
+            const payload = normalizePayload(productForm);
+            console.log("POST /admin/products payload:", payload);
+            await createProduct(payload);
             await fetchProducts();
+            // reset ฟอร์ม
             setProductForm({
                 category: "",
                 productname: "",
@@ -80,49 +176,63 @@ function AdminManageProduct() {
                 modelname: "",
                 warrantyinfo: "",
                 relatedproduct: [],
-                features: [],
-                variances: [{ color: "", image: [], stock: 0, price: 0 }],
+                tags: "",
+                variances: [{ color: "", image: "", stock: 0, price: 0 }],
             });
         } catch (error) {
-            console.error("❌ Error creating product:", error);
+            console.error(
+                "❌ Error creating product:",
+                error?.response?.data || error
+            );
+            alert(error?.response?.data?.message || "Create product failed");
         }
     };
 
+    // ลบ
     const handleProductDelete = async (id) => {
         if (!window.confirm("Delete this product?")) return;
-        await deleteProduct(id);
-        await fetchProducts();
+        try {
+            await deleteProduct(id);
+            await fetchProducts();
+        } catch (e) {
+            console.error("❌ Delete failed:", e?.response?.data || e);
+        }
     };
 
+    // เข้าโหมดแก้ไข
     const handleProductEdit = (product) => {
-        setEditProductId(product._id); // NOTE: ใช้ `_id` แทน `id` สำหรับ MongoDB
-        setEditProductForm(product);
+        setEditProductId(product._id); // ใช้ _id ของ MongoDB
+        setEditProductForm(toFormModel(product));
     };
 
+    // บันทึกแก้ไข
     const handleProductEditSave = async (id) => {
         try {
-            await updateProduct(id, editProductForm);
+            const payload = normalizePayload(editProductForm);
+            await updateProduct(id, payload);
             await fetchProducts();
             setEditProductId(null);
         } catch (error) {
-            console.error("❌ Error updating product:", error);
+            console.error("❌ Error updating product:", error?.response?.data || error);
+            alert(error?.response?.data?.message || "Update product failed");
         }
     };
 
     const handleProductEditCancel = () => setEditProductId(null);
 
+    // ฟอร์มแก้ไข – ช่องปกติ
     const handleProductEditChange = (e) => {
-        setEditProductForm({
-            ...editProductForm,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        // รองรับเคสเดิมที่ใน UI ใช้ name="features" (เก็บเป็น string)
+        if (name === "features") {
+            setEditProductForm((prev) => ({ ...prev, features: value, tags: value }));
+        } else {
+            setEditProductForm((prev) => ({ ...prev, [name]: value }));
+        }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    // 🔻 ส่วน return ด้านล่างนี้ ใช้ของเดิมจากกอล์ฟ 100% ตามคำขอ
+    /* --------------------------------- UI ----------------------------------- */
+    // 🔻 คืน UI “เหมือนของเดิม” (ตั้งแต่ return ลงมา)
     return (
         <div className="flex flex-col items-center p-6 space-y-6">
             {/* Form */}
@@ -204,7 +314,11 @@ function AdminManageProduct() {
                             <Label>Tags</Label>
                             <Input
                                 name="tags"
-                                value={productForm.tags}
+                                value={
+                                    Array.isArray(productForm.tags)
+                                        ? productForm.tags.join(", ")
+                                        : productForm.tags || ""
+                                }
                                 onChange={handleProductChange}
                                 placeholder="Tags"
                             />
@@ -241,17 +355,13 @@ function AdminManageProduct() {
                                     <Label>Product pic</Label>
                                     <Input
                                         name="image"
-                                        value={v.image}
+                                        value={Array.isArray(v.image) ? v.image.join(", ") : v.image}
                                         onChange={(e) => handleVarianceChange(i, e)}
                                         placeholder="Image URL"
                                     />
                                 </div>
                             ))}
-                            <Button
-                                type="button"
-                                onClick={handleAddVariance}
-                                variant="outline"
-                            >
+                            <Button type="button" onClick={handleAddVariance} variant="outline">
                                 + Add Variance
                             </Button>
                         </div>
@@ -277,17 +387,17 @@ function AdminManageProduct() {
                         <TableBody>
                             {products && products.length > 0 ? (
                                 products.map((product) => (
-                                    <TableRow key={product.id}>
-                                        {editProductId === product.id ? (
+                                    <TableRow key={product._id}>
+                                        {editProductId === product._id ? (
                                             <>
                                                 <TableCell>
                                                     <select
                                                         value={editProductForm.category}
                                                         onChange={(e) =>
-                                                            setEditProductForm({
-                                                                ...productForm,
+                                                            setEditProductForm((prev) => ({
+                                                                ...prev,
                                                                 category: e.target.value,
-                                                            })
+                                                            }))
                                                         }
                                                         name="category"
                                                     >
@@ -309,41 +419,43 @@ function AdminManageProduct() {
                                                 <TableCell>
                                                     <Input
                                                         name="features"
-                                                        value={editProductForm.features}
+                                                        value={editProductForm.features || ""}
                                                         onChange={handleProductEditChange}
                                                     />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
-                                                        value={editProductForm.variances[0]?.color || ""}
+                                                        value={editProductForm.variances?.[0]?.color || ""}
                                                         onChange={(e) => {
-                                                            const newVar = [...editProductForm.variances];
+                                                            const newVar = [...(editProductForm.variances || [{ color: "", stock: 0, price: 0, image: "" }])];
+                                                            if (!newVar[0]) newVar[0] = { color: "", stock: 0, price: 0, image: "" };
                                                             newVar[0].color = e.target.value;
-                                                            setEditProductForm({
-                                                                ...editProductForm,
+                                                            setEditProductForm((prev) => ({
+                                                                ...prev,
                                                                 variances: newVar,
-                                                            });
+                                                            }));
                                                         }}
                                                     />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
                                                         type="number"
-                                                        value={editProductForm.variances[0]?.stock || 0}
+                                                        value={editProductForm.variances?.[0]?.stock ?? 0}
                                                         onChange={(e) => {
-                                                            const newVar = [...editProductForm.variances];
+                                                            const newVar = [...(editProductForm.variances || [{ color: "", stock: 0, price: 0, image: "" }])];
+                                                            if (!newVar[0]) newVar[0] = { color: "", stock: 0, price: 0, image: "" };
                                                             newVar[0].stock = e.target.value;
-                                                            setEditProductForm({
-                                                                ...editProductForm,
+                                                            setEditProductForm((prev) => ({
+                                                                ...prev,
                                                                 variances: newVar,
-                                                            });
+                                                            }));
                                                         }}
                                                     />
                                                 </TableCell>
                                                 <TableCell className="space-x-2">
                                                     <Button
                                                         size="sm"
-                                                        onClick={() => handleProductEditSave(product.id)}
+                                                        onClick={() => handleProductEditSave(product._id)}
                                                     >
                                                         Save
                                                     </Button>
@@ -358,17 +470,17 @@ function AdminManageProduct() {
                                             </>
                                         ) : (
                                             <>
-                                                <TableCell>{product.productname}</TableCell>
+                                                <TableCell>{product.product_name}</TableCell>
                                                 <TableCell>
-                                                    {Array.isArray(product.features)
-                                                        ? product.features.join(", ")
-                                                        : product.features}
+                                                    {Array.isArray(product.product_tag)
+                                                        ? product.product_tag.join(", ")
+                                                        : product.product_tag}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {product.variances?.[0]?.color || "-"}
+                                                    {product.variances?.[0]?.product_color || "-"}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {product.variances?.[0]?.stock || 0}
+                                                    {product.variances?.[0]?.product_stock ?? 0}
                                                 </TableCell>
                                                 <TableCell className="space-x-2">
                                                     <Button
@@ -380,7 +492,7 @@ function AdminManageProduct() {
                                                     <Button
                                                         size="sm"
                                                         variant="destructive"
-                                                        onClick={() => handleProductDelete(product.id)}
+                                                        onClick={() => handleProductDelete(product._id)}
                                                     >
                                                         Delete
                                                     </Button>
