@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 
 const Footer = () => {
   return (
-    <div className="bg-chart-2 md:bg-gradient-to-r from-chart-3 to-chart-2 text-secondary p-6 flex justify-around gap-16 shadow-lg">
+    <div className="bg-chart-2 md:bg-gradient-to-r from-chart-3 to-chart-2 text-secondary p-6 flex justify-around gap-16 shadow-lg px-50">
       <div className="mx-2 my-2 flex flex-col justify-between gap-2">
         <img src="/Gadme.png" alt="gadme-logo" width="30px" />
         <h1>GadMe</h1>

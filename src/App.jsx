@@ -24,7 +24,48 @@ function RootProviders() {
       <ProductsProvider>
         <CartProvider>
           <Layout />
-          <Toaster position="top-center" />
+          <Toaster
+            position="bottom-right"
+            reverseOrder={false}
+            gutter={10}
+            containerStyle={{ top: 18, zIndex: 99999 }} // ลอยเหนือ UI
+            toastOptions={{
+              duration: 3500,
+              // ทำให้ “ใหญ่ขึ้น” + สวยขึ้น ด้วยทั้ง style และ className (Tailwind)
+              style: {
+                padding: "14px 16px",
+                fontSize: "16px",
+                lineHeight: 1.4,
+                borderRadius: "14px",
+              },
+              className:
+                // พื้นหลังโปร่งนิด ๆ + เบลอ + ขอบสวย ๆ ที่เข้ากับ Light/Dark
+                "max-w-[90vw] md:max-w-md bg-white/90 text-gray-800 border border-gray-200 shadow-xl backdrop-blur-md " +
+                "dark:bg-neutral-900/80 dark:text-neutral-100 dark:border-neutral-800",
+              // ปรับโทนแยกตามชนิด
+              success: {
+                duration: 2200,
+                className:
+                  "border-emerald-300/70 dark:border-emerald-700/70 " +
+                  "bg-emerald-50/80 dark:bg-emerald-900/40",
+                iconTheme: { primary: "#10b981", secondary: "white" }, // Emerald
+              },
+              error: {
+                duration: 4000,
+                className:
+                  "border-rose-300/70 dark:border-rose-700/70 " +
+                  "bg-rose-50/80 dark:bg-rose-900/40",
+                iconTheme: { primary: "#ef4444", secondary: "white" }, // Red
+              },
+              loading: {
+                duration: 8000,
+                className:
+                  "border-sky-300/70 dark:border-sky-700/70 " +
+                  "bg-sky-50/80 dark:bg-sky-900/40",
+                iconTheme: { primary: "#0ea5e9", secondary: "white" }, // Sky
+              },
+            }}
+          />
         </CartProvider>
       </ProductsProvider>
     </AuthProvider>

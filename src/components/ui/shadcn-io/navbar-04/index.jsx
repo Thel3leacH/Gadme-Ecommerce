@@ -484,7 +484,7 @@ export function ProductSearch({ onSelectProduct }) {
               setOpen(false);
             }
           }}
-          placeholder="ค้นหาสินค้า / ยี่ห้อ"
+          placeholder="Search products or brands..."
           className="peer h-8 ps-8 pe-8 min-md:w-96 bg-white"
           role="searchbox"
           aria-autocomplete="list"

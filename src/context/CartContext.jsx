@@ -2,16 +2,22 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
 
 const CartContext = createContext(null);
 const API_URL = import.meta?.env?.VITE_API_URL || "http://localhost:3000";
 
 export function CartProvider({ children, apiBase = API_URL }) {
+  const { user, loading: authLoading } = useAuth();
   // รวม “ชิ้น”
   const [totalQty, setTotalQty] = useState(0);
   // รวม “รายการ”
   const [totalItems, setTotalItems] = useState(0);
   const [adding, setAdding] = useState(false);
+
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+  }, []);
 
   // per-item lock กันกดรัว
   const busyRef = useRef(new Set());
@@ -58,16 +64,31 @@ export function CartProvider({ children, apiBase = API_URL }) {
   };
   const refreshCartMeta = fetchCartMeta;
 
-  // init
   useEffect(() => {
-    (async () => {
-      try {
-        await fetchCartMeta();
-      } catch (e) {
-        console.log("init cart meta failed:", e.response?.data || e.message);
-      }
-    })();
-  }, [apiBase]);
+    if (authLoading) return;
+    if (user?._id) {
+      fetchCartMeta().catch((e) =>
+        console.log("cart meta on login failed:", e.response?.data || e.message)
+      );
+    } else {
+      // logout/anonymous → รีเซ็ต badge
+      setTotalQty(0);
+      setTotalItems(0);
+    }
+  }, [authLoading, user?._id, apiBase]);
+
+  // ออปชัน: รีเฟรชเมื่อแท็บโฟกัส/กลับมา
+  useEffect(() => {
+    const onFocus = () => {
+      if (!authLoading && user?._id) fetchCartMeta().catch(() => {});
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [authLoading, user?._id, apiBase]);
 
   // ===== Actions =====
 
@@ -87,8 +108,10 @@ export function CartProvider({ children, apiBase = API_URL }) {
       // ถ้า response ไม่มี meta ครบ → fetch แค่ครั้งเดียว
       if (!syncMeta(res.data)) await fetchCartMeta();
 
-      const name = payload?.product_name ?? "สินค้า";
-      toast.success(`เพิ่ม ${name} x${inc} ลงตะกร้าแล้ว 🛒`, { id: tId });
+      const name = payload?.product_name ?? "Product";
+      toast.success(`Added ${name} x ${inc} item to your cart. 🛒`, {
+        id: tId,
+      });
       return res.data;
     } catch (e) {
       setTotalQty((c) => Math.max(0, c - inc)); // rollback
@@ -96,7 +119,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
         e.response?.data?.message ||
         e.response?.data?.code ||
         e.message ||
-        "เพิ่มลงตะกร้าไม่สำเร็จ";
+        "Add to cart failed";
       toast.error(msg, { id: tId });
       throw e;
     } finally {
@@ -114,7 +137,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
         typeof currentQty === "number" ? next - Number(currentQty) : 0;
 
       const tId = toast.loading(
-        delta > 0 ? "กำลังเพิ่มจำนวน..." : "กำลังลดจำนวน..."
+        delta > 0 ? "Increasing quantity…" : "Decreasing quantity…"
       );
       if (delta) setTotalQty((c) => Math.max(0, c + delta)); // optimistic
 
@@ -127,12 +150,14 @@ export function CartProvider({ children, apiBase = API_URL }) {
 
         if (!syncMeta(res.data)) await fetchCartMeta();
 
-        toast.success("อัปเดตจำนวนแล้ว", { id: tId });
+        toast.success("Quantity updated.", { id: tId });
         return res.data;
       } catch (e) {
         if (delta) setTotalQty((c) => Math.max(0, c - delta)); // rollback
         const msg =
-          e.response?.data?.message || e.message || "อัปเดตจำนวนไม่สำเร็จ";
+          e.response?.data?.message ||
+          e.message ||
+          "Failed to update quantity.";
         toast.error(msg, { id: tId });
         throw e;
       }
@@ -142,7 +167,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
   const incQty = async (itemId, step = 1) =>
     withItemLock(itemId, async () => {
       const n = Math.max(1, Number(step) || 1);
-      const tId = toast.loading("กำลังเพิ่มจำนวน...");
+      const tId = toast.loading("Increasing quantity…");
       setTotalQty((c) => c + n); // optimistic
 
       try {
@@ -154,12 +179,14 @@ export function CartProvider({ children, apiBase = API_URL }) {
 
         if (!syncMeta(res.data)) await fetchCartMeta();
 
-        toast.success("เพิ่มจำนวนแล้ว", { id: tId });
+        toast.success("Quantity increased.", { id: tId });
         return res.data;
       } catch (e) {
         setTotalQty((c) => Math.max(0, c - n)); // rollback
         const msg =
-          e.response?.data?.message || e.message || "เพิ่มจำนวนไม่สำเร็จ";
+          e.response?.data?.message ||
+          e.message ||
+          "Failed to increase quantity.";
         toast.error(msg, { id: tId });
         throw e;
       }
@@ -169,7 +196,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
   const decQty = async (itemId, step = 1) =>
     withItemLock(itemId, async () => {
       const n = Math.max(1, Number(step) || 1);
-      const tId = toast.loading("กำลังลดจำนวน...");
+      const tId = toast.loading("Decreasing quantity…");
       setTotalQty((c) => Math.max(0, c - n)); // optimistic
 
       try {
@@ -181,12 +208,14 @@ export function CartProvider({ children, apiBase = API_URL }) {
 
         if (!syncMeta(res.data)) await fetchCartMeta();
 
-        toast.success("ลดจำนวนแล้ว", { id: tId });
+        toast.success("Quantity decreased.", { id: tId });
         return res.data;
       } catch (e) {
         setTotalQty((c) => c + n); // rollback
         const msg =
-          e.response?.data?.message || e.message || "ลดจำนวนไม่สำเร็จ";
+          e.response?.data?.message ||
+          e.message ||
+          "Failed to decrease quantity.";
         toast.error(msg, { id: tId });
         throw e;
       }
@@ -195,7 +224,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
   // ลบรายการ
   const removeItem = async (itemId, { currentQty } = {}) =>
     withItemLock(itemId, async () => {
-      const tId = toast.loading("กำลังลบรายการ...");
+      const tId = toast.loading("Removing item...");
       setTotalItems((c) => Math.max(0, c - 1)); // optimistic: บรรทัด -1 แน่นอน
       if (typeof currentQty === "number") {
         setTotalQty((c) => Math.max(0, c - Number(currentQty)));
@@ -208,12 +237,12 @@ export function CartProvider({ children, apiBase = API_URL }) {
 
         if (!syncMeta(res.data)) await fetchCartMeta();
 
-        toast.success("ลบรายการแล้ว", { id: tId });
+        toast.success("Item removed.", { id: tId });
         return res.data;
       } catch (e) {
         await fetchCartMeta(); // sync กลับ
         const msg =
-          e.response?.data?.message || e.message || "ลบรายการไม่สำเร็จ";
+          e.response?.data?.message || e.message || "Failed to remove item.";
         toast.error(msg, { id: tId });
         throw e;
       }

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
 // Change this to match your backend
 const API_URL = "http://localhost:3000/"; // keep trailing slash
@@ -12,7 +13,7 @@ export default function CartList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiSubtotal, setApiSubtotal] = useState(null);
-  const { totalQty, setQty, removeItem: removeItemCtx } = useCart();
+  const { totalQty, totalItems, setQty, removeItem: removeItemCtx } = useCart();
   const [deleteBusy, setDeleteBusy] = useState(false); // ล็อกปุ่มลบทั้งหมด
   const [activeRemovingId, setActiveRemovingId] = useState(null); // ไอเท็มที่กำลังลบอยู่
   const [going, setGoing] = useState(false);
@@ -108,14 +109,16 @@ export default function CartList() {
       }, 600);
     }
   };
-
+  const count = totalItems ?? carts?.length ?? 0;
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
-      <h1 className="mb-5 text-2xl font-bold">
-        ตะกร้าของฉัน
-        {totalQty ?? carts.length
-          ? ` (${totalQty ?? carts.length} รายการ)`
-          : ""}
+      <h1 className="mb-5 text-2xl font-bold flex items-center gap-2">
+        🛒 My Cart
+        {count > 0 && (
+          <span className="rounded-full border px-2 py-0.5 text-sm">
+            {count.toLocaleString("en-US")} {count === 1 ? "item" : "items"}
+          </span>
+        )}
       </h1>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -207,13 +210,11 @@ export default function CartList() {
                         disabled={deleteBusy}
                         aria-disabled={deleteBusy}
                         onClick={() => removeItem(item._id, item.product_qty)}
-                        className={`ms-auto rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50 ${
-                          deleteBusy ? "opacity-60 pointer-events-none" : ""
-                        }`}
+                        className={`ms-auto inline-flex items-center justify-center rounded-full p-2 transition
+    ${deleteBusy ? "opacity-60 pointer-events-none" : "hover:bg-red-50"}
+    text-red-600 hover:text-red-700`}
                       >
-                        {deleteBusy && activeRemovingId === item._id
-                          ? "กำลังลบ..."
-                          : "ลบรายการ"}
+                        <Trash2 className="h-5 w-5" />
                       </button>
                     </div>
                   </div>
@@ -227,11 +228,11 @@ export default function CartList() {
         {carts.length > 0 && (
           <aside className="lg:col-span-1">
             <div className="rounded-xl border bg-white p-4 shadow-sm lg:sticky lg:top-24">
-              <h2 className="mb-3 text-lg font-semibold">สรุปคำสั่งซื้อ</h2>
+              <h2 className="mb-3 text-lg font-semibold">Order Summary</h2>
 
               <div className="mb-3 flex items-center justify-between text-sm text-gray-600">
-                <span>จำนวนสินค้า</span>
-                <span>{totalQty ?? carts.length} รายการ</span>
+                <span>Product Quantity</span>
+                <span>{totalQty ?? carts.length} Item</span>
               </div>
 
               <div className="mb-2 flex items-center justify-between">
@@ -270,7 +271,7 @@ export default function CartList() {
                   className={`w-full rounded-lg bg-black px-4 py-2 text-sm text-white hover:bg-black/90
       ${!canCheckout ? "opacity-60 cursor-not-allowed hover:bg-black" : ""}`}
                 >
-                  {going ? "กำลังไปหน้า Checkout..." : "ดำเนินการชำระเงิน"}
+                  {going ? "Proceeding to checkout…" : "Checkout"}
                 </button>
               </div>
 

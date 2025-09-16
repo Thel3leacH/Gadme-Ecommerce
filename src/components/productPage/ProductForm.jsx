@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function ProductForm() {
   const { name } = useParams(); // = :product_name
@@ -63,8 +63,6 @@ export function ProductForm() {
   };
 
   const handleAddToCart = async () => {
-    console.log("handleAddToCart");
-
     // กันกดรัว
     if (inFlightRef.current) return;
 
