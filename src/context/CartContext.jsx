@@ -54,6 +54,11 @@ export function CartProvider({ children, apiBase = API_URL }) {
     return updated;
   };
 
+  const clearCartClient = () => {
+    setTotalQty(0);
+    setTotalItems(0);
+  };
+
   // ดึง meta ครั้งเดียวสำหรับ navbar (ทั้งสองค่า)
   const fetchCartMeta = async () => {
     const r = await axios.get(`${apiBase}/cart/meta`, {
@@ -259,6 +264,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
 
         // actions
         fetchCartMeta: refreshCartMeta,
+        clearCartClient,
         addToCart,
         setQty,
         incQty,

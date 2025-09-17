@@ -1,73 +1,56 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+export function ProductDetail({
+  products = [],
+  product: productProp,
+  loading = false,
+  error = null,
+}) {
+  // รับมาได้ทั้งก้อนเดียวหรือ array → เลือกตัวแรกเป็นดีฟอลต์
+  const product = productProp ?? (Array.isArray(products) ? products[0] : null);
 
-const Api = "https://68996ee5fed141b96b9f7a90.mockapi.io/gameak/products";
+  const description =
+    product?.product_description ?? // ✅ จากฐานข้อมูล (snake_case)
+    product?.productDescription ?? // fallback ถ้าเป็น camelCase เดิม
+    product?.description ?? // fallback อื่น ๆ
+    "";
 
-export function ProductDetail() {
-  const { id } = useParams();
-  const [product, setProduct] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${Api}/${id}`);
-      setProduct(response.data);
-    } catch (error) {
-      alert("Failed");
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [id]);
+  const specs = product?.product_spec ?? product?.productSpec ?? {};
 
   return (
     <div>
-      {/* {loading ? <div className="text-center">Loading⌛...</div> : <div></div>} */}
-      <div className="flex flex-col gap-10 lg:gap-15">
+      {loading && <div className="text-center">Loading⌛...</div>}
+      {error && <div className="text-red-600">โหลดข้อมูลไม่สำเร็จ</div>}
+      {!loading && !error && !product && (
+        <div className="text-gray-500">ไม่พบสินค้า</div>
+      )}
+
+      <div className="flex flex-col gap-5">
         {/* productSpec */}
-        <table>
+        <table className="border border-gray-200 rounded-lg overflow-hidden">
           <thead>
             <tr>
-              <th className="p-2 w-[18rem] border-1 text-[1.25rem] text-left">
-                Product Spec
-              </th>
-              <th className="p-2 w-[25rem] border-1 text-[1.25rem] text-left">
-                {product.productName}
+              <th className=" pb-5 w-[18rem] border-b border-gray-200 text-[1.25rem] text-left">
+                Product Spec :{" "}
+                {product?.product_name ?? product?.productName ?? "-"}
               </th>
             </tr>
           </thead>
-          <tbody>
-            {Object.entries(product.productSpec ?? {}).map(([spec, detail]) => (
+          <p>
+            {Object.entries(specs).map(([spec, detail]) => (
               <tr key={spec}>
-                <td className="p-1 border-1">{spec}</td>
-                <td className="p-1 border-1">
-                  {Array.isArray(detail) ? detail.join(", ") : detail}
+                <td className="p-1 border-b border-gray-100">{spec}</td>
+                <td className="p-1 border-b border-gray-100">
+                  {Array.isArray(detail) ? detail.join(", ") : String(detail)}
                 </td>
               </tr>
             ))}
-          </tbody>
+          </p>
         </table>
 
-        {/* productDescription */}
-        <div className="lg:w-[45rem]">{product.productDescription}</div>
+        {/* ✅ product_description */}
+        <div className="lg:w-[45rem] whitespace-pre-line">
+          {description || "—"}
+        </div>
       </div>
     </div>
   );
-}
-
-{
-  /*
-<tbody>
-  {Object.entries(product.productSpec).map(([spec, detail]) => {
-    <tr key={spec}>
-      <td>{spec}</td>
-      <td>{Array.isArray(detail) ? detail.join(" ") : detail}</td>
-    </tr>;
-  })}
-</tbody>;
-*/
 }

@@ -1,13 +1,5 @@
 import React, { useMemo, useState } from "react";
 
-// ✅ Checkout Demo (shadcn-style) – cleaned & fixed
-// - แก้โครงสร้าง JSX ให้ปิดแท็กถูกต้อง (CardContent / div)
-// - นำส่วน "วิธีการจัดส่ง", "วิธีการชำระเงิน", และ "หมายเหตุเพิ่มเติม" ออกแล้วตามที่ขอ
-// - เพิ่มฟิลด์: ชื่อ, นามสกุล, ที่อยู่ (textarea), แขวง/ตำบล, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์
-// - คงสรุปราคา + คูปองฝั่งขวาไว้
-// - เพิ่ม Self-tests (mini tests) เพื่อเช็ค subtotal/total แบบง่าย ๆ ในโหมดเดโม
-
-// เครื่องมือ format เงิน
 const formatTHB = (n) =>
   new Intl.NumberFormat("th-TH", {
     style: "currency",

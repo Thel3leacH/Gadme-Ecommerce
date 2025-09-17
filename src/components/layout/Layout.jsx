@@ -11,7 +11,7 @@ const Layout = () => {
       <main className="md:container mx-auto">
         <Outlet />
       </main>
-      <footer className="md:bg-chart-2 text-gray-400 text-sm">
+      <footer className="mt-auto w-full bg-chart-2 md:bg-gradient-to-r from-chart-3 to-chart-2 text-secondary shadow-lg">
         <Footer />
       </footer>
     </div>

@@ -4,7 +4,7 @@ import Home from "./views/Home";
 import ProductLists from "@/views/ProductLists";
 import ProductPage from "@/views/ProductPage";
 import About from "./views/About";
-import Checkout from "./views/Checkout";
+import Checkout from "./views/Checkout2";
 import Payment from "./views/Payment";
 import OrderConfirm from "./views/OrderConfirm";
 import UserProfile from "./views/UserProfile";
@@ -88,7 +88,7 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductLists /> },
       { path: "products/:name", element: <ProductPage /> },
       { path: "payment", element: <Payment /> },
-      { path: "orderconfirm", element: <OrderConfirm /> },
+      { path: "orderconfirm/:orderId", element: <OrderConfirm /> },
       { path: "userprofile", element: <UserProfile /> },
       { path: "product-checkout", element: <ProductCheckout /> }, // เลี่ยง path ชน "checkout"
       { path: "cart", element: <Cart /> },

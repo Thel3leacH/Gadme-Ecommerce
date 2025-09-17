@@ -43,7 +43,7 @@ export default function ProductPage() {
         <ProductImage products={products} />
         <ProductForm />
       </div>
-      {/* <ProductDetail /> */}
+      <ProductDetail products={products} loading={loading} error={error} />
     </div>
   );
 }
