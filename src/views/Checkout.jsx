@@ -8,7 +8,7 @@ const formatTHB = (n) =>
   }).format(n);
 const formatFromSatang = (satang) => formatTHB(Math.round(satang) / 100);
 
-// 👇 ตัวอย่าง mock ตะกร้า (เดโม)
+
 const mockCart = {
   currency: "THB",
   items: [

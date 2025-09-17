@@ -8,26 +8,24 @@ import {
 } from "react";
 import axios from "axios";
 
-const API_URL = import.meta?.env?.VITE_API_URL ?? "http://localhost:3000/"; // ✅ อย่าฮาร์ดโค้ด
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductsContext = createContext(null);
 
 export function ProductsProvider({ children }) {
-  const [products, setProducts] = useState([]); // รายการสินค้า
-  const [loading, setLoading] = useState(true); // สถานะโหลด
-  const [error, setError] = useState(null); // เก็บ error ไว้อ่านที่ UI
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // ✅ ห่อด้วย useCallback ให้ identity คงที่ และใส่ cleanup กัน memory leak
   const fetchProducts = useCallback(async (signal) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_URL}productlist`, {
-        withCredentials: true, // ถ้าใช้คุกกี้ session ให้เปิดไว้; ไม่ใช้ก็ถอดได้
-        signal, // รองรับ abort (Axios v1+)
+      const res = await axios.get(`${API_URL}/productlist`, {
+        withCredentials: true,
+        signal,
       });
 
-      // ✅ รองรับทั้ง { products: [...] } และ [...] ตรงๆ
       const list = Array.isArray(res.data?.products)
         ? res.data.products
         : Array.isArray(res.data)
@@ -46,14 +44,12 @@ export function ProductsProvider({ children }) {
     }
   }, []);
 
-  // ✅ โหลดครั้งแรก + ยกเลิกเมื่อ component ถูก unmount
   useEffect(() => {
     const controller = new AbortController();
     fetchProducts(controller.signal);
     return () => controller.abort();
   }, [fetchProducts]);
 
-  // ✅ ทำแผนที่ id -> product ให้ค้นหา O(1) และรองรับทั้ง _id / id (หรือ product_id)
   const byIdMap = useMemo(() => {
     const map = new Map();
     for (const p of products) {
@@ -68,8 +64,8 @@ export function ProductsProvider({ children }) {
       products,
       loading,
       error,
-      refresh: () => fetchProducts(), // เรียกใหม่จากข้างนอกได้
-      productById: (id) => byIdMap.get(String(id)) ?? null, // เร็วและทนกว่า find()
+      refresh: () => fetchProducts(),
+      productById: (id) => byIdMap.get(String(id)) ?? null,
     };
   }, [products, loading, error, byIdMap, fetchProducts]);
 

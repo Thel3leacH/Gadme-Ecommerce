@@ -4,8 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
-// Change this to match your backend
-const API_URL = "http://localhost:3000/"; // keep trailing slash
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CartList() {
   const navigate = useNavigate();
@@ -14,15 +13,15 @@ export default function CartList() {
   const [error, setError] = useState(null);
   const [apiSubtotal, setApiSubtotal] = useState(null);
   const { totalQty, totalItems, setQty, removeItem: removeItemCtx } = useCart();
-  const [deleteBusy, setDeleteBusy] = useState(false); // ล็อกปุ่มลบทั้งหมด
-  const [activeRemovingId, setActiveRemovingId] = useState(null); // ไอเท็มที่กำลังลบอยู่
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [activeRemovingId, setActiveRemovingId] = useState(null);
   const [going, setGoing] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}cart`, {
+        const res = await axios.get(`${API_URL}/cart`, {
           withCredentials: true,
         });
         // If your API returns { carts: [...] } then use: setCarts(res.data.carts)
@@ -65,19 +64,18 @@ export default function CartList() {
   );
 
   const onCheckout = () => {
-    setGoing(true); // กันกดรัว
-    navigate("/checkout"); // ไปหน้าถัดไป
+    setGoing(true);
+    navigate("/checkout");
   };
 
   const patchQuantity = async (id, nextQty, currentQty) => {
-    // optimistic เฉพาะ UI list
     const backup = carts;
     setCarts((prev) =>
       prev.map((it) => (it._id === id ? { ...it, product_qty: nextQty } : it))
     );
     try {
-      await setQty(id, nextQty, { currentQty }); // ✅ ให้ Context จัดการ count + toast + sync
-      setApiSubtotal(null); // ให้คำนวณใหม่ฝั่ง client (หรือรอ API คืนมา)
+      await setQty(id, nextQty, { currentQty });
+      setApiSubtotal(null);
     } catch (e) {
       // rollback UI list
       setCarts(backup);
@@ -85,24 +83,21 @@ export default function CartList() {
   };
 
   const removeItem = async (id, currentQty) => {
-    if (deleteBusy) return; // กันกดลบตัวอื่น/ตัวเดิมซ้ำระหว่างกำลังลบ
+    if (deleteBusy) return;
 
-    const backup = carts; // หรือใช้ [...carts] ถ้าต้องการ clone
+    const backup = carts;
     setDeleteBusy(true);
     setActiveRemovingId(id);
 
-    // optimistic: เอาออกก่อน
     setCarts((prev) => prev.filter((it) => it._id !== id));
 
     try {
       await removeItemCtx(id, { currentQty }); // ให้ Context จัดการ count/toast
       setApiSubtotal(null);
     } catch (e) {
-      // rollback
       setCarts(backup);
       console.error("remove failed", e);
     } finally {
-      // คูลดาวน์กันจิ้มรัวทันที
       setTimeout(() => {
         setDeleteBusy(false);
         setActiveRemovingId(null);

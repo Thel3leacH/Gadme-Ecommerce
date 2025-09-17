@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 
 const CartContext = createContext(null);
-const API_URL = import.meta?.env?.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function CartProvider({ children, apiBase = API_URL }) {
   const { user, loading: authLoading } = useAuth();
@@ -32,13 +32,11 @@ export function CartProvider({ children, apiBase = API_URL }) {
   };
   const isBusy = (key) => busyRef.current.has(key);
 
-  // ===== Helpers: อ่าน meta จาก response =====
   const isNum = (v) => typeof v === "number" && Number.isFinite(v);
   const readQty = (d) =>
     [d?.count_items, d?.count, d?.totalQty].find((v) => isNum(v)); // รับ 0 ได้
   const readLines = (d) => [d?.count_lines, d?.lines].find((v) => isNum(v)); // รับ 0 ได้
 
-  // อัปเดต meta จาก payload; ถ้าไม่มีทั้งสองค่า จะคืน false
   const syncMeta = (data) => {
     let updated = false;
     const q = readQty(data);
@@ -59,12 +57,10 @@ export function CartProvider({ children, apiBase = API_URL }) {
     setTotalItems(0);
   };
 
-  // ดึง meta ครั้งเดียวสำหรับ navbar (ทั้งสองค่า)
   const fetchCartMeta = async () => {
     const r = await axios.get(`${apiBase}/cart/meta`, {
       withCredentials: true,
     });
-    // อัปเดตจาก response (รับ 0)
     syncMeta(r.data);
   };
   const refreshCartMeta = fetchCartMeta;
@@ -82,7 +78,6 @@ export function CartProvider({ children, apiBase = API_URL }) {
     }
   }, [authLoading, user?._id, apiBase]);
 
-  // ออปชัน: รีเฟรชเมื่อแท็บโฟกัส/กลับมา
   useEffect(() => {
     const onFocus = () => {
       if (!authLoading && user?._id) fetchCartMeta().catch(() => {});
@@ -95,9 +90,6 @@ export function CartProvider({ children, apiBase = API_URL }) {
     };
   }, [authLoading, user?._id, apiBase]);
 
-  // ===== Actions =====
-
-  // Add to cart
   const addToCart = async (payload) => {
     const inc = Number(payload?.product_qty ?? 1) || 1;
     setAdding(true);
@@ -144,7 +136,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
       const tId = toast.loading(
         delta > 0 ? "Increasing quantity…" : "Decreasing quantity…"
       );
-      if (delta) setTotalQty((c) => Math.max(0, c + delta)); // optimistic
+      if (delta) setTotalQty((c) => Math.max(0, c + delta));
 
       try {
         const res = await axios.put(
@@ -158,7 +150,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
         toast.success("Quantity updated.", { id: tId });
         return res.data;
       } catch (e) {
-        if (delta) setTotalQty((c) => Math.max(0, c - delta)); // rollback
+        if (delta) setTotalQty((c) => Math.max(0, c - delta));
         const msg =
           e.response?.data?.message ||
           e.message ||
@@ -187,7 +179,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
         toast.success("Quantity increased.", { id: tId });
         return res.data;
       } catch (e) {
-        setTotalQty((c) => Math.max(0, c - n)); // rollback
+        setTotalQty((c) => Math.max(0, c - n));
         const msg =
           e.response?.data?.message ||
           e.message ||
@@ -226,11 +218,10 @@ export function CartProvider({ children, apiBase = API_URL }) {
       }
     });
 
-  // ลบรายการ
   const removeItem = async (itemId, { currentQty } = {}) =>
     withItemLock(itemId, async () => {
       const tId = toast.loading("Removing item...");
-      setTotalItems((c) => Math.max(0, c - 1)); // optimistic: บรรทัด -1 แน่นอน
+      setTotalItems((c) => Math.max(0, c - 1));
       if (typeof currentQty === "number") {
         setTotalQty((c) => Math.max(0, c - Number(currentQty)));
       }
@@ -245,7 +236,7 @@ export function CartProvider({ children, apiBase = API_URL }) {
         toast.success("Item removed.", { id: tId });
         return res.data;
       } catch (e) {
-        await fetchCartMeta(); // sync กลับ
+        await fetchCartMeta();
         const msg =
           e.response?.data?.message || e.message || "Failed to remove item.";
         toast.error(msg, { id: tId });
@@ -257,8 +248,8 @@ export function CartProvider({ children, apiBase = API_URL }) {
     <CartContext.Provider
       value={{
         // state
-        totalQty, // รวม “ชิ้น”
-        totalItems, // รวม “รายการ”
+        totalQty,
+        totalItems,
         adding,
         isBusy,
 

@@ -27,12 +27,10 @@ export default function AuthDialog() {
           </TabsList>
 
           <TabsContent value="login">
-            {/* ถ้า LoginForm รองรับ onSuccess ก็ส่งไปได้เหมือนกัน */}
             <LoginForm onSuccess={handleClose} />
           </TabsContent>
 
           <TabsContent value="signup">
-            {/* ✅ ปิด dialog หลังสมัครสำเร็จ */}
             <SignupForm onSuccess={handleClose} />
           </TabsContent>
         </Tabs>

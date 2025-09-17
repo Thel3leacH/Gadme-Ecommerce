@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const formatTHB = (n) =>
   new Intl.NumberFormat("th-TH", {
@@ -119,184 +119,186 @@ export default function CheckoutStaticEmpty() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <h1 className="mb-6 text-2xl font-semibold">Checkout</h1>
+    <div className="min-h-screen flex flex-col">
+      <div className="mx-auto max-w-6xl px-4 py-6 flex-1 w-full">
+        <h1 className="mb-6 text-2xl font-semibold">Checkout</h1>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* LEFT: Address */}
-        <section className="md:col-span-2 rounded-2xl border p-5 shadow-sm">
-          <h2 className="mb-4 text-lg font-medium">Shipping Information</h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* LEFT: Address */}
+          <section className="md:col-span-2 rounded-2xl border p-5 shadow-sm">
+            <h2 className="mb-4 text-lg font-medium">Shipping Information</h2>
 
-          <form
-            autoComplete="off"
-            className="grid grid-cols-1 gap-3 md:grid-cols-2"
-          >
-            <Field label="First Name">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.firstname}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, firstname: e.target.value }))
-                }
-                placeholder="john"
-              />
-            </Field>
-            <Field label="Last Name">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.lastname}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, lastname: e.target.value }))
-                }
-                placeholder="doe"
-              />
-            </Field>
-            <Field label="Phone Number" span2>
-              <input
-                className="rounded-lg border p-2"
-                value={addr.phone}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, phone: e.target.value }))
-                }
-                placeholder="0812345678"
-                inputMode="tel"
-              />
-            </Field>
-            <Field label="Address / Street Address" span2>
-              <input
-                className="rounded-lg border p-2"
-                value={addr.line1}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, line1: e.target.value }))
-                }
-                placeholder="House Number / Village / Street"
-              />
-            </Field>
-            <Field label="Sub-district">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.subdistrict}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, subdistrict: e.target.value }))
-                }
-              />
-            </Field>
-            <Field label="District">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.district}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, district: e.target.value }))
-                }
-              />
-            </Field>
-            <Field label="State/Province">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.province}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, province: e.target.value }))
-                }
-              />
-            </Field>
-            <Field label="Postal Code / Zip Code">
-              <input
-                className="rounded-lg border p-2"
-                value={addr.postalcode}
-                onChange={(e) =>
-                  setAddr((a) => ({ ...a, postalcode: e.target.value }))
-                }
-                inputMode="numeric"
-              />
-            </Field>
-          </form>
-        </section>
-
-        {/* RIGHT: Cart + total */}
-        <aside className="rounded-2xl border p-5 shadow-sm">
-          <h2 className="mb-4 text-lg font-medium">Order Summary</h2>
-          <div className="space-y-3">
-            {items.length === 0 && (
-              <div className="text-gray-500">ไม่มีสินค้า</div>
-            )}
-            {items.map((it) => (
-              <div
-                key={String(it.product_id)}
-                className="flex items-center gap-3 border-b pb-3 last:border-none"
-              >
-                <img
-                  src={it.image}
-                  alt={it.name}
-                  className="h-16 w-16 rounded object-cover"
+            <form
+              autoComplete="off"
+              className="grid grid-cols-1 gap-3 md:grid-cols-2"
+            >
+              <Field label="First Name">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.firstname}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, firstname: e.target.value }))
+                  }
+                  placeholder="john"
                 />
-                <div className="flex-1">
-                  <div className="font-medium">{it.name}</div>
-                  <div className="text-sm text-gray-600">
-                    color: {it.color} | Qty: {it.qty}
+              </Field>
+              <Field label="Last Name">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.lastname}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, lastname: e.target.value }))
+                  }
+                  placeholder="doe"
+                />
+              </Field>
+              <Field label="Phone Number" span2>
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.phone}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, phone: e.target.value }))
+                  }
+                  placeholder="0812345678"
+                  inputMode="tel"
+                />
+              </Field>
+              <Field label="Address / Street Address" span2>
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.line1}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, line1: e.target.value }))
+                  }
+                  placeholder="House Number / Village / Street"
+                />
+              </Field>
+              <Field label="Sub-district">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.subdistrict}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, subdistrict: e.target.value }))
+                  }
+                />
+              </Field>
+              <Field label="District">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.district}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, district: e.target.value }))
+                  }
+                />
+              </Field>
+              <Field label="State/Province">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.province}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, province: e.target.value }))
+                  }
+                />
+              </Field>
+              <Field label="Postal Code / Zip Code">
+                <input
+                  className="rounded-lg border p-2"
+                  value={addr.postalcode}
+                  onChange={(e) =>
+                    setAddr((a) => ({ ...a, postalcode: e.target.value }))
+                  }
+                  inputMode="numeric"
+                />
+              </Field>
+            </form>
+          </section>
+
+          {/* RIGHT: Cart + total */}
+          <aside className="rounded-2xl border p-5 shadow-sm">
+            <h2 className="mb-4 text-lg font-medium">Order Summary</h2>
+            <div className="space-y-3">
+              {items.length === 0 && (
+                <div className="text-gray-500">ไม่มีสินค้า</div>
+              )}
+              {items.map((it) => (
+                <div
+                  key={String(it.product_id)}
+                  className="flex items-center gap-3 border-b pb-3 last:border-none"
+                >
+                  <img
+                    src={it.image}
+                    alt={it.name}
+                    className="h-16 w-16 rounded object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium">{it.name}</div>
+                    <div className="text-sm text-gray-600">
+                      color: {it.color} | Qty: {it.qty}
+                    </div>
                   </div>
+                  <div className="text-right">{formatTHB(it.line_total)}</div>
                 </div>
-                <div className="text-right">{formatTHB(it.line_total)}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="my-4 h-px bg-gray-200" />
-          <div className="space-y-2">
-            <Row label="Subtotal" value={formatTHB(cart.subtotal)} />
-            <Row label="Shipping Fee" value="Free" />
-            <Row bold label="Total" value={formatTHB(grandTotal)} />
-          </div>
-
-          <button
-            onClick={goToPaymentAsk}
-            disabled={!canProceed}
-            className={`mt-4 w-full rounded-xl px-4 py-3 text-white transition ${
-              canProceed
-                ? "bg-black hover:opacity-90"
-                : "cursor-not-allowed bg-gray-400"
-            }`}
-          >
-            {placing ? "Processing…" : "Select Payment Method"}
-          </button>
-          {!canProceed && (
-            <p className="mt-2 text-center text-sm text-gray-500">
-              Please complete all required fields before proceeding.
-            </p>
-          )}
-        </aside>
-      </div>
-
-      {/* Modal ยืนยันสร้างออเดอร์ & ล้างตะกร้า */}
-      {confirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold">Confirm your order?</h3>
-
-            <div className="mt-3 text-sm">
-              Total Payment:{" "}
-              <span className="font-semibold">{formatTHB(grandTotal)}</span>
+              ))}
             </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                className="rounded-lg border px-4 py-2"
-                onClick={() => setConfirmOpen(false)}
-                disabled={placing}
-              >
-                ยกเลิก
-              </button>
-              <button
-                className={`rounded-lg px-4 py-2 text-white ${
-                  placing ? "bg-gray-400" : "bg-black hover:opacity-90"
-                }`}
-                onClick={confirmCreateOrder}
-                disabled={placing}
-              >
-                {placing ? "Creating..." : "Confirm"}
-              </button>
+
+            <div className="my-4 h-px bg-gray-200" />
+            <div className="space-y-2">
+              <Row label="Subtotal" value={formatTHB(cart.subtotal)} />
+              <Row label="Shipping Fee" value="Free" />
+              <Row bold label="Total" value={formatTHB(grandTotal)} />
             </div>
-          </div>
+
+            <button
+              onClick={goToPaymentAsk}
+              disabled={!canProceed}
+              className={`mt-4 w-full rounded-xl px-4 py-3 text-white transition ${
+                canProceed
+                  ? "bg-black hover:opacity-90"
+                  : "cursor-not-allowed bg-gray-400"
+              }`}
+            >
+              {placing ? "Processing…" : "Select Payment Method"}
+            </button>
+            {!canProceed && (
+              <p className="mt-2 text-center text-sm text-gray-500">
+                Please complete all required fields before proceeding.
+              </p>
+            )}
+          </aside>
         </div>
-      )}
+
+        {/* Modal ยืนยันสร้างออเดอร์ & ล้างตะกร้า */}
+        {confirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+              <h3 className="text-lg font-semibold">Confirm your order?</h3>
+
+              <div className="mt-3 text-sm">
+                Total Payment:{" "}
+                <span className="font-semibold">{formatTHB(grandTotal)}</span>
+              </div>
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  className="rounded-lg border px-4 py-2"
+                  onClick={() => setConfirmOpen(false)}
+                  disabled={placing}
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  className={`rounded-lg px-4 py-2 text-white ${
+                    placing ? "bg-gray-400" : "bg-black hover:opacity-90"
+                  }`}
+                  onClick={confirmCreateOrder}
+                  disabled={placing}
+                >
+                  {placing ? "Creating..." : "Confirm"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

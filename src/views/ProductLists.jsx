@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductLists = () => {
   const [products, setProducts] = useState([]);
@@ -13,8 +13,8 @@ const ProductLists = () => {
     (async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}productlist`);
-        setProducts(res.data.products); // ดึง array ออกมาให้ถูกต้อง
+        const res = await axios.get(`${API_URL}/productlist`);
+        setProducts(res.data.products);
       } catch (e) {
         if (e.name !== "CanceledError") setError(e);
       } finally {

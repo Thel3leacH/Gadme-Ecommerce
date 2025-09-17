@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import success from "/src/assets/success.png";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 const CHECK_IMG = success; //
 const PLACEHOLDER_IMG = "/assets/placeholder.png";
 
