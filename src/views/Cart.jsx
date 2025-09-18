@@ -130,13 +130,13 @@ export default function CartList() {
 
             {error && (
               <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-                โหลดข้อมูลไม่สำเร็จ
+                Please sign in to continue.
               </div>
             )}
 
             {!loading && !error && carts.length === 0 && (
               <div className="rounded-lg border bg-white p-6 text-center text-gray-600">
-                ไม่มีสินค้าในตะกร้า
+                Your cart is empty
               </div>
             )}
 
@@ -273,7 +273,8 @@ export default function CartList() {
 
                 {hasInvalidItem && (
                   <p className="text-xs text-rose-600">
-                    มีรายการที่จำนวนไม่ถูกต้อง กรุณาตรวจสอบจำนวนสินค้าอีกครั้ง
+                    There’s an invalid quantity. Please check the item quantity
+                    again.
                   </p>
                 )}
               </div>
