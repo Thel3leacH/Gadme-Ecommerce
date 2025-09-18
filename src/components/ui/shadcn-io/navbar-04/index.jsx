@@ -333,7 +333,7 @@ export const Navbar04 = React.forwardRef(
                     <div className="flex items-center gap-2">
                       {/* ปุ่ม Logout */}
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={handleLogout}
                         disabled={busy}
@@ -527,11 +527,13 @@ export function ProductSearch({ onSelectProduct }) {
             </div>
           )}
           {error && (
-            <div className="p-3 text-sm text-red-600">โหลดข้อมูลไม่สำเร็จ</div>
+            <div className="p-3 text-sm text-red-600">Failed to load data</div>
           )}
 
           {!loading && !error && q && results.length === 0 && (
-            <div className="p-3 text-sm text-muted-foreground">ไม่พบ “{q}”</div>
+            <div className="p-3 text-sm text-muted-foreground">
+              No results found “{q}”
+            </div>
           )}
 
           {!loading && !error && results.length > 0 && (

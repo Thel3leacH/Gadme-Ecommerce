@@ -14,8 +14,8 @@ export default function AuthDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Open auth dialog">
-          <BsPersonFill className="text-2xl" />
+        <Button variant="outline" aria-label="Open auth dialog">
+          <BsPersonFill className="text-2xl" /> <p>login</p>
         </Button>
       </DialogTrigger>
 
