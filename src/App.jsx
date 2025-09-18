@@ -7,6 +7,7 @@ import About from "./views/About";
 import Checkout from "./views/Checkout2";
 import Payment from "./views/Payment";
 import OrderConfirm from "./views/OrderConfirm";
+import OrderHistory from "./views/OrderHistory";
 import UserProfile from "./views/UserProfile";
 import ProductCheckout from "./views/ProductCheckout";
 import Cart from "@/views/Cart";
@@ -94,6 +95,8 @@ const router = createBrowserRouter([
       { path: "cart", element: <Cart /> },
       { path: "admin", element: <AdminManageItem /> },
       { path: "confirm", element: <Confirm /> },
+      { path: "orderhistory", element: <OrderHistory /> },
+      { path: "orderhistory/:orderId", element: <OrderConfirm /> },
     ],
   },
 ]);

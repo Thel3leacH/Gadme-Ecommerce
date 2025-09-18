@@ -288,12 +288,22 @@ export const Navbar04 = React.forwardRef(
               {/* Right side */}
               {!isMobile && (
                 <div className="flex items-center gap-3">
-                  <Link to="products">
-                    <p>Products</p>
-                  </Link>
-                  <Link to="about">
-                    <p>About</p>
-                  </Link>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="products">Products</Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="about">About</Link>
+                  </Button>
+                  {loading ? null : user ? (
+                    <div className="flex items-center gap-2">
+                      {/* ปุ่มดูประวัติการสั่งซื้อ */}
+                      <Button asChild variant="ghost" size="sm">
+                        <Link to="/OrderHistory">Order</Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   <Button
                     size="sm"
                     className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
@@ -320,14 +330,17 @@ export const Navbar04 = React.forwardRef(
                   </Button> */}
                   {/* <LoginForm /> */}
                   {loading ? null : user ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      disabled={busy}
-                    >
-                      Logout
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {/* ปุ่ม Logout */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleLogout}
+                        disabled={busy}
+                      >
+                        Logout
+                      </Button>
+                    </div>
                   ) : (
                     <AuthDialog />
                   )}
