@@ -95,7 +95,8 @@ export const Navbar04 = React.forwardRef(
     const { totalQty, totalItems } = useCart();
     const { user, logout, loading } = useAuth();
     const [busy, setBusy] = useState(false);
-
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [authOpen, setAuthOpen] = useState(false);
     const handleLogout = async () => {
       setBusy(true);
       try {
@@ -163,80 +164,10 @@ export const Navbar04 = React.forwardRef(
         )}
         {...props}
       >
-        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
-          {/* Left side */}
+        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center gap-4">
+          {/* LEFT cluster: โลโก้ + ค้นหา (กินพื้นที่) */}
           <div className="flex flex-1 items-center gap-2">
-            {/* Mobile menu trigger */}
-            {isMobile && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="group h-9 w-9 hover:bg-accent hover:text-accent-foreground"
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <HamburgerIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-64 p-1">
-                  <NavigationMenu className="max-w-none">
-                    <NavigationMenuList className="flex-col items-start gap-0">
-                      {navigationLinks.map((link, index) => (
-                        <NavigationMenuItem key={index} className="w-full">
-                          <button
-                            onClick={(e) => e.preventDefault()}
-                            className="flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer no-underline"
-                          >
-                            {link.label}
-                          </button>
-                        </NavigationMenuItem>
-                      ))}
-                      <NavigationMenuItem
-                        className="w-full"
-                        role="presentation"
-                        aria-hidden={true}
-                      >
-                        <div
-                          role="separator"
-                          aria-orientation="horizontal"
-                          className="bg-border -mx-1 my-1 h-px"
-                        />
-                      </NavigationMenuItem>
-                      <NavigationMenuItem className="w-full">
-                        {loading ? null : user ? (
-                          <Button
-                            size="sm"
-                            className="mt-0.5 w-full"
-                            onClick={handleLogout}
-                            disabled={busy}
-                          >
-                            Logout
-                          </Button>
-                        ) : (
-                          <AuthDialog />
-                        )}
-                      </NavigationMenuItem>
-                      <NavigationMenuItem className="w-full">
-                        <Button
-                          size="sm"
-                          className="mt-0.5 w-full text-left text-sm"
-                        >
-                          <Link to="/cart">
-                            <span className="flex items-baseline gap-2">
-                              {cartText}
-                              <span className="text-primary-foreground/60 text-xs">
-                                {cartCount}
-                              </span>
-                            </span>
-                          </Link>
-                        </Button>
-                      </NavigationMenuItem>
-                    </NavigationMenuList>
-                  </NavigationMenu>
-                </PopoverContent>
-              </Popover>
-            )}
-            {/* Main nav */}
+            {/* Main nav (โลโก้ + ค้นหา) */}
             <div className="flex flex-1 items-center min-md:justify-around max-md:justify-between">
               <button
                 onClick={(e) => e.preventDefault()}
@@ -251,103 +182,152 @@ export const Navbar04 = React.forwardRef(
                   </span>
                 </Link>
               </button>
+
               {/* Search form */}
-              <div className="">
+              <div>
                 <form onSubmit={handleSearchSubmit} className="relative">
-                  {/* <Input
-                    id={searchId}
-                    name="search"
-                    className="peer h-8 ps-8 pe-2 min-md:w-96 bg-white"
-                    placeholder={searchPlaceholder}
-                    type="search"
-                  /> */}
                   <ProductSearch />
-                  {/* <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 peer-disabled:opacity-50">
-                    <SearchIcon size={16} />
-                  </div> */}
                 </form>
               </div>
-              {/* Navigation menu */}
-              {/* {!isMobile && (
-                <NavigationMenu className="flex ">
-                  <NavigationMenuList className="gap-2">
-                    {navigationLinks.map((link, index) => (
-                      <NavigationMenuItem key={index}>
-                        <NavigationMenuLink
-                          href={link.href}
-                          onClick={(e) => e.preventDefault()}
-                          className="text-muted-foreground hover:text-primary py-1.5 font-medium transition-colors cursor-pointer group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          {link.label}
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
-                  </NavigationMenuList>
-                </NavigationMenu>
-              )} */}
-              {/* Right side */}
-              {!isMobile && (
-                <div className="flex items-center gap-3">
-                  <Button asChild variant="ghost" size="sm">
-                    <Link to="products">Products</Link>
-                  </Button>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link to="about">About</Link>
-                  </Button>
-                  {loading ? null : user ? (
-                    <div className="flex items-center gap-2">
-                      {/* ปุ่มดูประวัติการสั่งซื้อ */}
-                      <Button asChild variant="ghost" size="sm">
-                        <Link to="/OrderHistory">Order</Link>
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  <Button
-                    size="sm"
-                    className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
-                  >
-                    <Link to="/cart">
-                      <span className="flex items-baseline gap-2">
-                        {cartText}
-                        <span className="text-primary-foreground text-xs">
-                          {totalItems}
-                        </span>
-                      </span>
-                    </Link>
-                  </Button>
-                  {/* <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (onSignInClick) onSignInClick();
-                    }}
-                  >
-                    {signInText}
-                  </Button> */}
-                  {/* <LoginForm /> */}
-                  {loading ? null : user ? (
-                    <div className="flex items-center gap-2">
-                      {/* ปุ่ม Logout */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleLogout}
-                        disabled={busy}
-                      >
-                        Logout
-                      </Button>
-                    </div>
-                  ) : (
-                    <AuthDialog />
-                  )}
-                </div>
-              )}
             </div>
           </div>
+
+          {/* RIGHT cluster: ปุ่มเมนู */}
+          {isMobile ? (
+            <div className="ml-auto flex items-center">
+              <Popover open={mobileOpen} onOpenChange={setMobileOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="group h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Toggle menu"
+                  >
+                    <HamburgerIcon />
+                  </Button>
+                </PopoverTrigger>
+
+                {/* ชิดขวา */}
+                <PopoverContent
+                  align="end"
+                  className="w-72 p-2"
+                  sideOffset={8}
+                  onEscapeKeyDown={() => setMobileOpen(false)}
+                >
+                  <nav className="flex flex-col gap-1">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start"
+                    >
+                      <Link to="/" onClick={() => setMobileOpen(false)}>
+                        Home
+                      </Link>
+                    </Button>
+
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start"
+                    >
+                      <Link to="/products" onClick={() => setMobileOpen(false)}>
+                        Products
+                      </Link>
+                    </Button>
+
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start"
+                    >
+                      <Link to="/about" onClick={() => setMobileOpen(false)}>
+                        About
+                      </Link>
+                    </Button>
+
+                    {!loading && user && (
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start"
+                      >
+                        <Link
+                          to="/OrderHistory"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          Order
+                        </Link>
+                      </Button>
+                    )}
+
+                    <div className="bg-border my-1 h-px" />
+
+                    <Button asChild size="sm" className="justify-between">
+                      <Link to="/cart" onClick={() => setMobileOpen(false)}>
+                        <span className="flex items-center gap-2">
+                          {cartText}
+                          <span className="text-xs opacity-70">
+                            {totalItems}
+                          </span>
+                        </span>
+                      </Link>
+                    </Button>
+                  </nav>
+                </PopoverContent>
+              </Popover>
+
+              {/* Dialog นอก Popover */}
+              <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
+            </div>
+          ) : (
+            // Desktop right cluster เดิม
+            <div className="ml-auto flex items-center gap-3">
+              <Button asChild variant="ghost" size="sm">
+                <Link to="products">Products</Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="about">About</Link>
+              </Button>
+              {loading ? null : user ? (
+                <div className="flex items-center gap-2">
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="/OrderHistory">Order</Link>
+                  </Button>
+                </div>
+              ) : null}
+              <Button
+                size="sm"
+                className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
+              >
+                <Link to="/cart">
+                  <span className="flex items-baseline gap-2">
+                    {cartText}
+                    <span className="text-primary-foreground text-xs">
+                      {totalItems}
+                    </span>
+                  </span>
+                </Link>
+              </Button>
+              {loading ? null : user ? (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    disabled={busy}
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <AuthDialog />
+              )}
+            </div>
+          )}
         </div>
       </header>
     );
