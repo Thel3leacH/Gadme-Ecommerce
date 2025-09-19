@@ -162,9 +162,6 @@ const Footer = () => {
       <div className="border-t border-white/20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-4 text-xs md:text-sm opacity-80 flex flex-col md:flex-row items-center justify-between gap-2">
           <p>© {new Date().getFullYear()} GadMe. All rights reserved.</p>
-          <p className="text-center">
-            Built with ❤️ — <span className="opacity-80">Bangkok</span>
-          </p>
         </div>
       </div>
     </footer>
