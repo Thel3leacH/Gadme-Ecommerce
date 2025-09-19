@@ -104,7 +104,7 @@ export function ProductForm() {
   if (error) return <div className="p-6 text-red-600">โหลดข้อมูลไม่สำเร็จ</div>;
   if (!active) return <div className="p-6">ไม่พบสินค้า</div>;
   return (
-    <div className="mx-auto w-[15rem] lg:w-[30rem]">
+    <div className="mx-auto w-[20rem] lg:w-[30rem]">
       <div className="flex flex-col gap-5">
         <a href="#" className="underline">
           {active.product_category}
