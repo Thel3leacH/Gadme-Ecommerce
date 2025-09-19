@@ -207,7 +207,6 @@ export const Navbar04 = React.forwardRef(
                   </Button>
                 </PopoverTrigger>
 
-                {/* ชิดขวา */}
                 <PopoverContent
                   align="end"
                   className="w-72 p-2"
@@ -248,6 +247,7 @@ export const Navbar04 = React.forwardRef(
                       </Link>
                     </Button>
 
+                    {/* แสดงเมนูที่ต้องล็อกอินก่อน */}
                     {!loading && user && (
                       <Button
                         asChild
@@ -266,6 +266,7 @@ export const Navbar04 = React.forwardRef(
 
                     <div className="bg-border my-1 h-px" />
 
+                    {/* Cart */}
                     <Button asChild size="sm" className="justify-between">
                       <Link to="/cart" onClick={() => setMobileOpen(false)}>
                         <span className="flex items-center gap-2">
@@ -276,12 +277,31 @@ export const Navbar04 = React.forwardRef(
                         </span>
                       </Link>
                     </Button>
+
+                    {/* 🔁 Login ↔ Logout */}
+                    {!loading &&
+                      (user ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-1"
+                          onClick={async () => {
+                            setMobileOpen(false);
+                            await handleLogout();
+                          }}
+                          disabled={busy}
+                        >
+                          Logout
+                        </Button>
+                      ) : (
+                        // ใช้ AuthDialog แบบ "ไม่ control" เพื่อให้มี trigger เอง
+                        <div className="mt-1">
+                          <AuthDialog />
+                        </div>
+                      ))}
                   </nav>
                 </PopoverContent>
               </Popover>
-
-              {/* Dialog นอก Popover */}
-              <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
             </div>
           ) : (
             // Desktop right cluster เดิม
