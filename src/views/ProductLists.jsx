@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL; // แนะนำให้มี "/" ท้าย URL เช่น http://localhost:3030/
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductLists = () => {
   const [products, setProducts] = useState([]);      // ให้ default เป็น [] เสมอ
@@ -49,8 +49,8 @@ const ProductLists = () => {
   return (
     <div className="mx-auto max-w-7xl p-6">
       <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-        {(products ?? []).map((p) => (
-          <ProductCard key={p._id || p.id} product={p} />
+        {products.map((p) => (
+          <ProductCard key={p._id} product={p} />
         ))}
       </div>
     </div>
