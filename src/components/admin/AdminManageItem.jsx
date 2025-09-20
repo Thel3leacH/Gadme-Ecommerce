@@ -62,24 +62,25 @@ const normalizePayload = (form) => {
 const toFormModel = (p) => {
     const tagsArray = Array.isArray(p.product_tag)
         ? p.product_tag
-        : p.product_tag
-            ? [p.product_tag]
-            : [];
+        : p.product_tag ? [p.product_tag] : [];
 
-    const variances = Array.isArray(p.variances) && p.variances.length > 0
-        ? p.variances.map((v) => ({
-            color: v.product_color || "",
-            stock: v.product_stock ?? 0,
-            price: v.product_price ?? 0,
-            // แสดงเป็น string ให้กรอกง่าย ถ้ามีหลายรูปใช้คอมมา
-            image: Array.isArray(v.product_image)
-                ? v.product_image.join(", ")
-                : v.product_image || "",
-        }))
-        : [{ color: "", image: "", stock: 0, price: 0 }];
+    // ถ้าไม่มี p.variances → ดึงค่าจาก top-level มาใส่แถวแรกให้แก้ง่าย ๆ
+    const variances =
+        Array.isArray(p.variances) && p.variances.length > 0
+            ? p.variances.map(v => ({
+                color: v.product_color || "",
+                stock: v.product_stock ?? 0,
+                price: v.product_price ?? 0,
+                image: Array.isArray(v.product_image) ? v.product_image.join(", ") : (v.product_image || ""),
+            }))
+            : [{
+                color: p.product_color || "",
+                stock: p.product_stock ?? 0,
+                price: p.product_price ?? 0,
+                image: p.product_image || "",
+            }];
 
     return {
-        // ชุดชื่อ field ของฟอร์มฝั่ง FE
         category: p.product_category || "",
         productname: p.product_name || "",
         description: p.product_description || "",
@@ -87,12 +88,12 @@ const toFormModel = (p) => {
         modelname: p.modelname || "",
         warrantyinfo: p.warrantyinfo || "",
         relatedproduct: p.relatedproduct || [],
-        // เก็บทั้งสองแบบ เพื่อไม่ต้องแก้ UI เดิมในส่วน return (มี input name="features")
         tags: tagsArray.join(", "),
         features: tagsArray.join(", "),
         variances,
     };
 };
+
 
 function AdminManageProduct() {
     // ข้อมูลในตาราง
@@ -225,7 +226,7 @@ function AdminManageProduct() {
         const { name, value } = e.target;
         // รองรับเคสเดิมที่ใน UI ใช้ name="features" (เก็บเป็น string)
         if (name === "features") {
-            setEditProductForm((prev) => ({ ...prev, features: value, tags: value }));
+            setEditProductForm((prev) => ({ ...prev, tags: value }));
         } else {
             setEditProductForm((prev) => ({ ...prev, [name]: value }));
         }
@@ -476,12 +477,9 @@ function AdminManageProduct() {
                                                         ? product.product_tag.join(", ")
                                                         : product.product_tag}
                                                 </TableCell>
-                                                <TableCell>
-                                                    {product.variances?.[0]?.product_color || "-"}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {product.variances?.[0]?.product_stock ?? 0}
-                                                </TableCell>
+                                                <TableCell>{product.product_color || "-"}</TableCell>
+                                                <TableCell>{product.product_stock ?? 0}</TableCell>
+
                                                 <TableCell className="space-x-2">
                                                     <Button
                                                         size="sm"
