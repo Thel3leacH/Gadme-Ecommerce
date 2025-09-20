@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function SignupForm({ onSuccess }) {
   const {
@@ -33,7 +33,6 @@ export function SignupForm({ onSuccess }) {
   });
 
   const handleSignup = async (data) => {
-    // 👇 ปรับคีย์ให้ตรงกับ backend ของคุณ
     const payload = {
       user_name: data.firstname.trim(), // ถ้า backend ใช้ user_firstname -> เปลี่ยนตรงนี้
       user_lastname: data.lastname.trim(),

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/context/CartContext";
 // Change this to match your backend
-const API_URL = "http://localhost:3000/"; // keep trailing slash
+const API_URL = import.meta.env.VITE_API_URL; // keep trailing slash
 
 export default function CartList() {
   const [carts, setCarts] = useState([]);

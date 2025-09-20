@@ -8,7 +8,8 @@ import {
 } from "react";
 import axios from "axios";
 
-const API_URL = import.meta?.env?.VITE_API_URL ?? "http://localhost:3000/"; // ✅ อย่าฮาร์ดโค้ด
+// const API_URL = import.meta?.env?.VITE_API_URL ?? "http://localhost:3000/"; // ✅ อย่าฮาร์ดโค้ด
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductsContext = createContext(null);
 
@@ -22,7 +23,7 @@ export function ProductsProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_URL}productlist`, {
+      const res = await axios.get(`${API_URL}/productlist`, {
         withCredentials: true, // ถ้าใช้คุกกี้ session ให้เปิดไว้; ไม่ใช้ก็ถอดได้
         signal, // รองรับ abort (Axios v1+)
       });
@@ -31,10 +32,10 @@ export function ProductsProvider({ children }) {
       const list = Array.isArray(res.data?.products)
         ? res.data.products
         : Array.isArray(res.data)
-        ? res.data
-        : Array.isArray(res.data?.data)
-        ? res.data.data
-        : [];
+          ? res.data
+          : Array.isArray(res.data?.data)
+            ? res.data.data
+            : [];
 
       setProducts(list);
     } catch (e) {

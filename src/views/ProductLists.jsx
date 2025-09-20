@@ -2,25 +2,45 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductLists = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);      // ให้ default เป็น [] เสมอ
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}productlist`);
-        setProducts(res.data.products); // ดึง array ออกมาให้ถูกต้อง
+        // ระวัง "/" ให้ถูก ต้องได้เป็น .../productlist
+        const url = `${API_URL?.replace(/\/?$/, "/")}productlist`;
+        const res = await axios.get(url);
+
+        // กันกรณี backend ส่งรูปแบบไม่ตรง: {products: [...] } หรือส่งเป็น array ตรง ๆ
+        const data = res?.data;
+        const list = Array.isArray(data?.products)
+          ? data.products
+          : Array.isArray(data)
+            ? data
+            : [];
+
+        if (!cancelled) setProducts(list);
       } catch (e) {
-        if (e.name !== "CanceledError") setError(e);
+        if (!cancelled) {
+          console.error("Fetch products failed:", e);
+          setError(e);
+          setProducts([]); // กันพัง
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) return <div className="p-6">Loading...</div>;
