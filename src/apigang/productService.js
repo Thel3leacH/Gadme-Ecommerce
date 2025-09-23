@@ -42,25 +42,44 @@ export const searchProducts = async (query, { page = 1, limit = 10 } = {}) => {
 };
 
 //Below are all cart service
+// ดึงรายการในตะกร้าของผู้ใช้
+export const getCartByUser = async () => {
+  const res = await api.get("/api/cart");
+  return res.data;
+};
+
+// ดึงสรุป meta ของตะกร้า (เช่น count, total) — เบากว่าดึงทั้งรายการ
+export const getCartMeta = async () => {
+  const res = await api.get("/api/cart/meta");
+  return res.data;
+};
+
+// นับจำนวนรายการในตะกร้า
+export const getCartCount = async () => {
+  const res = await api.get("/api/cart/count");
+  return res.data;
+};
+
 // Access Cart of the user
 export const addProductCart = async (productData) => {
-  const response = await api.post("/api/gadme/add-product/cart", productData);
+  const response = await api.post("/api/cart", productData);
   return response.data;
 };
 
 // Update an existing product in cart
 export const updateProductCart = async (productId, updatedData) => {
-  const response = await api.put(
-    `/api/gadme/edit-product/${productId}/cart`,
-    updatedData
-  );
+  const response = await api.put(`/api/cart/${productId}`, updatedData);
   return response.data;
 };
 
 // Delete an product from cart
 export const deleteProductCart = async (productId) => {
-  const response = await api.delete(
-    `/api/gadme/delete-product/${productId}/cart`
-  );
+  const response = await api.delete(`/api/cart/${productId}`);
   return response.data;
+};
+
+// ลบตะกร้าทั้งหมดของผู้ใช้
+export const clearCart = async () => {
+  const res = await api.delete("/api/cart");
+  return res.data;
 };
