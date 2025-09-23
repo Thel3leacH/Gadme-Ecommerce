@@ -16,7 +16,7 @@ export const getProductById = async (productId) => {
 
 // Create a new product to database
 export const createProduct = async (productData) => {
-  const response = await api.post("/api/gadme/add-product", productData);
+  const response = await api.post("/api/add-product", productData);
   return response.data;
 };
 
