@@ -177,7 +177,7 @@ function AdminManageProduct() {
                 modelname: "",
                 warrantyinfo: "",
                 relatedproduct: [],
-                tags: "",
+                tags: [],
                 variances: [{ color: "", image: "", stock: 0, price: 0 }],
             });
         } catch (error) {
